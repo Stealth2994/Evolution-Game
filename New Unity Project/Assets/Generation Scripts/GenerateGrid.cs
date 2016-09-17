@@ -31,11 +31,13 @@ public class GenerateGrid : MonoBehaviour {
             {
                 AddFood(i);
             }
-            StartCoroutine(CreateGrid());
+            
             done = true;
             last = Time.deltaTime - mid;
             Debug.Log(start + "," + mid + "," + last);
+            StartCoroutine_Auto(CreateGrid()); 
         }
+        
     }
     TerrainTileValues u;
 
@@ -173,23 +175,28 @@ public class GenerateGrid : MonoBehaviour {
             grid.Add(new coords(x, y,0),t);
         }
     }
+    public GameObject player;
+    public int renderdistance = 20;
 	IEnumerator CreateGrid()
     {
-        int i = 0;
-        mid = Time.deltaTime - start;
-        foreach (KeyValuePair<coords, TerrainTileValues> entry in grid)
-        {
-            // do something with entry.Value or entry.Key
-            i++;
-            GameObject go = Instantiate(entry.Value.gameObject, new Vector3(entry.Key.x, entry.Key.y, 0), Quaternion.identity) as GameObject;
-            go.transform.parent = transform;
-            if (i > 100)
+        while(true) {
+            
+            foreach (KeyValuePair<coords, TerrainTileValues> entry in grid)
             {
-                i = 0;
-                yield return new WaitForSeconds(0.001f);
+                if (entry.Key.x > player.transform.position.x - renderdistance && entry.Key.x < player.transform.position.x + renderdistance && entry.Key.y > player.transform.position.y - renderdistance && entry.Key.y < player.transform.position.y + renderdistance)
+                {
+
+
+                    GameObject go = Instantiate(entry.Value.gameObject, new Vector3(entry.Key.x, entry.Key.y, 0), Quaternion.identity) as GameObject;
+                    go.transform.parent = transform;
+
+                }
+                
             }
+            yield return new WaitForSeconds(1f);
+
         }
-        yield return 0;
+        
         }
     public static List<coords> coorder = new List<coords>();
     public static List<coords> basecoorder = new List<coords>();

@@ -3,7 +3,7 @@ using System.Collections;
 
 public class Movement : MonoBehaviour {
 
-	int movementSpeed = 5;
+	public int movementSpeed = 5;
 	Rigidbody2D rb;
 
 	void Start () {
@@ -12,13 +12,13 @@ public class Movement : MonoBehaviour {
 
 	void Update () {
 		if (Input.GetKey ("w")) {
-			transform.Translate (Vector2.up / 50 * Time.deltaTime);
+			transform.Translate (Vector2.up * movementSpeed * Time.deltaTime);
 		} else if (Input.GetKey ("s")) {
-			transform.Translate (Vector2.down / 50 * Time.deltaTime);
+			transform.Translate (Vector2.down * movementSpeed * Time.deltaTime);
 		} else if (Input.GetKey ("a")) {
-			transform.Translate (Vector2.left / 50 * Time.deltaTime);
+			transform.Translate (Vector2.left * movementSpeed * Time.deltaTime);
 		} else if (Input.GetKey ("d")) {
-			transform.Translate (Vector2.right / 50 * Time.deltaTime);
+			transform.Translate (Vector2.right * movementSpeed * Time.deltaTime);
 		}
 	}
 }
