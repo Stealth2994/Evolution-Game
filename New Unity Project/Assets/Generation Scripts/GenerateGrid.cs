@@ -4,6 +4,7 @@ using System.Collections.Generic;
 
 public class GenerateGrid : MonoBehaviour {
     public List<GameObject> gridObjects;
+    public List<GameObject> foods;
     public int length;
     public int width;
     public Dictionary<coords, GameObject> grid;
@@ -20,6 +21,10 @@ public class GenerateGrid : MonoBehaviour {
             for (int i = 1; i < gridObjects.Count; i++)
             {
                 BunchSpawns(i);
+            }
+            for(int i = 0; i < foods.Count; i++)
+            {
+                AddFood(i);
             }
             CreateGrid();
             done = true;
@@ -111,6 +116,36 @@ public class GenerateGrid : MonoBehaviour {
             }
         }
     }
+    int grasscode = 500;
+    void AddFood(int food)
+    {
+        GameObject gg = foods[food];
+        for (int x = 0; x < length; x++)
+        {
+            for (int y = 0; y < width; y++)
+            {
+
+                if (gg.GetComponent<TerrainTileValues>())
+                {
+                    TerrainTileValues t = gg.GetComponent<TerrainTileValues>();
+                    GameObject hit;
+                    if (grid.TryGetValue(coords.withCoords(x, y), out hit))
+                    {
+
+                    }
+                        else
+                    {
+                        DoBunchChance(t, x, y, gg, t.spawnChance);
+                    }
+                       
+
+
+                    
+                }
+            }
+        }
+    }
+    
     void DoBunchChance(TerrainTileValues t,int x, int y, GameObject gg, float chance)
     {
         if (Random.Range(0.0f, 100.0f) <= chance)
