@@ -12,13 +12,13 @@ public class Movement : MonoBehaviour {
 
 	void Update () {
 		if (Input.GetKey ("w")) {
-			transform.Translate (Vector2.up / 5);
+			transform.Translate (Vector2.up / 50 * Time.deltaTime);
 		} else if (Input.GetKey ("s")) {
-			transform.Translate (Vector2.down / 5);
+			transform.Translate (Vector2.down / 50 * Time.deltaTime);
 		} else if (Input.GetKey ("a")) {
-			transform.Translate (Vector2.left / 5);
+			transform.Translate (Vector2.left / 50 * Time.deltaTime);
 		} else if (Input.GetKey ("d")) {
-			transform.Translate (Vector2.right / 5);
+			transform.Translate (Vector2.right / 50 * Time.deltaTime);
 		}
 	}
 }

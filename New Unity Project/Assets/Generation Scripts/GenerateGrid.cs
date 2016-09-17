@@ -3,17 +3,22 @@ using System.Collections;
 using System.Collections.Generic;
 
 public class GenerateGrid : MonoBehaviour {
+    public float start;
+    public float mid;
+    public float last;
     public List<GameObject> gridObjects;
     public List<GameObject> foods;
     public int length;
     public int width;
-    public Dictionary<coords, GameObject> grid;
+    public Dictionary<coords, TerrainTileValues> grid;
     bool done = false;
     // Use this for initialization
     void Update () {
+        
         if (!done)
         {
-            grid = new Dictionary<coords, GameObject>();
+            start = Time.deltaTime;
+            grid = new Dictionary<coords, TerrainTileValues>();
             for (int i = 0; i < gridObjects.Count; i++)
             {
                 SetTiles(i);
@@ -26,58 +31,67 @@ public class GenerateGrid : MonoBehaviour {
             {
                 AddFood(i);
             }
-            CreateGrid();
+            StartCoroutine(CreateGrid());
             done = true;
+            last = Time.deltaTime - mid;
+            Debug.Log(start + "," + mid + "," + last);
         }
     }
-    
-	void SetTiles(int layer)
+    TerrainTileValues u;
+
+    void SetTiles(int layer)
     {
         GameObject gg = gridObjects[layer];
-        for (int x = 0; x < length; x++)
+        if (gg.GetComponent<TerrainTileValues>())
+        {
+           u  = gg.GetComponent<TerrainTileValues>();
+        }
+            for (int x = 0; x < length; x++)
         {
             for (int y = 0; y < width; y++)
             {
-                
-                if (gg.GetComponent<TerrainTileValues>())
-                {
-                    TerrainTileValues t = gg.GetComponent<TerrainTileValues>();
+             
                     if (layer == 0)
                     {
-                        grid.Add(new coords(x,y,1), gg);
+                        grid.Add(new coords(x,y,1), u);
                     }
                     else
                     {
-                        DoBunchChance(t, x, y, gg, t.spawnChance);
+                        DoBunchChance(u, x, y, u.spawnChance);
 
 
                     }
-                }
+               
             }
         }
     }
+    TerrainTileValues t;
     void BunchSpawns(int layer)
     {
         GameObject gg = gridObjects[layer];
+        
+        if (gg.GetComponent<TerrainTileValues>())
+        {
+            t = gg.GetComponent<TerrainTileValues>();
+        }
         for (int x = 0; x < length; x++)
         {
             for (int y = 0; y < width; y++)
             {
-                if (gg.GetComponent<TerrainTileValues>())
-                {
-                    TerrainTileValues t = gg.GetComponent<TerrainTileValues>();
-                    GameObject hit;
-                    GameObject hit2;
-                    GameObject hit3;
-                    GameObject hit4;
+             
+                    
+                    TerrainTileValues hit;
+                    TerrainTileValues hit2;
+                    TerrainTileValues hit3;
+                    TerrainTileValues hit4;
 
 
-                    int b = 0;
+                int b = 0;
 
                     if (grid.TryGetValue(coords.withCoords(x + 1, y), out hit))
                     {
 
-                        if (hit.GetComponent<TerrainTileValues>().code == t.code)
+                        if (hit.code == t.code)
                         {
                             b++;
 
@@ -86,7 +100,7 @@ public class GenerateGrid : MonoBehaviour {
                     if (grid.TryGetValue(coords.withCoords(x - 1, y), out hit2))
                     {
 
-                        if (hit2.GetComponent<TerrainTileValues>().code == t.code)
+                        if (hit2.code == t.code)
                         {
                             b++;
 
@@ -95,7 +109,7 @@ public class GenerateGrid : MonoBehaviour {
                     if (grid.TryGetValue(coords.withCoords(x, y + 1), out hit3))
                     {
 
-                        if (hit3.GetComponent<TerrainTileValues>().code == t.code)
+                        if (hit3.code == t.code)
                         {
                             b++;
 
@@ -103,67 +117,79 @@ public class GenerateGrid : MonoBehaviour {
                     }
                     if (grid.TryGetValue(coords.withCoords(x, y - 1), out hit4))
                     {
-                        if (hit4.GetComponent<TerrainTileValues>().code == t.code)
+                        if (hit4.code == t.code)
                         {
                             b++;
 
                         }
                     }
 
-                        DoBunchChance(t, x, y, gg, t.bunchChance * t.bunchMultiplier * b);
+                        DoBunchChance(t, x, y, t.bunchChance * t.bunchMultiplier * b);
                     
                 }
-            }
+            
         }
     }
     int grasscode = 500;
+    TerrainTileValues g;
     void AddFood(int food)
     {
         GameObject gg = foods[food];
+        if (gg.GetComponent<TerrainTileValues>())
+        {
+            g = gg.GetComponent<TerrainTileValues>();
+        }
+           
         for (int x = 0; x < length; x++)
         {
             for (int y = 0; y < width; y++)
             {
 
-                if (gg.GetComponent<TerrainTileValues>())
-                {
-                    TerrainTileValues t = gg.GetComponent<TerrainTileValues>();
-                    GameObject hit;
+             
+                    TerrainTileValues hit;
                     if (grid.TryGetValue(coords.withCoords(x, y), out hit))
                     {
 
                     }
-                        else
+                    else
                     {
-                        DoBunchChance(t, x, y, gg, t.spawnChance);
+                        DoBunchChance(g, x, y, g.spawnChance);
                     }
-                       
 
 
-                    
-                }
+
+
+                
             }
         }
     }
     
-    void DoBunchChance(TerrainTileValues t,int x, int y, GameObject gg, float chance)
+    void DoBunchChance(TerrainTileValues t,int x, int y, float chance)
     {
         if (Random.Range(0.0f, 100.0f) <= chance)
         {
             grid.Remove(coords.withBaseCoords(x, y));
             grid.Remove(coords.withCoords(x, y));
-            grid.Add(new coords(x, y,0), gg);
+            grid.Add(new coords(x, y,0),t);
         }
     }
-	void CreateGrid()
+	IEnumerator CreateGrid()
     {
-        foreach (KeyValuePair<coords, GameObject> entry in grid)
+        int i = 0;
+        mid = Time.deltaTime - start;
+        foreach (KeyValuePair<coords, TerrainTileValues> entry in grid)
         {
             // do something with entry.Value or entry.Key
-
-            GameObject go = Instantiate(entry.Value, new Vector3(entry.Key.x, entry.Key.y, 0), Quaternion.identity) as GameObject;
+            i++;
+            GameObject go = Instantiate(entry.Value.gameObject, new Vector3(entry.Key.x, entry.Key.y, 0), Quaternion.identity) as GameObject;
             go.transform.parent = transform;
+            if (i > 100)
+            {
+                i = 0;
+                yield return new WaitForSeconds(0.001f);
+            }
         }
+        yield return 0;
         }
     public static List<coords> coorder = new List<coords>();
     public static List<coords> basecoorder = new List<coords>();
