@@ -6,10 +6,10 @@ public class GenerateGrid : MonoBehaviour {
     public List<GameObject> gridObjects;
     public int length;
     public int width;
-    public List<GameObject> grid;
+    public Dictionary<coords, GameObject> grid;
     // Use this for initialization
     void Start () {
-        grid = new List<GameObject>();
+        grid = new Dictionary<coords, GameObject>();
         for(int i = 0; i < gridObjects.Count; i++)
         {
             SetTiles(i);
@@ -19,57 +19,50 @@ public class GenerateGrid : MonoBehaviour {
 	void SetTiles(int layer)
     {
         GameObject gg = gridObjects[layer];
-        for (int x = 10; x  > 0; x++)
+        for (int x = 0; x < length; x++)
         {
-            for (int y = 10; y  > 0; y++)
+            for (int y = 0; y < width; y++)
             {
-
-                    if (gg.GetComponent<TerrainTileValues>())
-                    {
-                        TerrainTileValues t = gg.GetComponent<TerrainTileValues>();
+                
+                if (gg.GetComponent<TerrainTileValues>())
+                {
+                    TerrainTileValues t = gg.GetComponent<TerrainTileValues>();
                     if (layer == 0)
                     {
-                        grid.Add(gg);
+                        Debug.Log(x + "," +  y);
+                        grid.Add(new coords(x,y), gg);
                     }
                     else
                     {
                         if (Random.Range(0, 100) <= t.spawnChance)
                         {
-                            grid.RemoveAt(x * y);
-                            grid.Insert(x * y, gg);
-
-
+                            grid.Remove(new coords(x, y));
+                            grid.Add(new coords(x, y), gg);
                         }
                     }
-                             
-                                }
-                           
-
-                             
-                            
-                                            
-                    
-
-                
-
-
+                }
             }
         }
     }
 	void CreateGrid()
     {
-        int tempX = 0;
-        int tempY = 0;
-        foreach (GameObject g in grid)
+        foreach (KeyValuePair<coords, GameObject> entry in grid)
         {
-            GameObject go = Instantiate(g, new Vector3(tempX,tempY, 0), Quaternion.identity) as GameObject;
+            // do something with entry.Value or entry.Key
+
+            GameObject go = Instantiate(entry.Value, new Vector3(entry.Key.x, entry.Key.y, 0), Quaternion.identity) as GameObject;
             go.transform.parent = transform;
-            tempX++;
-            if (tempX >= length)
-            {
-                tempX = 0;
-                tempY++;
-            }
+        }
+        }
+   public class coords
+    {
+        public int x;
+        public int y;
+        public coords(int x, int y)
+        {
+            this.x = x;
+            this.y = y;
         }
     }
-}
+    }
+
