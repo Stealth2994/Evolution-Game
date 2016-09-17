@@ -3,7 +3,7 @@ using System.Collections;
 
 public class CameraControl : MonoBehaviour {
     public GameObject character;
-    public float lagSpeed = 1;
+    public float lagSpeed = 3;
 	// Use this for initialization
 	void Start () {
 	
