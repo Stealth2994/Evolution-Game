@@ -10,13 +10,10 @@ public class GenerateGrid : MonoBehaviour {
     public List<GameObject> foods;
     public int length;
     public int width;
+    public List<PoolSystem> pools;
     public Dictionary<coords, TerrainTileValues> grid;
-    bool done = false;
     // Use this for initialization
-    void Update () {
-        
-        if (!done)
-        {
+    void Awake () {
             start = Time.deltaTime;
             grid = new Dictionary<coords, TerrainTileValues>();
             for (int i = 0; i < gridObjects.Count; i++)
@@ -31,12 +28,10 @@ public class GenerateGrid : MonoBehaviour {
             {
                 AddFood(i);
             }
-            
-            done = true;
             last = Time.deltaTime - mid;
             Debug.Log(start + "," + mid + "," + last);
-            StartCoroutine_Auto(CreateGrid()); 
-        }
+            StartCoroutine(CreateGrid()); 
+        
         
     }
     TerrainTileValues u;
@@ -165,7 +160,7 @@ public class GenerateGrid : MonoBehaviour {
             }
         }
     }
-    
+
     void DoBunchChance(TerrainTileValues t,int x, int y, float chance)
     {
         if (Random.Range(0.0f, 100.0f) <= chance)
@@ -177,6 +172,7 @@ public class GenerateGrid : MonoBehaviour {
     }
     public GameObject player;
     public int renderdistance = 5;
+    
     Dictionary<coords,GameObject> created = new Dictionary<coords,GameObject>();
 	IEnumerator CreateGrid()
     {
@@ -184,6 +180,7 @@ public class GenerateGrid : MonoBehaviour {
             
             foreach (KeyValuePair<coords, TerrainTileValues> entry in grid)
             {
+                
                 if (entry.Key.x > player.transform.position.x - renderdistance && entry.Key.x < player.transform.position.x + renderdistance && entry.Key.y > player.transform.position.y - renderdistance && entry.Key.y < player.transform.position.y + renderdistance)
                 {
                     GameObject hit;
@@ -192,24 +189,42 @@ public class GenerateGrid : MonoBehaviour {
 
                         
                      } else {
-                     GameObject go = Instantiate(entry.Value.gameObject, new Vector3(entry.Key.x, entry.Key.y, 0), Quaternion.identity) as GameObject;
-                    go.transform.parent = transform;
-                    created.Add(new coords(entry.Key.x, entry.Key.y,2),go);
+                        foreach(PoolSystem p in pools)
+                        {
+                            if(p.code == entry.Value.code)
+                            {
+                                GameObject g = p.GetPooledObject();
+                                g.SetActive(true);
+                                g.transform.position = new Vector3(entry.Key.x, entry.Key.y, 0);
+                                g.transform.parent = transform;
+                                created.Add(new coords(entry.Key.x, entry.Key.y, 2), g);
+                            }
+                        }
+                  
+                    
                         }
 
                 }
                 else {
-                    GameObject hit;
-                    if(created.TryGetValue(coords.withCreatedCoords(entry.Key.x, entry.Key.y),out hit)) {
-                        created.Remove(coords.withCreatedCoords(entry.Key.x, entry.Key.y));
-                        Destroy(hit.gameObject);
+                    foreach (PoolSystem p in pools)
+                    {
+                        if (p.code == entry.Value.code)
+                        {
+                            GameObject hit;
+                            if (created.TryGetValue(coords.withCreatedCoords(entry.Key.x, entry.Key.y), out hit))
+                            {
+                                created.Remove(coords.withCreatedCoords(entry.Key.x, entry.Key.y));
+                                p.RecycleObject(hit);
+                            }
+                    }
+                   
 }
                     
 }
                 
             }
-            yield return new WaitForSeconds(1f);
 
+            yield return new WaitForSeconds(1f);
         }
         
         }
