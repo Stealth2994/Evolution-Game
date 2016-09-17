@@ -1,2 +1,2 @@
 # Evolution-Game
-Cool Game guys
+Game about evolution.
