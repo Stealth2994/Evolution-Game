@@ -15,7 +15,7 @@ public class Movement : MonoBehaviour {
 	}
 
 	void FixedUpdate () {
-		transform.Translate (CrossPlatformInputManager.GetAxis("Horizontal") * Time.deltaTime, CrossPlatformInputManager.GetAxis("Vertical") * Time.deltaTime, 0);
+		transform.Translate (CrossPlatformInputManager.GetAxis("Horizontal") * Time.deltaTime * movementSpeed, CrossPlatformInputManager.GetAxis("Vertical") * Time.deltaTime * movementSpeed, 0);
 
 		float headingDir = Mathf.Atan2 (CrossPlatformInputManager.GetAxis ("Horizontal"), CrossPlatformInputManager.GetAxis ("Vertical"));
 		PlayerSprite.transform.rotation = Quaternion.Inverse (Quaternion.Euler (0f, 0f, headingDir * Mathf.Rad2Deg));

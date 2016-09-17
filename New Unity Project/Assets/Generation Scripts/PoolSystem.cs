@@ -22,8 +22,10 @@ public class PoolSystem : MonoBehaviour {
 
     public GameObject GetPooledObject()
     {
+        
         for (int i = 0; i < pooledObjects.Count; i++)
         {
+            
             if (pooledObjects[i] == null)
             {
                 GameObject obj = (GameObject)Instantiate(pooledObject);
