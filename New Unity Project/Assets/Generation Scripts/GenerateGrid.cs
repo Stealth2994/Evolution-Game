@@ -176,7 +176,8 @@ public class GenerateGrid : MonoBehaviour {
         }
     }
     public GameObject player;
-    public int renderdistance = 20;
+    public int renderdistance = 5;
+    Dictionary<coords,GameObject> created = new Dictionary<coords,GameObject>();
 	IEnumerator CreateGrid()
     {
         while(true) {
@@ -185,12 +186,26 @@ public class GenerateGrid : MonoBehaviour {
             {
                 if (entry.Key.x > player.transform.position.x - renderdistance && entry.Key.x < player.transform.position.x + renderdistance && entry.Key.y > player.transform.position.y - renderdistance && entry.Key.y < player.transform.position.y + renderdistance)
                 {
+                    GameObject hit;
+                       if((created.TryGetValue(coords.withCreatedCoords(entry.Key.x, entry.Key.y),out hit))) {
+             
 
-
-                    GameObject go = Instantiate(entry.Value.gameObject, new Vector3(entry.Key.x, entry.Key.y, 0), Quaternion.identity) as GameObject;
+                        
+                     } else {
+                     GameObject go = Instantiate(entry.Value.gameObject, new Vector3(entry.Key.x, entry.Key.y, 0), Quaternion.identity) as GameObject;
                     go.transform.parent = transform;
+                    created.Add(new coords(entry.Key.x, entry.Key.y,2),go);
+                        }
 
                 }
+                else {
+                    GameObject hit;
+                    if(created.TryGetValue(coords.withCreatedCoords(entry.Key.x, entry.Key.y),out hit)) {
+                        created.Remove(coords.withCreatedCoords(entry.Key.x, entry.Key.y));
+                        Destroy(hit.gameObject);
+}
+                    
+}
                 
             }
             yield return new WaitForSeconds(1f);
@@ -200,6 +215,7 @@ public class GenerateGrid : MonoBehaviour {
         }
     public static List<coords> coorder = new List<coords>();
     public static List<coords> basecoorder = new List<coords>();
+    public static List<coords> createdcoorder = new List<coords>();
     public class coords
     {
         public static coords withCoords(int x, int y)
@@ -224,6 +240,17 @@ public class GenerateGrid : MonoBehaviour {
             }
             return new coords(-1, -1, -1);
         }
+          public static coords withCreatedCoords(int x, int y)
+        {
+            foreach (coords c in createdcoorder)
+            {
+                if (c.x == x && c.y == y)
+                {
+                    return c;
+                }
+            }
+            return new coords(-1, -1, -1);
+        }
         public int x;
         public int y;
         public coords(int x, int y, int add)
@@ -234,6 +261,8 @@ public class GenerateGrid : MonoBehaviour {
                 coorder.Add(this);
             else if (add == 1)
                 basecoorder.Add(this);
+            else if(add == 2)
+                createdcoorder.Add(this);
         }
     }
     }
