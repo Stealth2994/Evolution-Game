@@ -13,8 +13,8 @@ public class Movement : MonoBehaviour {
 	}
 
 	void FixedUpdate () {
-		Vector2 moveVec = new Vector2 (CrossPlatformInputManager.GetAxis("Horizontal"), CrossPlatformInputManager.GetAxis("Vertical"));
+		//Vector2 moveVec = new Vector2 (CrossPlatformInputManager.GetAxis("Horizontal"), CrossPlatformInputManager.GetAxis("Vertical"));
 
-		rb.AddForce (moveVec * 2);
+		transform.Translate (CrossPlatformInputManager.GetAxis("Horizontal") * Time.deltaTime, CrossPlatformInputManager.GetAxis("Vertical") * Time.deltaTime, 0);
 	}
 }
