@@ -51,6 +51,7 @@ public class GenerateGrid : MonoBehaviour {
             }
         }
     }
+
     void BunchSpawns(int layer)
     {
         GameObject gg = gridObjects[layer];
@@ -58,6 +59,7 @@ public class GenerateGrid : MonoBehaviour {
         {
             for (int y = 0; y < width; y++)
             {
+
                 if (gg.GetComponent<TerrainTileValues>())
                 {
                     TerrainTileValues t = gg.GetComponent<TerrainTileValues>();
