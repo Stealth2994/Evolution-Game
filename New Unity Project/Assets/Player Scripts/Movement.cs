@@ -1,5 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityStandardAssets;
+using UnityStandardAssets.CrossPlatformInput;
 
 public class Movement : MonoBehaviour {
 
@@ -10,15 +12,9 @@ public class Movement : MonoBehaviour {
 		rb = this.GetComponent<Rigidbody2D> ();
 	}
 
-	void Update () {
-		if (Input.GetKey ("w")) {
-			transform.Translate (Vector2.up / 50 * Time.deltaTime);
-		} else if (Input.GetKey ("s")) {
-			transform.Translate (Vector2.down / 50 * Time.deltaTime);
-		} else if (Input.GetKey ("a")) {
-			transform.Translate (Vector2.left / 50 * Time.deltaTime);
-		} else if (Input.GetKey ("d")) {
-			transform.Translate (Vector2.right / 50 * Time.deltaTime);
-		}
+	void FixedUpdate () {
+		Vector2 moveVec = new Vector2 (CrossPlatformInputManager.GetAxis("Horizontal"), CrossPlatformInputManager.GetAxis("Vertical"));
+
+		rb.AddForce (moveVec * 2);
 	}
 }
