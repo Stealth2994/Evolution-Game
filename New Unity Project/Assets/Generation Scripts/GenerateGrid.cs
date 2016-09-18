@@ -55,12 +55,13 @@ public class GenerateGrid : MonoBehaviour {
             BunchSpawns(i);
             yield return new WaitForSeconds(0);
         }
+        AddDeepWater(deepWater);
         for (int i = 0; i < foods.Count; i++)
         {
             AddFood(i);
             yield return new WaitForSeconds(0);
         }
-        AddDeepWater(deepWater);
+       
 
         //Takes every tile and makes it into chunks defined in chunkSize
         Chunk.MakeChunks(grid);
@@ -272,6 +273,43 @@ public class GenerateGrid : MonoBehaviour {
 
                     }
                 }
+                if (grid.TryGetValue(new coords(x + 2, y), out hit))
+                {
+
+                    if (hit.code == waterCode || hit.code == k.code)
+                    {
+
+                        b++;
+
+                    }
+                }
+
+                if (grid.TryGetValue(new coords(x - 2, y), out hit2))
+                {
+
+                    if (hit2.code == waterCode || hit2.code == k.code)
+                    {
+                        b++;
+
+                    }
+                }
+                if (grid.TryGetValue(new coords(x, y + 2), out hit3))
+                {
+
+                    if (hit3.code == waterCode || hit3.code == k.code)
+                    {
+                        b++;
+
+                    }
+                }
+                if (grid.TryGetValue(new coords(x, y - 2), out hit4))
+                {
+                    if (hit4.code == waterCode || hit4.code == k.code)
+                    {
+                        b++;
+
+                    }
+                }
                 if (grid.TryGetValue(new coords(x + 1, y + 1), out hit5))
                 {
 
@@ -308,8 +346,8 @@ public class GenerateGrid : MonoBehaviour {
 
                     }
                 }
-                //if all 8 hits are water make it deep water
-                if (b == 8)
+                //if all 12 hits are water make it deep water
+                if (b == 12)
                 {
 					grid.Remove(new coords(x,y));
 					grid.Add(new coords(x, y),k);
@@ -377,50 +415,20 @@ public class GenerateGrid : MonoBehaviour {
             pg.y = player.transform.position.y;
             pg.render = renderdistance;
             pg.created = created;
+            pg.updateList = updateList;
             //Starts the thread
             pg.Start();
             //Waits for the thread to finish so we can use the values
             yield return StartCoroutine(pg.WaitFor());
-            //addTo is everything the thread decides wants to be added to the render
-            foreach (KeyValuePair<coords, Chunk> entry in pg.addTo)
-            {
-
-                yield return new WaitForSecondsRealtime(0.01f);
-                //Loops through all the chunks and renders them
-                foreach (KeyValuePair<coords, TerrainTileValues> ggg in entry.Value.t)
-                {
-                    //Finds the right pool system for the object
-                    foreach (PoolSystem p in pools)
-                    {
-                        if (p.code == ggg.Value.code)
-                        {
-                           //if for some reason addTo was already generated
-                            if (!created.ContainsKey(new coords(ggg.Key.x, ggg.Key.y)))
-                            {
-                                //Gets an object from the pool and turns it on
-                                GameObject g = p.GetPooledObject();
-                                g.SetActive(true);
-                                g.transform.position = new Vector3(ggg.Key.x, ggg.Key.y);
-                                g.transform.parent = transform;
-                                created.Add(new coords(ggg.Key.x, ggg.Key.y), g);
-                            }
-                            else
-                            {
-                                Debug.LogWarning("To be rendered objet already exists!");
-                           }
-                        }
-                    }
-                }
-            }
             //The opposite of addTo, everything to be removed this frame
             foreach (KeyValuePair<coords, Chunk> entry in pg.removeFrom)
             {
                 //Splits lag over multiple frames
                 yield return new WaitForSecondsRealtime(0.01f);
-
+                Debug.Log(pg.addTo.Count);
                 foreach (KeyValuePair<coords, TerrainTileValues> ggg in entry.Value.t)
                 {
-                    
+
                     foreach (PoolSystem p in pools)
                     {
                         if (p.code == ggg.Value.code)
@@ -433,22 +441,88 @@ public class GenerateGrid : MonoBehaviour {
                                 //Recycles the object to be used again
                                 p.RecycleObject(hit);
                             }
+                            else
+                            {
+                                Debug.LogWarning("An object wants to be deleted but doesn't exist!!!");
+                            }
                         }
 
                     }
                 }
             }
+          
+        //addTo is everything the thread decides wants to be added to the render
+        foreach (KeyValuePair<coords, Chunk> entry in pg.addTo)
+            {
 
-            yield return new WaitForSeconds(0);
+                yield return new WaitForSecondsRealtime(0.01f);
+                //Loops through all the chunks and renders them
+                foreach (KeyValuePair<coords, TerrainTileValues> ggg in entry.Value.t)
+                {
+                    //Finds the right pool system for the object
+                    foreach (PoolSystem p in pools)
+                    {
+                        if (p.code == ggg.Value.code)
+                        {
+                            //if for some reason addTo was already generated
+                            if (!created.ContainsKey(new coords(ggg.Key.x, ggg.Key.y)) && !updateList.ContainsKey(new coords(ggg.Key.x, ggg.Key.y)))
+                            {
+                                //Gets an object from the pool and turns it on
+                                GameObject g = p.GetPooledObject();
+                                g.SetActive(true);
+                                g.transform.position = new Vector3(ggg.Key.x, ggg.Key.y);
+                                g.transform.parent = transform;
+                                created.Add(new coords(ggg.Key.x, ggg.Key.y), g);
+                            }
+                            else
+                            {
+                              //  Debug.LogWarning("To be rendered object already exists!");
+                           }
+                        }
+                    }
+                }
+            }         
+                yield return new WaitForSeconds(0);
         }
-        
-        }
+    }
+            
+    public static Dictionary<coords, Chunk> updateList = new Dictionary<coords, Chunk>();
     //Stores every chunk
     public static Dictionary<coords, Chunk> chunkList = new Dictionary<coords, Chunk>();
     //Stores every mega chunk
     public static Dictionary<coords,MegaChunk> megaChunkList = new Dictionary<coords, MegaChunk>();
     public class Chunk
     {
+        public static coords FindChunkCoords(coords pos)
+        {
+          
+            return new coords(pos.x - (pos.x % chunkSize),pos.y - (pos.y % chunkSize));
+        }
+        public static void UpdateTile(coords chunk, coords tile, TerrainTileValues tiler)
+        {
+            Chunk hit;
+            if(chunkList.TryGetValue(chunk,out hit))
+            {
+                TerrainTileValues kk;
+                if(hit.t.TryGetValue(tile, out kk))
+                {
+                    TerrainTileValues t;
+                    hit.t.TryGetValue(tile, out t);
+                    hit.t.Remove(tile);
+                    hit.t.Add(tile, tiler);
+                    TerrainTileValues y;
+                    hit.t.TryGetValue(tile, out y);
+                    MegaChunk.UpdateChunk(MegaChunk.FindChunkCoords(chunk), chunk, hit);
+                    if(updateList.ContainsKey(chunk))
+                    {
+                        updateList.Remove(chunk);
+                    }
+                    Chunk c;
+                    chunkList.TryGetValue(chunk, out c);
+                   updateList.Add(chunk, c);
+                }
+            }
+        }
         //Sorts all of the tiles into chunks
         public static void MakeChunks(Dictionary<coords, TerrainTileValues> tiles)
         {
@@ -510,6 +584,28 @@ public class GenerateGrid : MonoBehaviour {
 
     public class MegaChunk
     {
+        public static coords FindChunkCoords(coords pos)
+        {
+            Debug.Log(pos.x - (pos.x % megaChunkSize) + "," + ( pos.y - (pos.y % megaChunkSize)));
+            return new coords(pos.x - (pos.x % megaChunkSize), pos.y - (pos.y % megaChunkSize));
+        }
+        public static void UpdateChunk(coords megaChunk, coords chunk, Chunk chunker)
+        {
+            MegaChunk hit;
+            
+            if (megaChunkList.TryGetValue(megaChunk, out hit))
+            {
+                
+                Chunk kk;
+                if (hit.t.TryGetValue(chunk, out kk))
+                {
+                    
+                    hit.t.Remove(chunk);
+                    hit.t.Add(chunk,chunker);
+
+                }
+            }
+        }
         //Sorts all of the chunks into megachunks
         public static void MakeChunks(Dictionary<coords, Chunk> tiles)
         {

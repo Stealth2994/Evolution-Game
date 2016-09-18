@@ -7,6 +7,7 @@ public class ProcessGrid : ThreadedJob
     //Put these variables into the machine
     public Dictionary<GenerateGrid.coords, GenerateGrid.MegaChunk> grid;
     public Dictionary<GenerateGrid.coords, GenerateGrid.Chunk> chunkGrid = new Dictionary<GenerateGrid.coords, GenerateGrid.Chunk>();
+    public Dictionary<GenerateGrid.coords, GenerateGrid.Chunk> updateList = new Dictionary<GenerateGrid.coords, GenerateGrid.Chunk>();
     public float x;
     public float y;
     public int render;
@@ -31,16 +32,12 @@ public class ProcessGrid : ThreadedJob
                     if (chunk.Key.x > x - render && chunk.Key.x < x + render && chunk.Key.y > y - render && chunk.Key.y < y + render)
                     {
                         //add it
-                        GameObject hit;
-                        if ((created.TryGetValue(new GenerateGrid.coords(chunk.Key.x, chunk.Key.y), out hit)))
-                        {
-
-
-                        }
-                        else
+                        if (!created.ContainsKey(new GenerateGrid.coords(chunk.Key.x, chunk.Key.y)))
                         {
                             addTo.Add(chunk.Key, chunk.Value);
+
                         }
+
                     }
                     //otherwise delete it if it exists
                     else
@@ -55,9 +52,9 @@ public class ProcessGrid : ThreadedJob
                     }
                 }
             }
-
+            updateList = new Dictionary<GenerateGrid.coords, GenerateGrid.Chunk>();
         }
-
+      
     }
 }
  
