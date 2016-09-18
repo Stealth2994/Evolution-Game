@@ -150,6 +150,7 @@ public class GenerateGrid : MonoBehaviour {
     TerrainTileValues g;
     void AddFood(int food)
     {
+       
         GameObject gg = foods[food];
         if (gg.GetComponent<TerrainTileValues>())
         {
@@ -163,14 +164,12 @@ public class GenerateGrid : MonoBehaviour {
 
              
                     TerrainTileValues hit;
-                    if (grid.TryGetValue(new coords(x,y), out hit))
-                    {
+                   grid.TryGetValue(new coords(x,y), out hit);
+                    
+                    if(hit.code == 500) {
+                      DoBunchChance(g, x, y, g.spawnChance);
+}
 
-                    }
-                    else
-                    {
-                        DoBunchChance(g, x, y, g.spawnChance);
-                    }
 
 
 
