@@ -1,8 +1,10 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
-public class ProcessGrid : ThreadedJob {
-    public Dictionary<GenerateGrid.coords, GenerateGrid.Chunk> grid;
+public class ProcessGrid : ThreadedJob
+{
+    public Dictionary<GenerateGrid.coords, GenerateGrid.MegaChunk> grid;
+    public Dictionary<GenerateGrid.coords, GenerateGrid.Chunk> chunkGrid = new Dictionary<GenerateGrid.coords, GenerateGrid.Chunk>();
     public float x;
     public float y;
     public int render;
@@ -12,37 +14,43 @@ public class ProcessGrid : ThreadedJob {
     public Dictionary<GenerateGrid.coords, GenerateGrid.Chunk> removeFrom = new Dictionary<GenerateGrid.coords, GenerateGrid.Chunk>();
     protected override void ThreadFunction()
     {
-        foreach (KeyValuePair<GenerateGrid.coords,GenerateGrid.Chunk> entry in grid)
+        foreach (KeyValuePair<GenerateGrid.coords, GenerateGrid.MegaChunk> entry in grid)
         {
 
-     
-            if (entry.Key.x > x - render && entry.Key.x < x + render && entry.Key.y > y - render && entry.Key.y  < y + render)
-            {
-                
-                GameObject hit;
-                if ((created.TryGetValue(GenerateGrid.coords.withCreatedCoords(entry.Key.x, entry.Key.y), out hit)))
-                {
-          
 
-                }
-                else
-                {
-                    entry.Value.alive = true;
-                    addTo.Add(entry.Key, entry.Value);
-                }
-            }
-            else
+            if (entry.Key.x > x - render - 64 && entry.Key.x < x + render + 64 && entry.Key.y > y - render - 64 && entry.Key.y < y + render + 64)
             {
-                GameObject hit;
-                if (created.TryGetValue(GenerateGrid.coords.withCreatedCoords(entry.Key.x, entry.Key.y), out hit))
+                foreach (KeyValuePair<GenerateGrid.coords, GenerateGrid.Chunk> chunk in entry.Value.t)
                 {
-                    entry.Value.alive = false;
-                    removeFrom.Add(entry.Key, entry.Value);
+                    if (chunk.Key.x > x - render && chunk.Key.x < x + render && chunk.Key.y > y - render && chunk.Key.y < y + render)
+                    {
+
+                        GameObject hit;
+                        if ((created.TryGetValue(new GenerateGrid.coords(chunk.Key.x, chunk.Key.y), out hit)))
+                        {
+
+
+                        }
+                        else
+                        {
+                            addTo.Add(chunk.Key, chunk.Value);
+                        }
+                    }
+                    else
+                    {
+                        GameObject hit;
+                        if (created.TryGetValue(new GenerateGrid.coords(chunk.Key.x, chunk.Key.y), out hit))
+                        {
+                            removeFrom.Add(chunk.Key, chunk.Value);
+                        }
+
+
+                    }
                 }
-                
             }
-            
+
         }
+
     }
 }
  

@@ -8,28 +8,42 @@ public class GenerateGrid : MonoBehaviour {
     public int length;
     public int width;
     public static int chunkSize = 8;
+    public static int megaChunkSize = 64;
+    bool dynamic = false;
     public List<PoolSystem> pools;
+    Coroutine c;
     public Dictionary<coords, TerrainTileValues> grid;
     // Use this for initialization
     void Awake() {
         grid = new Dictionary<coords, TerrainTileValues>();
+        c = StartCoroutine(GenerateMap());
+       
+    }
+    TerrainTileValues u;
+    IEnumerator GenerateMap()
+    {
         for (int i = 0; i < gridObjects.Count; i++)
         {
+            
             SetTiles(i);
+            yield return new WaitForSeconds(0);
         }
         for (int i = 1; i < gridObjects.Count; i++)
         {
+            
             BunchSpawns(i);
+            yield return new WaitForSeconds(0);
         }
         for (int i = 0; i < foods.Count; i++)
         {
             AddFood(i);
+            yield return new WaitForSeconds(0);
         }
         Chunk.MakeChunks(grid);
+        MegaChunk.MakeChunks(chunkList);
         StartCoroutine(CreateGrid());
+        StopCoroutine(c);
     }
-    TerrainTileValues u;
-
     void SetTiles(int layer)
     {
         GameObject gg = gridObjects[layer];
@@ -44,7 +58,7 @@ public class GenerateGrid : MonoBehaviour {
 
                 if (layer == 0)
                 {
-                    grid.Add(new coords(x, y, 1), u);
+                    grid.Add(new coords(x, y), u);
                 }
                 else
                 {
@@ -59,6 +73,8 @@ public class GenerateGrid : MonoBehaviour {
     TerrainTileValues t;
     void BunchSpawns(int layer)
     {
+
+        float finalit = 0;
         GameObject gg = gridObjects[layer];
 
         if (gg.GetComponent<TerrainTileValues>())
@@ -78,8 +94,8 @@ public class GenerateGrid : MonoBehaviour {
 
 
                 int b = 0;
-
-                if (grid.TryGetValue(coords.withCoords(x + 1, y), out hit))
+                
+                if (grid.TryGetValue(new coords(x + 1,y), out hit))
                 {
 
                     if (hit.code == t.code)
@@ -88,7 +104,8 @@ public class GenerateGrid : MonoBehaviour {
 
                     }
                 }
-                if (grid.TryGetValue(coords.withCoords(x - 1, y), out hit2))
+                
+                if (grid.TryGetValue(new coords(x - 1, y), out hit2))
                 {
 
                     if (hit2.code == t.code)
@@ -97,7 +114,7 @@ public class GenerateGrid : MonoBehaviour {
 
                     }
                 }
-                if (grid.TryGetValue(coords.withCoords(x, y + 1), out hit3))
+                if (grid.TryGetValue(new coords(x, y + 1), out hit3))
                 {
 
                     if (hit3.code == t.code)
@@ -106,7 +123,7 @@ public class GenerateGrid : MonoBehaviour {
 
                     }
                 }
-                if (grid.TryGetValue(coords.withCoords(x, y - 1), out hit4))
+                if (grid.TryGetValue(new coords(x,y - 1), out hit4))
                 {
                     if (hit4.code == t.code)
                     {
@@ -114,12 +131,15 @@ public class GenerateGrid : MonoBehaviour {
 
                     }
                 }
+                
 
+                float ok = Time.realtimeSinceStartup;
                 DoBunchChance(t, x, y, t.bunchChance * t.bunchMultiplier * b);
-
+                finalit += Time.realtimeSinceStartup - ok;
             }
 
         }
+        Debug.Log(finalit);
     }
 
     TerrainTileValues g;
@@ -138,7 +158,7 @@ public class GenerateGrid : MonoBehaviour {
 
              
                     TerrainTileValues hit;
-                    if (grid.TryGetValue(coords.withCoords(x, y), out hit))
+                    if (grid.TryGetValue(new coords(x,y), out hit))
                     {
 
                     }
@@ -159,9 +179,10 @@ public class GenerateGrid : MonoBehaviour {
     {
         if (Random.Range(0.0f, 100.0f) <= chance)
         {
-            grid.Remove(coords.withBaseCoords(x, y));
-            grid.Remove(coords.withCoords(x, y));
-            grid.Add(new coords(x, y,0),t);
+            
+            grid.Remove(new coords(x,y));
+            grid.Remove(new coords(x, y));
+            grid.Add(new coords(x, y),t);
         }
     }
     public GameObject player;
@@ -172,7 +193,7 @@ public class GenerateGrid : MonoBehaviour {
     {
         while(true) { 
             pg = new ProcessGrid();
-            pg.grid = chunkList;
+            pg.grid = megaChunkList;
             pg.x = player.transform.position.x;
             pg.y = player.transform.position.y;
             pg.render = renderdistance;
@@ -185,7 +206,7 @@ public class GenerateGrid : MonoBehaviour {
             foreach (KeyValuePair<coords, Chunk> entry in pg.addTo)
             {
 
-                //yield return new WaitForSecondsRealtime(0.01f);
+                yield return new WaitForSecondsRealtime(0.01f);
                 foreach (KeyValuePair<coords, TerrainTileValues> ggg in entry.Value.t)
                 {
                     
@@ -195,16 +216,16 @@ public class GenerateGrid : MonoBehaviour {
                         {
                             GameObject g = p.GetPooledObject();
                             g.SetActive(true);
-                            g.transform.position = new Vector3(ggg.Key.x, ggg.Key.y, 0);
+                            g.transform.position = new Vector3(ggg.Key.x, ggg.Key.y);
                             g.transform.parent = transform;
-                            created.Add(new coords(ggg.Key.x, ggg.Key.y, 2), g);
+                            created.Add(new coords(ggg.Key.x, ggg.Key.y), g);
                         }
                     }
                 }
             }
             foreach (KeyValuePair<coords, Chunk> entry in pg.removeFrom)
             {
-              //  yield return new WaitForSecondsRealtime(0.01f);
+                yield return new WaitForSecondsRealtime(0.01f);
                 foreach (KeyValuePair<coords, TerrainTileValues> ggg in entry.Value.t)
                 {
                     
@@ -213,10 +234,10 @@ public class GenerateGrid : MonoBehaviour {
                         if (p.code == ggg.Value.code)
                         {
                             GameObject hit;
-                            if (created.TryGetValue(coords.withCreatedCoords(ggg.Key.x, ggg.Key.y), out hit))
+                            if (created.TryGetValue(new coords(ggg.Key.x, ggg.Key.y), out hit))
                             {
-                                created.Remove(coords.withCreatedCoords(ggg.Key.x, ggg.Key.y));
-                                createdcoorder.Remove(coords.withCreatedCoords(ggg.Key.x, ggg.Key.y));
+                                created.Remove(new coords(ggg.Key.x, ggg.Key.y));
+                                createdcoorder.Remove(new coords(ggg.Key.x, ggg.Key.y));
                                 p.RecycleObject(hit);
                             }
                         }
@@ -234,15 +255,53 @@ public class GenerateGrid : MonoBehaviour {
     public static List<coords> createdcoorder = new List<coords>();
     public static List<coords> chunkcoorder = new List<coords>();
     public static Dictionary<coords, Chunk> chunkList = new Dictionary<coords, Chunk>();
+    public static Dictionary<coords,MegaChunk> megaChunkList = new Dictionary<coords, MegaChunk>();
+  public class MegaChunk
+    {
+        public static void MakeChunks(Dictionary<coords, Chunk> tiles)
+        {
+            megaChunkList = new Dictionary<coords, MegaChunk>();
+            foreach (KeyValuePair<coords, Chunk> entry in tiles)
+            {
+                if (!AddToChunk(entry))
+                {
+                    new MegaChunk(new coords(entry.Key.x, entry.Key.y));
+                    AddToChunk(entry);
+                }
+            }
+        }
+        public static bool AddToChunk(KeyValuePair<coords, Chunk> k)
+        {
+
+            foreach (KeyValuePair<coords, MegaChunk> u in megaChunkList)
+            {
+
+                if (u.Key.x > k.Key.x - megaChunkSize - 1 && u.Key.x < k.Key.x + megaChunkSize + 1 && u.Key.y > k.Key.y - megaChunkSize - 1 && u.Key.y < k.Key.y + megaChunkSize + 1)
+                {   u.Value.t.Add(k.Key, k.Value);
+                    return true;
+                }
+            }
+            return false;
+        }
+        public bool alive = false;
+        public coords c;
+        public Dictionary<coords, Chunk> t = new Dictionary<coords, Chunk>();
+        public MegaChunk(coords d)
+        {
+            c = d;
+            megaChunkList.Add(d, this);
+        }
+    }
     public class Chunk
     {
         public static void MakeChunks(Dictionary<coords,TerrainTileValues> tiles)
         {
-            foreach(KeyValuePair<coords, TerrainTileValues> entry in tiles)
+            chunkList = new Dictionary<coords, Chunk>();
+            foreach (KeyValuePair<coords, TerrainTileValues> entry in tiles)
             {
                 if(!AddToChunk(entry))
                 {
-                    new Chunk(new coords(entry.Key.x, entry.Key.y, 3));
+                    new Chunk(new coords(entry.Key.x, entry.Key.y));
                     AddToChunk(entry);
                 }
             }
@@ -261,7 +320,6 @@ public class GenerateGrid : MonoBehaviour {
             }
             return false;
         }
-        public bool alive = false;
         public coords c;
         public Dictionary<coords, TerrainTileValues> t = new Dictionary<coords, TerrainTileValues>();
         public Chunk(coords d)
@@ -272,64 +330,51 @@ public class GenerateGrid : MonoBehaviour {
     }
     public class coords
     {
-        public static coords withCoords(int x, int y)
+        public override int GetHashCode()
         {
-            foreach(coords c in coorder)
-            {
-                if(c.x == x && c.y == y)
-                {
-                    return c;
-                }
-            }
-            return new coords(-1, -1,-1);
+            return GetHashCodeInternal(x.GetHashCode(), y.GetHashCode());
         }
-        public static coords withBaseCoords(int x, int y)
+        //this function should be move so you can reuse it
+        private static int GetHashCodeInternal(int key1, int key2)
         {
-            foreach (coords c in basecoorder)
+            unchecked
             {
-                if (c.x == x && c.y == y)
-                {
-                    return c;
-                }
+                //Seed
+                var num = 0x7e53a269;
+
+                //Key 1
+                num = (-1521134295 * num) + key1;
+                num += (num << 10);
+                num ^= (num >> 6);
+
+                //Key 2
+                num = ((-1521134295 * num) + key2);
+                num += (num << 10);
+                num ^= (num >> 6);
+
+                return num;
             }
-            return new coords(-1, -1, -1);
         }
-          public static coords withCreatedCoords(int x, int y)
+        public override bool Equals(object obj)
         {
-            foreach (coords c in createdcoorder)
-            {
-                if (c.x == x && c.y == y)
-                {
-                    return c;
-                }
-            }
-            return new coords(-1,-1,-1);
+            if (obj == null)
+                return false;
+            coords p = obj as coords;
+            if (p == null)
+                return false;
+
+            // Return true if the fields match:
+            return (x == p.x) && (y == p.y);
         }
-        public static coords withChunkCoords(int x, int y)
-        {
-            foreach (coords c in chunkcoorder)
-            {
-                if (c.x == x && c.y == y)
-                {
-                    return c;
-                }
-            }
-            return new coords(-1, -1, -1);
-        }
+      
+    
+        
         public int x;
         public int y;
-        public coords(int x, int y, int add)
+        public coords(int x, int y)
         {
             this.x = x;
             this.y = y;
-            if (add == 0)
-                coorder.Add(this);
-            else if (add == 1)
-                basecoorder.Add(this);
-            else if (add == 2)
-                createdcoorder.Add(this);
-            else if (add == 3)
-                chunkcoorder.Add(this);
         }
     }
     }
