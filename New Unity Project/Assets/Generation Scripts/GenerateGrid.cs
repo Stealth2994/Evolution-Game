@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 
 public class GenerateGrid : MonoBehaviour {
     public List<GameObject> gridObjects;
@@ -18,6 +19,10 @@ public class GenerateGrid : MonoBehaviour {
         grid = new Dictionary<coords, TerrainTileValues>();
         c = StartCoroutine(GenerateMap());
        
+    }
+    void Update()
+    {
+        Debug.Log(grid.Count);
     }
     TerrainTileValues u;
     IEnumerator GenerateMap()
@@ -74,7 +79,7 @@ public class GenerateGrid : MonoBehaviour {
     void BunchSpawns(int layer)
     {
 
-        float finalit = 0;
+        
         GameObject gg = gridObjects[layer];
 
         if (gg.GetComponent<TerrainTileValues>())
@@ -133,13 +138,13 @@ public class GenerateGrid : MonoBehaviour {
                 }
                 
 
-                float ok = Time.realtimeSinceStartup;
+                
                 DoBunchChance(t, x, y, t.bunchChance * t.bunchMultiplier * b);
-                finalit += Time.realtimeSinceStartup - ok;
+              
             }
 
         }
-        Debug.Log(finalit);
+       
     }
 
     TerrainTileValues g;
@@ -181,7 +186,6 @@ public class GenerateGrid : MonoBehaviour {
         {
             
             grid.Remove(new coords(x,y));
-            grid.Remove(new coords(x, y));
             grid.Add(new coords(x, y),t);
         }
     }
@@ -260,9 +264,11 @@ public class GenerateGrid : MonoBehaviour {
     {
         public static void MakeChunks(Dictionary<coords, Chunk> tiles)
         {
+            
             megaChunkList = new Dictionary<coords, MegaChunk>();
             foreach (KeyValuePair<coords, Chunk> entry in tiles)
             {
+
                 if (!AddToChunk(entry))
                 {
                     new MegaChunk(new coords(entry.Key.x, entry.Key.y));
@@ -296,25 +302,40 @@ public class GenerateGrid : MonoBehaviour {
     {
         public static void MakeChunks(Dictionary<coords,TerrainTileValues> tiles)
         {
+            float finalit = 0;
             chunkList = new Dictionary<coords, Chunk>();
-            foreach (KeyValuePair<coords, TerrainTileValues> entry in tiles)
+       foreach(coords key in tiles.Keys)
             {
-                if(!AddToChunk(entry))
+                float ok = Time.realtimeSinceStartup;
+                TerrainTileValues t = tiles[key];
+                if (!AddToChunk(key,t))
                 {
-                    new Chunk(new coords(entry.Key.x, entry.Key.y));
-                    AddToChunk(entry);
+
+                    new Chunk(new coords(key.x, key.y));
+
+
+                    AddToChunk(key,t);
+
                 }
+                finalit += Time.realtimeSinceStartup - ok;
             }
+   
+
+           
+             
+                
+            
+            Debug.Log(finalit);
         }
-        public static bool AddToChunk(KeyValuePair<coords,TerrainTileValues> k)
+        public static bool AddToChunk(coords c, TerrainTileValues t)
         {
   
             foreach(KeyValuePair<coords, Chunk> u in chunkList)
             {
      
-                if(u.Key.x > k.Key.x - chunkSize && u.Key.x < k.Key.x + chunkSize && u.Key.y > k.Key.y - chunkSize && u.Key.y < k.Key.y + chunkSize)
+                if(u.Key.x > c.x - chunkSize && u.Key.x < c.x + chunkSize && u.Key.y > c.y - chunkSize && u.Key.y < c.y + chunkSize)
                 {
-                    u.Value.t.Add(k.Key,k.Value);
+                    u.Value.t.Add(c,t);
                     return true;
                 }
             }
