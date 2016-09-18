@@ -11,6 +11,7 @@ public class GenerateGrid : MonoBehaviour {
     public static int chunkSize = 8;
     public static int megaChunkSize = 64;
     bool dynamic = false;
+    public GameObject deepWater;
     public List<PoolSystem> pools;
     Coroutine c;
     public Dictionary<coords, TerrainTileValues> grid;
@@ -22,7 +23,6 @@ public class GenerateGrid : MonoBehaviour {
     }
     void Update()
     {
-        Debug.Log(grid.Count);
     }
     TerrainTileValues u;
     IEnumerator GenerateMap()
@@ -44,6 +44,7 @@ public class GenerateGrid : MonoBehaviour {
             AddFood(i);
             yield return new WaitForSeconds(0);
         }
+      //  AddDeepWater(deepWater);
         Chunk.MakeChunks(grid);
         MegaChunk.MakeChunks(chunkList);
         StartCoroutine(CreateGrid());
@@ -146,7 +147,112 @@ public class GenerateGrid : MonoBehaviour {
         }
        
     }
+    TerrainTileValues k;
+    public int waterCode;
+    void AddDeepWater(GameObject gg)
+    {
 
+        if (gg.GetComponent<TerrainTileValues>())
+        {
+            k = gg.GetComponent<TerrainTileValues>();
+        }
+        for (int x = 0; x < length; x++)
+        {
+            for (int y = 0; y < width; y++)
+            {
+                TerrainTileValues hit;
+                TerrainTileValues hit2;
+                TerrainTileValues hit3;
+                TerrainTileValues hit4;
+                TerrainTileValues hit5;
+                TerrainTileValues hit6;
+                TerrainTileValues hit7;
+                TerrainTileValues hit8;
+
+                int b = 0;
+                
+                if (grid.TryGetValue(new coords(x + 1, y), out hit))
+                {
+                    
+                    if (hit.code == waterCode || hit.code == k.code)
+                    {
+                       
+                        b++;
+                        
+                    }
+                }
+
+                if (grid.TryGetValue(new coords(x - 1, y), out hit2))
+                {
+
+                    if (hit2.code == waterCode || hit2.code == k.code)
+                    {
+                        b++;
+
+                    }
+                }
+                if (grid.TryGetValue(new coords(x, y + 1), out hit3))
+                {
+
+                    if (hit3.code == waterCode || hit3.code == k.code)
+                    {
+                        b++;
+
+                    }
+                }
+                if (grid.TryGetValue(new coords(x, y - 1), out hit4))
+                {
+                    if (hit4.code == waterCode || hit4.code == k.code)
+                    {
+                        b++;
+
+                    }
+                }
+                if (grid.TryGetValue(new coords(x + 1, y + 1), out hit5))
+                {
+
+                    if (hit5.code == waterCode || hit5.code == k.code)
+                    {
+                        b++;
+
+                    }
+                }
+
+                if (grid.TryGetValue(new coords(x - 1, y - 1), out hit6))
+                {
+
+                    if (hit6.code == waterCode || hit6.code == k.code)
+                    {
+                        b++;
+
+                    }
+                }
+                if (grid.TryGetValue(new coords(x - 1, y + 1), out hit7))
+                {
+
+                    if (hit7.code == waterCode || hit7.code == k.code)
+                    {
+                        b++;
+
+                    }
+                }
+                if (grid.TryGetValue(new coords(x + 1, y - 1), out hit8))
+                {
+                    if (hit8.code == waterCode || hit8.code == k.code)
+                    {
+                        b++;
+
+                    }
+                }
+                
+                if (b == 8)
+                {
+                    DoBunchChance(k, x, y, k.spawnChance);
+                }
+            }
+        }
+    }
+            
     TerrainTileValues g;
     void AddFood(int food)
     {
@@ -217,11 +323,14 @@ public class GenerateGrid : MonoBehaviour {
                     {
                         if (p.code == ggg.Value.code)
                         {
-                            GameObject g = p.GetPooledObject();
-                            g.SetActive(true);
-                            g.transform.position = new Vector3(ggg.Key.x, ggg.Key.y);
-                            g.transform.parent = transform;
-                            created.Add(new coords(ggg.Key.x, ggg.Key.y), g);
+                            if (!created.ContainsKey(new coords(ggg.Key.x, ggg.Key.y)))
+                            {
+                                GameObject g = p.GetPooledObject();
+                                g.SetActive(true);
+                                g.transform.position = new Vector3(ggg.Key.x, ggg.Key.y);
+                                g.transform.parent = transform;
+                                created.Add(new coords(ggg.Key.x, ggg.Key.y), g);
+                            }
                         }
                     }
                 }
