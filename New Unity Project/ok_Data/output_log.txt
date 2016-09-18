@@ -1,0 +1,42 @@
+Initialize engine version: 5.4.1f1 (649f48bbbf0f)
+GfxDevice: creating device client; threaded=1
+Direct3D:
+    Version:  Direct3D 11.0 [level 11.0]
+    Renderer: AMD Radeon (TM) R9 200 Series (ID=0x6811)
+    Vendor:   ATI
+    VRAM:     2029 MB
+Begin MonoManager ReloadAssembly
+Platform assembly: C:\Users\cnnr2\Desktop\evo\Evolution-Game\New Unity Project\ok_Data\Managed\UnityEngine.dll (this message is harmless)
+Loading C:\Users\cnnr2\Desktop\evo\Evolution-Game\New Unity Project\ok_Data\Managed\UnityEngine.dll into Unity Child Domain
+Platform assembly: C:\Users\cnnr2\Desktop\evo\Evolution-Game\New Unity Project\ok_Data\Managed\Assembly-CSharp-firstpass.dll (this message is harmless)
+Loading C:\Users\cnnr2\Desktop\evo\Evolution-Game\New Unity Project\ok_Data\Managed\Assembly-CSharp-firstpass.dll into Unity Child Domain
+Platform assembly: C:\Users\cnnr2\Desktop\evo\Evolution-Game\New Unity Project\ok_Data\Managed\Assembly-CSharp.dll (this message is harmless)
+Loading C:\Users\cnnr2\Desktop\evo\Evolution-Game\New Unity Project\ok_Data\Managed\Assembly-CSharp.dll into Unity Child Domain
+Platform assembly: C:\Users\cnnr2\Desktop\evo\Evolution-Game\New Unity Project\ok_Data\Managed\UnityEngine.UI.dll (this message is harmless)
+Loading C:\Users\cnnr2\Desktop\evo\Evolution-Game\New Unity Project\ok_Data\Managed\UnityEngine.UI.dll into Unity Child Domain
+Platform assembly: C:\Users\cnnr2\Desktop\evo\Evolution-Game\New Unity Project\ok_Data\Managed\UnityEngine.Networking.dll (this message is harmless)
+Loading C:\Users\cnnr2\Desktop\evo\Evolution-Game\New Unity Project\ok_Data\Managed\UnityEngine.Networking.dll into Unity Child Domain
+- Completed reload, in  0.439 seconds
+Platform assembly: C:\Users\cnnr2\Desktop\evo\Evolution-Game\New Unity Project\ok_Data\Managed\System.Core.dll (this message is harmless)
+Platform assembly: C:\Users\cnnr2\Desktop\evo\Evolution-Game\New Unity Project\ok_Data\Managed\System.dll (this message is harmless)
+desktop: 1920x1080 60Hz; virtual: 3520x1080 at 0,0
+<RI> Initializing input.
+<RI> Input initialized.
+<RI> Initialized touch support.
+UnloadTime: 2.092676 ms
+ArgumentException: The Object you want to instantiate is null.
+  at UnityEngine.Object.CheckNullArgument (System.Object arg, System.String message) [0x00000] in <filename unknown>:0 
+  at UnityEngine.Object.Instantiate[GameObject] (UnityEngine.GameObject original) [0x00000] in <filename unknown>:0 
+  at PoolSystem.Start () [0x00000] in <filename unknown>:0 
+ 
+(Filename:  Line: -1)
+
+Setting up 1 worker threads for Enlighten.
+  Thread -> id: 3b24 -> priority: 1 
+NullReferenceException: Object reference not set to an instance of an object
+  at GenerateGrid.AddDeepWater (UnityEngine.GameObject gg) [0x00000] in <filename unknown>:0 
+  at GenerateGrid+<GenerateMap>c__Iterator0.MoveNext () [0x00000] in <filename unknown>:0 
+  at UnityEngine.SetupCoroutine.InvokeMoveNext (IEnumerator enumerator, IntPtr returnValueAddress) [0x00000] in <filename unknown>:0 
+ 
+(Filename:  Line: -1)
+

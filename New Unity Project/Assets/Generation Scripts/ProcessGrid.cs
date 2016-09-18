@@ -7,15 +7,18 @@ public class ProcessGrid : ThreadedJob
     //Put these variables into the machine
     public Dictionary<GenerateGrid.coords, GenerateGrid.MegaChunk> grid;
     public Dictionary<GenerateGrid.coords, GenerateGrid.Chunk> chunkGrid = new Dictionary<GenerateGrid.coords, GenerateGrid.Chunk>();
-    public Dictionary<GenerateGrid.coords, GenerateGrid.Chunk> updateList = new Dictionary<GenerateGrid.coords, GenerateGrid.Chunk>();
+    public Dictionary<GenerateGrid.coords, TerrainTileValues> foodList = new Dictionary<GenerateGrid.coords, TerrainTileValues>();
     public float x;
     public float y;
     public int render;
     public Dictionary<GenerateGrid.coords, GameObject> created;
-
+    public Dictionary<GenerateGrid.coords, GameObject> createdFoods;
+    public Dictionary<GenerateGrid.coords, TerrainTileValues> removeFoods;
     //These variables will contain computed info once the thread is done
     public Dictionary<GenerateGrid.coords, GenerateGrid.Chunk> addTo = new Dictionary<GenerateGrid.coords, GenerateGrid.Chunk>();
     public Dictionary<GenerateGrid.coords, GenerateGrid.Chunk> removeFrom = new Dictionary<GenerateGrid.coords, GenerateGrid.Chunk>();
+    public Dictionary<GenerateGrid.coords, TerrainTileValues> addFood = new Dictionary<GenerateGrid.coords, TerrainTileValues>();
+    public Dictionary<GenerateGrid.coords, TerrainTileValues> removeFood = new Dictionary<GenerateGrid.coords, TerrainTileValues>();
     protected override void ThreadFunction()
     {
         //Loop through all megachunks
@@ -52,9 +55,34 @@ public class ProcessGrid : ThreadedJob
                     }
                 }
             }
-            updateList = new Dictionary<GenerateGrid.coords, GenerateGrid.Chunk>();
+
         }
-      
+        foreach (KeyValuePair<GenerateGrid.coords, TerrainTileValues> entry in foodList)
+        {
+            if (entry.Key.x > x - render && entry.Key.x < x + render && entry.Key.y > y - render && entry.Key.y < y + render)
+            {
+                //add it
+                if (!createdFoods.ContainsKey(new GenerateGrid.coords(entry.Key.x, entry.Key.y)))
+                {
+                    addFood.Add(entry.Key, entry.Value);
+
+                }
+
+            }
+            //otherwise delete it if it exists
+            else
+            {
+                GameObject hit;
+                if (createdFoods.TryGetValue(new GenerateGrid.coords(entry.Key.x, entry.Key.y), out hit))
+                {
+                    removeFood.Add(entry.Key, entry.Value);
+                }
+            }
+        }
+        foreach(KeyValuePair<GenerateGrid.coords, TerrainTileValues> entry in removeFoods)
+        {
+            removeFood.Add(entry.Key, entry.Value);
+        }
     }
 }
  

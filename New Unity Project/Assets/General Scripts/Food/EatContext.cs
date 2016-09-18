@@ -17,8 +17,10 @@ public class EatContext : MonoBehaviour {
 
     public void OnMouseDown()
     {
-      
-      
+       
+        if (!GenerateGrid.removeFoodList.ContainsKey(new GenerateGrid.coords((int)transform.position.x + 3, (int)transform.position.y - 1))) {
+            GenerateGrid.removeFoodList.Add(new GenerateGrid.coords((int)transform.position.x + 3, (int)transform.position.y - 1), grid.gridObjects[0].GetComponent<TerrainTileValues>());
+        }
         playerHunger.currentHunger = playerHunger.currentHunger + nutrition;
         ContextSprite.SetActive(false);
 
