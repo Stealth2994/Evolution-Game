@@ -10,4 +10,5 @@ public class TerrainTileValues : MonoBehaviour {
     public int code = 1000;
     public bool alive = false;
     public int unique;
+    public float regenRate = 0;
 }

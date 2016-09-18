@@ -37,12 +37,14 @@ public class GenerateGrid : MonoBehaviour {
     void Awake() {
         grid = new Dictionary<coords, TerrainTileValues>();
         c = StartCoroutine(GenerateMap());
-       
+        for (int i = 0; i < foods.Count; i++)
+            StartCoroutine(RegenFood(i));
     }
 
     //Takes breaks so it doesnt look like it crashed
     IEnumerator GenerateMap()
     {
+        float ok = Time.realtimeSinceStartup;
         for (int i = 0; i < gridObjects.Count; i++)
         {
             //Creates all the grass and single other blocks
@@ -61,12 +63,13 @@ public class GenerateGrid : MonoBehaviour {
             AddFood(i);
             yield return new WaitForSeconds(0);
         }
-       
+    
 
         //Takes every tile and makes it into chunks defined in chunkSize
         Chunk.MakeChunks(grid);
        //Takes every chunk and makes it into megachunks so further increase efficiency in the thread
         MegaChunk.MakeChunks(chunkList);
+        Debug.Log("Startup Time: " + (Time.realtimeSinceStartup - ok));
         //Starts making the rendered map in repeat
         StartCoroutine(CreateGrid());
         //Its done generating
@@ -387,6 +390,48 @@ public class GenerateGrid : MonoBehaviour {
             }
         }
     }
+    float time = 0;
+    IEnumerator RegenFood(int food)
+    {
+        TerrainTileValues fodder = foods[food].GetComponent<TerrainTileValues>();
+        TerrainTileValues g = null;
+        GameObject gg = foods[food];
+        if (gg.GetComponent<TerrainTileValues>())
+        {
+            g = gg.GetComponent<TerrainTileValues>();
+        }
+        while (true)
+        {
+            int tries = 0;
+            yield return new WaitForSeconds(fodder.regenRate);
+            bool doot = false;
+            while (!doot)
+            {
+                int x = Random.Range(0, length);
+                int y = Random.Range(0, width);
+                TerrainTileValues hit;
+                grid.TryGetValue(new coords(x, y), out hit);
+                //Only spawns wheat on grass :)
+                if (hit.code == 500 && !foodList.ContainsKey(new coords(x,y)))
+                {
+                   
+                    foodList.Add(new coords(x, y), g);
+                    doot = true;
+                }
+                else
+                {
+                    tries++;
+                }
+                if(foodList.Count > length * width / 50)
+                {
+                    doot = true;
+                }
+            }
+           
+        }
+        
+        
+    }
     //Adds in objects
     void DoBunchChance(TerrainTileValues t,int x, int y, float chance)
     {
@@ -481,7 +526,9 @@ public class GenerateGrid : MonoBehaviour {
                                 GameObject g = p.GetPooledObject();
                                 g.SetActive(true);
                                 g.transform.position = new Vector3(ggg.Key.x, ggg.Key.y);
-                                g.transform.parent = transform;
+                                if(g.transform.parent == null) {
+                                    g.transform.parent = transform;
+                                }
                                 created.Add(new coords(ggg.Key.x, ggg.Key.y), g);
                             }
                             else
@@ -508,7 +555,7 @@ public class GenerateGrid : MonoBehaviour {
                                 //Gets an object from the pool and turns it on
                                 GameObject g = p.GetPooledObject();
                                 g.SetActive(true);
-                                g.transform.position = new Vector3(ggg.Key.x, ggg.Key.y);
+                                g.transform.position = new Vector3(ggg.Key.x, ggg.Key.y,-0.1f);
                                 g.transform.parent = transform;
                                 createdFoods.Add(new coords(ggg.Key.x, ggg.Key.y), g);
                             }
@@ -523,10 +570,6 @@ public class GenerateGrid : MonoBehaviour {
             foreach (KeyValuePair<coords, TerrainTileValues> ggg in pg.removeFood)
             {
                 //Splits lag over multiple frames
-              
-                Debug.Log(pg.addTo.Count);
-               
-
                     foreach (PoolSystem p in pools)
                     {
                         if (p.code == ggg.Value.code)
@@ -599,7 +642,7 @@ public class GenerateGrid : MonoBehaviour {
         //Sorts all of the tiles into chunks
         public static void MakeChunks(Dictionary<coords, TerrainTileValues> tiles)
         {
-            float finalit = 0;
+            
             chunkList = new Dictionary<coords, Chunk>();
             //Loops all the chunks (laggiest thing in this script!)
           
@@ -620,15 +663,9 @@ public class GenerateGrid : MonoBehaviour {
                     AddToChunk(key, t);
                     
                 }
-                finalit += Time.realtimeSinceStartup - ok;
+                
             }
            
-
-
-
-
-
-            Debug.Log(finalit);
         }
         public static bool AddToChunk(coords c, TerrainTileValues t)
         {
