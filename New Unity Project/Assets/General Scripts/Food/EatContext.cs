@@ -17,10 +17,7 @@ public class EatContext : MonoBehaviour {
 
     public void OnMouseDown()
     {
-      
-      
         playerHunger.currentHunger = playerHunger.currentHunger + nutrition;
         ContextSprite.SetActive(false);
-
-    }
-    }
+  }
+}

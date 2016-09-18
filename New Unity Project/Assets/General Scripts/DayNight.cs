@@ -5,10 +5,10 @@ using UnityEngine.UI;
 public class DayNight : MonoBehaviour {
 
 	bool TimeIsZero;
-	public Image DarknessImage;
+	public SpriteRenderer DarknessImage;
 	public float secondsInFullDay = 120f;
-	[Range(0,1)]
-	public float currentTimeOfDay = 0;
+	[Range(-1,1)]
+	public float currentTimeOfDay = -1f;
 	public float timeMultiplier = 1f;
 
 	void Update() {
@@ -20,15 +20,13 @@ public class DayNight : MonoBehaviour {
 			}
 		} else if (TimeIsZero == false) {
 			currentTimeOfDay -= (Time.deltaTime / secondsInFullDay) * timeMultiplier;
-			if (currentTimeOfDay <= 0) {
+			if (currentTimeOfDay <= -1) {
 				TimeIsZero = true;
 			}
 		}
-		if (currentTimeOfDay <= 0.3f) {
-			timeMultiplier = 0.5f;
-		} else {
-			timeMultiplier = 1f;
-		}
+		if (currentTimeOfDay >= 0f) {
 			DarknessImage.color = new Color (0, 0, 0, currentTimeOfDay);
+		} else
+			Debug.Log ("not day");
 	}
 }
