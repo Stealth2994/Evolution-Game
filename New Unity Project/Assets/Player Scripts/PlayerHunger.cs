@@ -9,6 +9,7 @@ public class PlayerHunger : MonoBehaviour {
 	[HideInInspector]
 	public float currentHunger = 1f;
 	public float depletionRate = 1f;
+	public GameObject DeathPanel;
 	public Text HungerText;
 
 	void Update () {
@@ -17,6 +18,9 @@ public class PlayerHunger : MonoBehaviour {
 
 		if (currentHunger > 1f) {
 			currentHunger = 1f;
+		}
+		if (currentHunger <= 0) {
+			DeathPanel.SetActive (true);
 		}
 	}
 }
