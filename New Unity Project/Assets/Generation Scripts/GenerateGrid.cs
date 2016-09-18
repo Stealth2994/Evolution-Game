@@ -376,7 +376,7 @@ public class GenerateGrid : MonoBehaviour {
                    grid.TryGetValue(new coords(x,y), out hit);
                     //Only spawns wheat on grass :)
                     if(hit.code == 500) {
-                      DoBunchChance(g, x, y, g.spawnChance);
+                      DoBunchChanceFood(g, x, y, g.spawnChance);
 }
 
 
@@ -398,7 +398,16 @@ public class GenerateGrid : MonoBehaviour {
             grid.Add(new coords(x, y),t);
         }
     }
-    
+    void DoBunchChanceFood(TerrainTileValues t, int x, int y, float chance)
+    {
+        //If a number from 1-100 is less than the random chance
+        if (Random.Range(0.0f, 100.0f) <= chance)
+        {
+            //Take out the grass and add the new block
+            
+            foodList.Add(new coords(x, y), t);
+        }
+    }
     //Threading
     ProcessGrid pg;
     //List of all currently rendered tiles
@@ -415,7 +424,9 @@ public class GenerateGrid : MonoBehaviour {
             pg.y = player.transform.position.y;
             pg.render = renderdistance;
             pg.created = created;
-            pg.updateList = updateList;
+            pg.foodList = foodList;
+            pg.createdFoods = createdFoods;
+            pg.removeFoods = removeFoodList;
             //Starts the thread
             pg.Start();
             //Waits for the thread to finish so we can use the values
@@ -425,7 +436,6 @@ public class GenerateGrid : MonoBehaviour {
             {
                 //Splits lag over multiple frames
                 yield return new WaitForSecondsRealtime(0.01f);
-                Debug.Log(pg.addTo.Count);
                 foreach (KeyValuePair<coords, TerrainTileValues> ggg in entry.Value.t)
                 {
 
@@ -481,11 +491,73 @@ public class GenerateGrid : MonoBehaviour {
                         }
                     }
                 }
-            }         
-                yield return new WaitForSeconds(0);
+            }
+            //addTo is everything the thread decides wants to be added to the render
+            foreach (KeyValuePair<coords, TerrainTileValues> ggg in pg.addFood)
+            {
+
+             
+                    //Finds the right pool system for the object
+                    foreach (PoolSystem p in pools)
+                    {
+                        if (p.code == ggg.Value.code)
+                        {
+                            //if for some reason addTo was already generated
+                            if (!createdFoods.ContainsKey(new coords(ggg.Key.x, ggg.Key.y)))
+                            {
+                                //Gets an object from the pool and turns it on
+                                GameObject g = p.GetPooledObject();
+                                g.SetActive(true);
+                                g.transform.position = new Vector3(ggg.Key.x, ggg.Key.y,-0.5f);
+                                g.transform.parent = transform;
+                                createdFoods.Add(new coords(ggg.Key.x, ggg.Key.y), g);
+                            }
+                            else
+                            {
+                                //  Debug.LogWarning("To be rendered object already exists!");
+                            }
+                        
+                    }
+                }
+            }
+            foreach (KeyValuePair<coords, TerrainTileValues> ggg in pg.removeFood)
+            {
+                //Splits lag over multiple frames
+              
+                Debug.Log(pg.addTo.Count);
+               
+
+                    foreach (PoolSystem p in pools)
+                    {
+                        if (p.code == ggg.Value.code)
+                        {
+                            GameObject hit;
+                            //Removes the object if it currently exists
+                            if (createdFoods.TryGetValue(new coords(ggg.Key.x, ggg.Key.y), out hit))
+                            {
+                                createdFoods.Remove(new coords(ggg.Key.x, ggg.Key.y));
+                            removeFoodList.Remove(new coords(ggg.Key.x, ggg.Key.y));
+                            foodList.Remove(new coords(ggg.Key.x, ggg.Key.y));
+                                //Recycles the object to be used again
+                                p.RecycleObject(hit);
+                            }
+                            else
+                            {
+                            removeFoodList.Remove(new coords(ggg.Key.x, ggg.Key.y));
+                            foodList.Remove(new coords(ggg.Key.x, ggg.Key.y));
+                            Destroy(ggg.Value.gameObject);
+                        }
+                        
+
+                    }
+                }
+            }
+            yield return new WaitForSeconds(0);
         }
     }
-            
+    public static Dictionary<coords, TerrainTileValues> foodList = new Dictionary<coords, TerrainTileValues>();
+    public static Dictionary<coords, GameObject> createdFoods = new Dictionary<coords, GameObject>();
+    public static Dictionary<coords, TerrainTileValues> removeFoodList = new Dictionary<coords, TerrainTileValues>();
     public static Dictionary<coords, Chunk> updateList = new Dictionary<coords, Chunk>();
     //Stores every chunk
     public static Dictionary<coords, Chunk> chunkList = new Dictionary<coords, Chunk>();
