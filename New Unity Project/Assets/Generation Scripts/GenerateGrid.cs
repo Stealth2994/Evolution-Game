@@ -21,8 +21,10 @@ public class GenerateGrid : MonoBehaviour {
     //Dimensions
     public int length;
     public int width;
+    //The bigger the chunks the quicker the initial load but the slower the game (500x500: 16 = 7s, 12 = 21s,  8 = 49s)
     public static int chunkSize = 8;
     public static int megaChunkSize = 64;
+    bool firstLoad;
     public int renderdistance = 5;
 
     //For stopping map gen
@@ -92,14 +94,14 @@ public class GenerateGrid : MonoBehaviour {
                 {
                     //Otherwise generate based on spawn chance
                     DoBunchChance(u, x, y, u.spawnChance);
-
-
                 }
 
             }
         }
     }
-    
+    List<int> donex = new List<int>();
+    List<int> doney = new List<int>();
+    public bool bigwaters = true;
     void BunchSpawns(int layer)
     {
         //Gets the block that it will generate
@@ -111,11 +113,47 @@ public class GenerateGrid : MonoBehaviour {
             t = gg.GetComponent<TerrainTileValues>();
         }
         //Loops through every tile
-        for (int x = 0; x < length; x++)
+        for (int tx = 0; tx < length; tx++)
         {
-            for (int y = 0; y < width; y++)
+            for (int ty = 0; ty < width; ty++)
             {
-
+                int x;
+                int y;
+                if (bigwaters)
+                {
+                    x = tx;
+                    y = ty;
+                }
+                else {
+                    
+    
+                     x = -1;
+                    while (x == -1)
+                    {
+                        x = Random.Range(0, length);
+                        foreach (int k in donex)
+                        {
+                            if (x == k)
+                            {
+                                x = -1;
+                                continue;
+                            }
+                        }
+                    }
+                    y = -1;
+                    while (y == -1)
+                    {
+                        y = Random.Range(0, width);
+                        foreach (int k in doney)
+                        {
+                            if (y == k)
+                            {
+                                y = -1;
+                                continue;
+                            }
+                        }
+                    }
+                }
                 //Generates variables for trygetvalue output
                 TerrainTileValues hit;
                 TerrainTileValues hit2;
@@ -164,7 +202,7 @@ public class GenerateGrid : MonoBehaviour {
                 
 
                 //chance of it making object is based on how many around and bunchchance
-                DoBunchChance(t, x, y, t.bunchChance * t.bunchMultiplier * b);
+                DoBunchChance(t, x, y, t.bunchChance * (t.bunchMultiplier * b));
               
             }
 
@@ -355,7 +393,7 @@ public class GenerateGrid : MonoBehaviour {
                     {
                         if (p.code == ggg.Value.code)
                         {
-                            //if for some reason addTo was already generated
+                           //if for some reason addTo was already generated
                             if (!created.ContainsKey(new coords(ggg.Key.x, ggg.Key.y)))
                             {
                                 //Gets an object from the pool and turns it on
@@ -368,7 +406,7 @@ public class GenerateGrid : MonoBehaviour {
                             else
                             {
                                 Debug.LogWarning("To be rendered objet already exists!");
-                            }
+                           }
                         }
                     }
                 }
@@ -416,23 +454,27 @@ public class GenerateGrid : MonoBehaviour {
             float finalit = 0;
             chunkList = new Dictionary<coords, Chunk>();
             //Loops all the chunks (laggiest thing in this script!)
+          
             foreach (coords key in tiles.Keys)
             {
-                float ok = Time.realtimeSinceStartup;
+                
                 TerrainTileValues t = tiles[key];
+
+
                 //Try to add it to a chunk, if you can't make a new chunk for it
+                float ok = Time.realtimeSinceStartup;
                 if (!AddToChunk(key, t))
                 {
-
+                   
                     new Chunk(new coords(key.x, key.y));
-
+                    
 
                     AddToChunk(key, t);
-
+                    
                 }
                 finalit += Time.realtimeSinceStartup - ok;
             }
-
+           
 
 
 
