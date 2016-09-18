@@ -26,7 +26,6 @@ public class DayNight : MonoBehaviour {
 		}
 		if (currentTimeOfDay >= 0f) {
 			DarknessImage.color = new Color (0, 0, 0, currentTimeOfDay);
-		} else
-			Debug.Log ("not day");
+		} 
 	}
 }

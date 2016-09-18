@@ -508,7 +508,7 @@ public class GenerateGrid : MonoBehaviour {
                                 //Gets an object from the pool and turns it on
                                 GameObject g = p.GetPooledObject();
                                 g.SetActive(true);
-                                g.transform.position = new Vector3(ggg.Key.x, ggg.Key.y,-0.5f);
+                                g.transform.position = new Vector3(ggg.Key.x, ggg.Key.y);
                                 g.transform.parent = transform;
                                 createdFoods.Add(new coords(ggg.Key.x, ggg.Key.y), g);
                             }
@@ -543,9 +543,10 @@ public class GenerateGrid : MonoBehaviour {
                             }
                             else
                             {
+                            Debug.LogError("INFINITE WHEAT");
+                            createdFoods.Add(new coords(ggg.Key.x, ggg.Key.y), ggg.Value.gameObject);
                             removeFoodList.Remove(new coords(ggg.Key.x, ggg.Key.y));
                             foodList.Remove(new coords(ggg.Key.x, ggg.Key.y));
-                            Destroy(ggg.Value.gameObject);
                         }
                         
 
