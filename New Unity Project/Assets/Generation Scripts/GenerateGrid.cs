@@ -58,7 +58,7 @@ public class GenerateGrid : MonoBehaviour {
             AddFood(i);
             yield return new WaitForSeconds(0);
         }
-        //  AddDeepWater(deepWater);
+        AddDeepWater(deepWater);
 
         //Takes every tile and makes it into chunks defined in chunkSize
         Chunk.MakeChunks(grid);
@@ -273,7 +273,8 @@ public class GenerateGrid : MonoBehaviour {
                 //if all 8 hits are water make it deep water
                 if (b == 8)
                 {
-                    DoBunchChance(k, x, y, k.spawnChance);
+					grid.Remove(new coords(x,y));
+					grid.Add(new coords(x, y),k);
                 }
             }
         }
