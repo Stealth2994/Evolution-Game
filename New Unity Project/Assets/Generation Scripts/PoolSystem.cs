@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 public class PoolSystem : MonoBehaviour {
-
+    //pool variables
     public GameObject pooledObject;
     public int pooledAmount = 20;
     public bool willGrow = true;
@@ -11,6 +11,7 @@ public class PoolSystem : MonoBehaviour {
 
     void Start()
     {
+        //creates the base pool based on poolamount and primes them
         pooledObjects = new List<GameObject>();
         for (int i = 0; i < pooledAmount; i++)
         {
@@ -22,7 +23,7 @@ public class PoolSystem : MonoBehaviour {
 
     public GameObject GetPooledObject()
     {
-        
+        //looks for one thats not null and grabs it and gives it to the caller
         for (int i = 0; i < pooledObjects.Count; i++)
         {
             
@@ -38,7 +39,7 @@ public class PoolSystem : MonoBehaviour {
                 return pooledObjects[i];
             }
         }
-
+        //if oops we ran out but it can grow just make a new one and give it over
         if (willGrow)
         {
             GameObject obj = (GameObject)Instantiate(pooledObject);
@@ -48,6 +49,7 @@ public class PoolSystem : MonoBehaviour {
 
         return null;
     }
+    //Put it back in the pool
     public void RecycleObject(GameObject g)
     {
         pooledObjects.Add(g);
