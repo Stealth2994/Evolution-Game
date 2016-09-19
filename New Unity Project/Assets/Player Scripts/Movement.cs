@@ -38,7 +38,7 @@ public class Movement : MonoBehaviour {
 		rb = this.GetComponent<Rigidbody2D> ();
 	}
     public bool doit = false;
-    public GameObject target;
+    public Vector3 target;
 	void FixedUpdate () {
 		TerrainTileValues t;
 
@@ -75,14 +75,14 @@ public class Movement : MonoBehaviour {
         
 		if (doit) {
 			isRotating = true;
-			Vector2 dir = target.transform.position - PlayerSprite.transform.position;
+			Vector2 dir = target - PlayerSprite.transform.position;
 			float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
 			PlayerSprite.transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
-			transform.position = Vector3.MoveTowards (transform.position, new Vector3 (target.transform.position.x + 3, target.transform.position.y - 1), (tempSpeed * Time.deltaTime));
-			if (Vector3.Distance (transform.position, new Vector3 (target.transform.position.x + 3, target.transform.position.y - 1)) < 0.5f) {
-				if (!GenerateGrid.removeFoodList.ContainsKey (new GenerateGrid.coords ((int)target.transform.position.x + 3, (int)target.transform.position.y - 1))) {
-
-					GenerateGrid.removeFoodList.Add (new GenerateGrid.coords ((int)target.transform.position.x + 3, (int)target.transform.position.y - 1), grid.gridObjects [0].GetComponent<TerrainTileValues> ());
+			transform.position = Vector3.MoveTowards (transform.position, new Vector3 (target.x + 3, target.y - 1), (tempSpeed * Time.deltaTime));
+			if (Vector3.Distance (transform.position, new Vector3 (target.x + 3, target.y - 1)) < 0.5f) {
+				if (!GenerateGrid.removeFoodList.ContainsKey (new GenerateGrid.coords ((int)target.x + 3, (int)target.y - 1))) {
+                    playerHunger.currentHunger = playerHunger.currentHunger + nutrition;
+                    GenerateGrid.removeFoodList.Add (new GenerateGrid.coords ((int)target.x + 3, (int)target.y - 1), grid.gridObjects [0].GetComponent<TerrainTileValues> ());
 					doit = false;
 				}
 

@@ -19,7 +19,7 @@ public class EatContext : MonoBehaviour {
     public void OnMouseDown()
     {
         m.nutrition = nutrition;
-        m.target = gameObject;
+        m.target = new Vector3((int)transform.position.x, (int)transform.position.y, -0.5f);
         m.doit = true;
        
         ContextSprite.SetActive(false);
