@@ -4,12 +4,13 @@ using UnityStandardAssets;
 using UnityStandardAssets.CrossPlatformInput;
 
 public class Movement : MonoBehaviour {
-
-	float minColour = 0f;
+    public float nutrition;
+    float minColour = 0f;
 	float maxColour = 1f;
 	float posY;
 	float posX;
-	bool isWalking;
+    GameObject Player;
+    bool isWalking;
 	public SpriteRenderer PlayerSpriteRenderer;
 	Vector3 curpos;
 	Vector3 lastpos;
@@ -18,8 +19,11 @@ public class Movement : MonoBehaviour {
 	public float movementSpeed = 5;
     public GenerateGrid grid;
 	Rigidbody2D rb;
-
-	void Start () {
+    PlayerHunger playerHunger;
+    
+    void Start () {
+        Player = GameObject.FindWithTag("Player");
+        playerHunger = Player.GetComponent<PlayerHunger>();
         grid = GameObject.Find("Grid").GetComponent<GenerateGrid>();
 		PlayerSpriteRenderer.color = new Color (Random.Range(minColour,maxColour), Random.Range(minColour,maxColour), Random.Range(minColour,maxColour));
 		isWalking = false;
@@ -41,7 +45,7 @@ public class Movement : MonoBehaviour {
             {
                 if (!GenerateGrid.removeFoodList.ContainsKey(new GenerateGrid.coords((int)target.transform.position.x + 3, (int)target.transform.position.y - 1)))
                 {
-
+                    playerHunger.currentHunger = playerHunger.currentHunger + nutrition;
                     GenerateGrid.removeFoodList.Add(new GenerateGrid.coords((int)target.transform.position.x + 3, (int)target.transform.position.y - 1), grid.gridObjects[0].GetComponent<TerrainTileValues>());
                     doit = false;
                 }

@@ -35,6 +35,7 @@ public class GenerateGrid : MonoBehaviour {
     
     // Generates map
     void Awake() {
+
         grid = new Dictionary<coords, TerrainTileValues>();
         c = StartCoroutine(GenerateMap());
         for (int i = 0; i < foods.Count; i++)
