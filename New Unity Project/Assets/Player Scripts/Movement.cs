@@ -4,8 +4,15 @@ using UnityStandardAssets;
 using UnityStandardAssets.CrossPlatformInput;
 
 public class Movement : MonoBehaviour {
+
     public float nutrition;
-    float minColour = 0f;
+
+
+	bool isRotating = false;
+	float currentDir;
+	float headingDir;
+	float minColour = 0f;
+
 	float maxColour = 1f;
 	float posY;
 	float posX;
@@ -33,40 +40,77 @@ public class Movement : MonoBehaviour {
     public bool doit = false;
     public GameObject target;
 	void FixedUpdate () {
-        TerrainTileValues t;
-        grid.grid.TryGetValue(new GenerateGrid.coords((int)transform.position.x, (int)transform.position.y), out t);
+		TerrainTileValues t;
 
-        float tempSpeed = movementSpeed * t.speed;
-        if (doit)
-        {
-
-            transform.position = Vector3.MoveTowards(transform.position, new Vector3(target.transform.position.x + 3, target.transform.position.y - 1), (tempSpeed * Time.deltaTime));
-            if (Vector3.Distance(transform.position, new Vector3(target.transform.position.x + 3, target.transform.position.y - 1)) < 0.5f)
-            {
-                if (!GenerateGrid.removeFoodList.ContainsKey(new GenerateGrid.coords((int)target.transform.position.x + 3, (int)target.transform.position.y - 1)))
-                {
-                    playerHunger.currentHunger = playerHunger.currentHunger + nutrition;
-                    GenerateGrid.removeFoodList.Add(new GenerateGrid.coords((int)target.transform.position.x + 3, (int)target.transform.position.y - 1), grid.gridObjects[0].GetComponent<TerrainTileValues>());
-                    doit = false;
-                }
+		grid.grid.TryGetValue(new GenerateGrid.coords((int)transform.position.x, (int)transform.position.y), out t);
 
 
-            }
+    float tempSpeed = movementSpeed * t.speed;
+   
+        
+        
+   
 
+		if(transform.position.x > grid.length)
+		{
+			transform.position = new Vector3(grid.length, transform.position.y, transform.position.z);
+		}
+		if (transform.position.y > grid.width -1)
+		{
+			transform.position = new Vector3(transform.position.x,grid.width -1, transform.position.z);
+		}
+		if (transform.position.x < 1)
+		{
+			transform.position = new Vector3(1, transform.position.y, transform.position.z);
+		}
+		if (transform.position.y < 1)
+		{
+			transform.position = new Vector3(transform.position.x, 1, transform.position.z);
+		}
 
-        }
-      
 		posY = Mathf.Abs (CrossPlatformInputManager.GetAxis("Vertical"));
 		posX = Mathf.Abs (CrossPlatformInputManager.GetAxis("Horizontal"));
 		transform.Translate (CrossPlatformInputManager.GetAxis("Horizontal") * Time.deltaTime * tempSpeed, CrossPlatformInputManager.GetAxis("Vertical") * Time.deltaTime * tempSpeed, 0);
+		transform.position += Vector3.ClampMagnitude(new Vector2 (CrossPlatformInputManager.GetAxis("Horizontal") * Time.deltaTime * tempSpeed, CrossPlatformInputManager.GetAxis("Vertical") * Time.deltaTime * tempSpeed), tempSpeed) * Time.deltaTime;
+        
+		if (doit) {
+			isRotating = true;
+			Vector2 dir = target.transform.position - PlayerSprite.transform.position;
+			float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
+			PlayerSprite.transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
+			transform.position = Vector3.MoveTowards (transform.position, new Vector3 (target.transform.position.x + 3, target.transform.position.y - 1), (tempSpeed * Time.deltaTime));
+			if (Vector3.Distance (transform.position, new Vector3 (target.transform.position.x + 3, target.transform.position.y - 1)) < 0.5f) {
+				if (!GenerateGrid.removeFoodList.ContainsKey (new GenerateGrid.coords ((int)target.transform.position.x + 3, (int)target.transform.position.y - 1))) {
 
-		if (posY > 0f || posX > 0f) {
+					GenerateGrid.removeFoodList.Add (new GenerateGrid.coords ((int)target.transform.position.x + 3, (int)target.transform.position.y - 1), grid.gridObjects [0].GetComponent<TerrainTileValues> ());
+					doit = false;
+				}
+
+
+			}
+
+
+		} else {
+			isRotating = false;
+		}
+
+		if (posY > 0f || posX > 0f || isRotating) {
 			PlayerAnimator.Play ("PlayerAnimation");
 		} else {
 			PlayerAnimator.Play ("IdleAnimation");
 		}
         transform.position = new Vector3(transform.position.x, transform.position.y, -0.5f);
-		float headingDir = Mathf.Atan2 (CrossPlatformInputManager.GetAxis ("Horizontal"), CrossPlatformInputManager.GetAxis ("Vertical"));
-		PlayerSprite.transform.rotation = Quaternion.Inverse (Quaternion.Euler (0f, 0f, headingDir * Mathf.Rad2Deg));
+		//rotation
+		if (!isRotating) {
+			headingDir = Mathf.Atan2 (CrossPlatformInputManager.GetAxis ("Horizontal"), CrossPlatformInputManager.GetAxis ("Vertical"));
+			if (CrossPlatformInputManager.GetAxis ("Horizontal") == 0 && CrossPlatformInputManager.GetAxis ("Vertical") == 0) {
+				PlayerSprite.transform.rotation = Quaternion.Inverse (Quaternion.Euler (0f, 0f, currentDir * Mathf.Rad2Deg));
+			} else {
+				currentDir = headingDir;
+				PlayerSprite.transform.rotation = Quaternion.Inverse (Quaternion.Euler (0f, 0f, headingDir * Mathf.Rad2Deg));
+			}
+		} else {
+			Debug.Log ("<size=25> dingus </size>");
+		}
 	}
 }
