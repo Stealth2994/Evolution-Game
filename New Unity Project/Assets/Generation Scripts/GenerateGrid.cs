@@ -472,7 +472,6 @@ public class GenerateGrid : MonoBehaviour {
             pg.created = created;
             pg.foodList = foodList;
             pg.createdFoods = createdFoods;
-            pg.removeFoods = removeFoodList;
             //Starts the thread
             pg.Start();
             //Waits for the thread to finish so we can use the values
@@ -569,40 +568,48 @@ public class GenerateGrid : MonoBehaviour {
                 }
             }
             foreach (KeyValuePair<coords, TerrainTileValues> ggg in pg.removeFood)
-            {
                 //Splits lag over multiple frames
-                    foreach (PoolSystem p in pools)
+                foreach (PoolSystem p in pools)
+                {
+                    if (p.code == ggg.Value.code)
                     {
-                        if (p.code == ggg.Value.code)
+                        GameObject hit;
+                        //Removes the object if it currently exists
+                        if (createdFoods.TryGetValue(new coords(ggg.Key.x, ggg.Key.y), out hit))
                         {
-                            GameObject hit;
-                            //Removes the object if it currently exists
-                            if (createdFoods.TryGetValue(new coords(ggg.Key.x, ggg.Key.y), out hit))
+                            createdFoods.Remove(new coords(ggg.Key.x, ggg.Key.y));
+                            //foodList.Remove(new coords(ggg.Key.x, ggg.Key.y));
+                            //Recycles the object to be used again
+                            if (hit != null)
                             {
-                                createdFoods.Remove(new coords(ggg.Key.x, ggg.Key.y));
-                            removeFoodList.Remove(new coords(ggg.Key.x, ggg.Key.y));
-                            foodList.Remove(new coords(ggg.Key.x, ggg.Key.y));
-                                //Recycles the object to be used again
                                 p.RecycleObject(hit);
                             }
-                            else
-                            {
+                        }
+                        else
+                        {
                             Debug.LogError("INFINITE WHEAT");
                             createdFoods.Add(new coords(ggg.Key.x, ggg.Key.y), ggg.Value.gameObject);
-                            removeFoodList.Remove(new coords(ggg.Key.x, ggg.Key.y));
-                            foodList.Remove(new coords(ggg.Key.x, ggg.Key.y));
+                           // foodList.Remove(new coords(ggg.Key.x, ggg.Key.y));
                         }
-                        
+
 
                     }
-                }
+                
+
+        }
+            foreach(KeyValuePair<coords,GameObject> ggg in removeFoodList)
+            {
+                createdFoods.Remove(new coords(ggg.Key.x, ggg.Key.y));
+                foodList.Remove(new coords(ggg.Key.x, ggg.Key.y));
+                Destroy(ggg.Value);
             }
+            removeFoodList = new Dictionary<coords, GameObject>();
             yield return new WaitForSeconds(0);
         }
     }
     public static Dictionary<coords, TerrainTileValues> foodList = new Dictionary<coords, TerrainTileValues>();
     public static Dictionary<coords, GameObject> createdFoods = new Dictionary<coords, GameObject>();
-    public static Dictionary<coords, TerrainTileValues> removeFoodList = new Dictionary<coords, TerrainTileValues>();
+    public static Dictionary<coords, GameObject> removeFoodList = new Dictionary<coords, GameObject>();
     public static Dictionary<coords, Chunk> updateList = new Dictionary<coords, Chunk>();
     //Stores every chunk
     public static Dictionary<coords, Chunk> chunkList = new Dictionary<coords, Chunk>();
@@ -692,7 +699,7 @@ public class GenerateGrid : MonoBehaviour {
             chunkList.Add(d, this);
         }
     }
-
+    
     public class MegaChunk
     {
         public static coords FindChunkCoords(coords pos)

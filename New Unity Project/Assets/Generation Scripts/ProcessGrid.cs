@@ -13,7 +13,6 @@ public class ProcessGrid : ThreadedJob
     public int render;
     public Dictionary<GenerateGrid.coords, GameObject> created;
     public Dictionary<GenerateGrid.coords, GameObject> createdFoods;
-    public Dictionary<GenerateGrid.coords, TerrainTileValues> removeFoods;
     //These variables will contain computed info once the thread is done
     public Dictionary<GenerateGrid.coords, GenerateGrid.Chunk> addTo = new Dictionary<GenerateGrid.coords, GenerateGrid.Chunk>();
     public Dictionary<GenerateGrid.coords, GenerateGrid.Chunk> removeFrom = new Dictionary<GenerateGrid.coords, GenerateGrid.Chunk>();
@@ -79,10 +78,10 @@ public class ProcessGrid : ThreadedJob
                 }
             }
         }
-        foreach(KeyValuePair<GenerateGrid.coords, TerrainTileValues> entry in removeFoods)
-        {
-            removeFood.Add(entry.Key, entry.Value);
-        }
+    }
+       class CheatThread
+    {
+        GameObject g;
     }
 }
  
