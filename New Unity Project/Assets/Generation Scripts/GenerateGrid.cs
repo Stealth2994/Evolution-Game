@@ -584,7 +584,7 @@ public class GenerateGrid : MonoBehaviour {
             foreach (KeyValuePair<coords, Chunk> entry in pg.removeFrom)
             {
                 //Splits lag over multiple frames
-               // yield return new WaitForSecondsRealtime(0.01f);
+                yield return new WaitForSecondsRealtime(0.01f);
                 foreach (KeyValuePair<coords, TerrainTileValues> ggg in entry.Value.t)
                 {
 
@@ -614,7 +614,7 @@ public class GenerateGrid : MonoBehaviour {
         foreach (KeyValuePair<coords, Chunk> entry in pg.addTo)
             {
 
-              //  yield return new WaitForSecondsRealtime(0.01f);
+                yield return new WaitForSecondsRealtime(0.01f);
                 //Loops through all the chunks and renders them
                 foreach (KeyValuePair<coords, TerrainTileValues> ggg in entry.Value.t)
                 {
