@@ -8,7 +8,10 @@ public class GenerateGrid : MonoBehaviour {
     public List<GameObject> gridObjects;
     public List<GameObject> foods;
     public GameObject deepWater;
-   
+    public int continentMin = 2;
+    public int continentMax = 10;
+    public int minRadius = 5;
+    public int maxRadius = 20;
     //Pool system setup
     public List<PoolSystem> pools;
 
@@ -24,11 +27,10 @@ public class GenerateGrid : MonoBehaviour {
     //The bigger the chunks the quicker the initial load but the slower the game (500x500: 16 = 7s, 12 = 21s,  8 = 49s)
     public static int chunkSize = 8;
     public static int megaChunkSize = 64;
-    bool firstLoad;
     public int renderdistance = 5;
 
     //For stopping map gen
-    Coroutine c;
+    Coroutine cc;
 
     //Contains every single tile, only have to loop this once to set up chunks
     public Dictionary<coords, TerrainTileValues> grid;
@@ -37,7 +39,7 @@ public class GenerateGrid : MonoBehaviour {
     void Awake() {
 
         grid = new Dictionary<coords, TerrainTileValues>();
-        c = StartCoroutine(GenerateMap());
+        cc = StartCoroutine(GenerateMap());
         for (int i = 0; i < foods.Count; i++)
             StartCoroutine(RegenFood(i));
     }
@@ -45,27 +47,34 @@ public class GenerateGrid : MonoBehaviour {
     //Takes breaks so it doesnt look like it crashed
     IEnumerator GenerateMap()
     {
+        ContinentPoints(gridObjects[0]);
+        FillWater(gridObjects[2]);
+        foreach (coords c in continentPoints)
+        {
+            MakeContinents(gridObjects[0], c, 1);
+        }
         float ok = Time.realtimeSinceStartup;
-        for (int i = 0; i < gridObjects.Count; i++)
-        {
-            //Creates all the grass and single other blocks
-            SetTiles(i);
-            yield return new WaitForSeconds(0);
-        }
-        for (int i = 1; i < gridObjects.Count; i++)
-        {
-            //Puts more blocks around each single block
-            BunchSpawns(i);
-            yield return new WaitForSeconds(0);
-        }
-        AddDeepWater(deepWater);
-        for (int i = 0; i < foods.Count; i++)
-        {
-            AddFood(i);
-            yield return new WaitForSeconds(0);
-        }
-    
-
+          for (int i = 1; i < gridObjects.Count; i++)
+          {
+              //Creates all the grass and single other blocks
+              SetTiles(2);
+              yield return new WaitForSeconds(0);
+          }
+           for (int i = 0; i < gridObjects.Count; i++)
+          {
+              //Puts more blocks around each single block
+              BunchSpawns(i);
+              yield return new WaitForSeconds(0);
+          }
+          AddDeepWater(deepWater);
+          for (int i = 0; i < foods.Count; i++)
+          {
+              AddFood(i);
+              yield return new WaitForSeconds(0);
+          }
+      
+     
+        yield return new WaitForSeconds(0);
         //Takes every tile and makes it into chunks defined in chunkSize
         Chunk.MakeChunks(grid);
        //Takes every chunk and makes it into megachunks so further increase efficiency in the thread
@@ -74,7 +83,100 @@ public class GenerateGrid : MonoBehaviour {
         //Starts making the rendered map in repeat
         StartCoroutine(CreateGrid());
         //Its done generating
-        StopCoroutine(c);
+        StopCoroutine(cc);
+    }
+    List<coords> continentPoints = new List<coords>();
+    void ContinentPoints(GameObject gg)
+    {
+        TerrainTileValues u = null;
+        if (gg.GetComponent<TerrainTileValues>())
+        {
+            u = gg.GetComponent<TerrainTileValues>();
+        }
+        int continents = Random.Range(continentMin, continentMax);
+        for(int i = 0; i < continents; i++)
+        {
+            int x = Random.Range(0, length);
+            int y = Random.Range(0, width);
+            grid.Add(new coords(x,y), u);
+            continentPoints.Add(new coords(x, y));
+        }
+    }
+    void MakeContinents(GameObject gg, coords c, int level)
+    {
+        int radius = Random.Range(minRadius, maxRadius);
+        TerrainTileValues u = null;
+        if (gg.GetComponent<TerrainTileValues>())
+        {
+            u = gg.GetComponent<TerrainTileValues>();
+        }
+        TerrainTileValues hit;
+        TerrainTileValues hit2;
+        TerrainTileValues hit3;
+        TerrainTileValues hit4;
+        if (grid.TryGetValue(new coords(c.x + 1, c.y), out hit))
+        {
+            //if its the same block increase b
+            if (hit.code != 500)
+            {
+                if(DoBunchChance(u, c.x + 1, c.y, 100 - (100 / radius * level)))
+                {
+                    MakeContinents(gg, new coords(c.x + 1, c.y), level+1);
+                }
+            }
+        }
+        if (grid.TryGetValue(new coords(c.x - 1, c.y), out hit2))
+        {
+            //if its the same block increase b
+            if (hit2.code != 500)
+            {
+                if (DoBunchChance(u, c.x - 1, c.y, 100 - (100 / radius * level)))
+                {
+                    MakeContinents(gg, new coords(c.x + 1, c.y), level + 1);
+                }
+
+            }
+        }
+        if (grid.TryGetValue(new coords(c.x, c.y + 1), out hit3))
+        {
+            //if its the same block increase b
+            if (hit3.code != 500)
+            {
+                if (DoBunchChance(u, c.x, c.y + 1, 100 - (100 / radius * level)))
+                {
+                    MakeContinents(gg, new coords(c.x + 1, c.y), level + 1);
+                }
+
+            }
+        }
+        if (grid.TryGetValue(new coords(c.x, c.y - 1), out hit4))
+        {
+            //if its the same block increase b
+            if (hit4.code != 500)
+            {
+                if (DoBunchChance(u, c.x + 1, c.y, 100 - (100 / radius * level)))
+                {
+                    MakeContinents(gg, new coords(c.x, c.y - 1), level + 1);
+                }
+
+            }
+        }
+    }
+    void FillWater(GameObject water)
+    {
+        TerrainTileValues u = null;
+        if (water.GetComponent<TerrainTileValues>())
+        {
+            u = water.GetComponent<TerrainTileValues>();
+        }
+        for (int x = 0; x < length; x++)
+        {
+            for (int y = 0; y < width; y++)
+            {
+                if(!grid.ContainsKey(new coords(x,y)))
+                grid.Add(new coords(x, y), u);
+            }
+        }
     }
     void SetTiles(int layer)
     {
@@ -434,7 +536,7 @@ public class GenerateGrid : MonoBehaviour {
         
     }
     //Adds in objects
-    void DoBunchChance(TerrainTileValues t,int x, int y, float chance)
+    bool DoBunchChance(TerrainTileValues t,int x, int y, float chance)
     {
         //If a number from 1-100 is less than the random chance
         if (Random.Range(0.0f, 100.0f) <= chance)
@@ -442,7 +544,9 @@ public class GenerateGrid : MonoBehaviour {
             //Take out the grass and add the new block
             grid.Remove(new coords(x,y));
             grid.Add(new coords(x, y),t);
+            return true;
         }
+        return false;
     }
     void DoBunchChanceFood(TerrainTileValues t, int x, int y, float chance)
     {
@@ -480,7 +584,7 @@ public class GenerateGrid : MonoBehaviour {
             foreach (KeyValuePair<coords, Chunk> entry in pg.removeFrom)
             {
                 //Splits lag over multiple frames
-                yield return new WaitForSecondsRealtime(0.01f);
+               // yield return new WaitForSecondsRealtime(0.01f);
                 foreach (KeyValuePair<coords, TerrainTileValues> ggg in entry.Value.t)
                 {
 
@@ -510,7 +614,7 @@ public class GenerateGrid : MonoBehaviour {
         foreach (KeyValuePair<coords, Chunk> entry in pg.addTo)
             {
 
-                yield return new WaitForSecondsRealtime(0.01f);
+              //  yield return new WaitForSecondsRealtime(0.01f);
                 //Loops through all the chunks and renders them
                 foreach (KeyValuePair<coords, TerrainTileValues> ggg in entry.Value.t)
                 {

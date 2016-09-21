@@ -43,10 +43,18 @@ public class Movement : MonoBehaviour {
 	void FixedUpdate () {
 		TerrainTileValues t;
 
-		grid.grid.TryGetValue(new GenerateGrid.coords((int)transform.position.x, (int)transform.position.y), out t);
+        float tempSpeed;
 
+        if (grid.grid.TryGetValue(new GenerateGrid.coords((int)transform.position.x, (int)transform.position.y), out t))
+        {
+         tempSpeed   = movementSpeed * t.speed;
+        }
+        else
+        {
+            tempSpeed = movementSpeed;
+        }
 
-    float tempSpeed = movementSpeed * t.speed;
+   
         if (doit)
         {
             tempTime += Time.deltaTime;
