@@ -2,18 +2,20 @@
 using System.Collections;
 using UnityStandardAssets;
 using UnityStandardAssets.CrossPlatformInput;
+using UnityEngine.UI;
 
 public class Movement : MonoBehaviour {
 
     public float nutrition;
-
-   public PlayerHunger playerHunger;
-    bool isRotating = false;
+	float revealOffset = 1;
+	bool isRotating = false;
 	float currentDir;
 	float headingDir;
 	float minColour = 0f;
+	public SpriteRenderer Loader;
+	float maxColour = 1f;
+    public PlayerHunger playerHunger;
     public bool doit = false;
-    float maxColour = 1f;
 	float posY;
 	float posX;
     GameObject Player;
@@ -30,9 +32,9 @@ public class Movement : MonoBehaviour {
     float tempTime = 0;
     public GameObject gg;
     public Transform target;
+
     void Start () {
         Player = GameObject.FindWithTag("Player");
-        
         grid = GameObject.Find("Grid").GetComponent<GenerateGrid>();
 		PlayerSpriteRenderer.color = new Color (Random.Range(minColour,maxColour), Random.Range(minColour,maxColour), Random.Range(minColour,maxColour));
 		isWalking = false;
@@ -55,8 +57,13 @@ public class Movement : MonoBehaviour {
         }
 
    
+
+
         if (doit)
         {
+			Loader.enabled = true;
+			revealOffset = revealOffset - 0.02f;
+			Loader.material.SetFloat ("_Cutoff", revealOffset);
             tempTime += Time.deltaTime;
             if (tempTime > eatTime)
             {
@@ -68,6 +75,8 @@ public class Movement : MonoBehaviour {
                     Debug.Log(target.position.x + 3 + "," + (target.position.y - 1));
                     tempTime = 0;
                     doit = false;
+					Loader.enabled = false;
+					revealOffset = 1;
                 }
 
 
