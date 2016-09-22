@@ -69,7 +69,12 @@ public class GenerateGrid : MonoBehaviour {
         grid = new Dictionary<coords, TerrainTileValues>();
         cc = StartCoroutine(GenerateMap());
         for (int i = 0; i < foods.Count; i++)
-            StartCoroutine(RegenFood(i));
+        {
+            if (foods[i].GetComponent<TerrainTileValues>().regen)
+            {
+                StartCoroutine(RegenFood(i));
+            }
+        }
     }
 
     //Takes breaks so it doesnt look like it crashed
@@ -658,6 +663,7 @@ public class GenerateGrid : MonoBehaviour {
                 //Finds the right pool system for the object
                 PoolSystem p;
                 int k = poolCodes.FindIndex(d => d == ggg.Value.code);
+                Debug.Log(k);
                 p = pools[k];
                 //if for some reason addTo was already generated
                 if (!createdFoods.ContainsKey(new coords(ggg.Key.x, ggg.Key.y)))
@@ -671,7 +677,7 @@ public class GenerateGrid : MonoBehaviour {
                             }
                             else
                             {
-                                //  Debug.LogWarning("To be rendered object already exists!");
+                                  Debug.LogWarning("To be rendered object already exists!");
                             }
                         
                     
