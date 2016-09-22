@@ -44,29 +44,21 @@ public class Movement : MonoBehaviour {
     
 	void FixedUpdate () {
 		TerrainTileValues t;
-		grid.grid.TryGetValue(new GenerateGrid.coords((int)transform.position.x, (int)transform.position.y), out t);
-		float tempSpeed = movementSpeed * t.speed;
-		if(transform.position.x > grid.length)
-		{
-			transform.position = new Vector3(grid.length, transform.position.y, transform.position.z);
-		}
-		if (transform.position.y > grid.width -1)
-		{
-			transform.position = new Vector3(transform.position.x,grid.width -1, transform.position.z);
-		}
-		if (transform.position.x < 1)
-		{
-			transform.position = new Vector3(1, transform.position.y, transform.position.z);
-		}
-		if (transform.position.y < 1)
-		{
-			transform.position = new Vector3(transform.position.x, 1, transform.position.z);
-		}
-		posY = Mathf.Abs (CrossPlatformInputManager.GetAxis("Vertical"));
-		posX = Mathf.Abs (CrossPlatformInputManager.GetAxis("Horizontal"));
-		transform.Translate (CrossPlatformInputManager.GetAxis("Horizontal") * Time.deltaTime * tempSpeed, CrossPlatformInputManager.GetAxis("Vertical") * Time.deltaTime * tempSpeed, 0);
-		transform.position += Vector3.ClampMagnitude(new Vector2 (CrossPlatformInputManager.GetAxis("Horizontal") * Time.deltaTime * tempSpeed, CrossPlatformInputManager.GetAxis("Vertical") * Time.deltaTime * tempSpeed), tempSpeed) * Time.deltaTime;
-        
+
+        float tempSpeed;
+
+        if (grid.grid.TryGetValue(new GenerateGrid.coords((int)transform.position.x, (int)transform.position.y), out t))
+        {
+         tempSpeed   = movementSpeed * t.speed;
+        }
+        else
+        {
+            tempSpeed = movementSpeed;
+        }
+
+   
+
+
         if (doit)
         {
 			Loader.enabled = true;

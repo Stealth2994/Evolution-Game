@@ -8,10 +8,13 @@ public class GenerateGrid : MonoBehaviour {
     public List<GameObject> gridObjects;
     public List<GameObject> foods;
     public GameObject deepWater;
-   
+    public int continentMin = 2;
+    public int continentMax = 10;
+    public int minRadius = 5;
+    public int maxRadius = 20;
     //Pool system setup
     public List<PoolSystem> pools;
-
+    public List<int> poolCodes;
     //Must be a float or else it sinks
     float boat;
 
@@ -21,60 +24,201 @@ public class GenerateGrid : MonoBehaviour {
     //Dimensions
     public int length;
     public int width;
-    //The bigger the chunks the quicker the initial load but the slower the game (500x500: 16 = 7s, 12 = 21s,  8 = 49s)
-    public static int chunkSize = 8;
+    public static int chunkSize = 6;
     public static int megaChunkSize = 64;
-    bool firstLoad;
     public int renderdistance = 5;
-
+    public bool fpscounter = true;
     //For stopping map gen
-    Coroutine c;
+    Coroutine cc;
 
     //Contains every single tile, only have to loop this once to set up chunks
     public Dictionary<coords, TerrainTileValues> grid;
-    
+    float deltaTime = 0.0f;
+    float fps = 0.0f;
+
+    void Update()
+    {
+
+        fps = 1.0f / Time.deltaTime;
+            if (fpscounter) {
+            if (fps > 30)
+                Debug.Log("FPS > 30");
+            else if(fps > 25)
+            {
+                Debug.Log("25 < FPS < 30");
+               
+            }
+            else if(fps > 20)
+            {
+                Debug.Log("20 < FPS < 25");
+            }
+            else if (fps > 15)
+            {
+                Debug.LogWarning("Low FPS: " + (int)fps);
+            }
+            else
+            {
+                Debug.LogError("Extremely Low FPS: " + (int)fps);
+            }
+            
+        }
+    }
     // Generates map
     void Awake() {
 
         grid = new Dictionary<coords, TerrainTileValues>();
-        c = StartCoroutine(GenerateMap());
+        cc = StartCoroutine(GenerateMap());
         for (int i = 0; i < foods.Count; i++)
-            StartCoroutine(RegenFood(i));
+        {
+            if (foods[i].GetComponent<TerrainTileValues>().regen)
+            {
+                StartCoroutine(RegenFood(i));
+            }
+        }
     }
 
     //Takes breaks so it doesnt look like it crashed
     IEnumerator GenerateMap()
     {
         float ok = Time.realtimeSinceStartup;
-        for (int i = 0; i < gridObjects.Count; i++)
-        {
-            //Creates all the grass and single other blocks
-            SetTiles(i);
-            yield return new WaitForSeconds(0);
-        }
-        for (int i = 1; i < gridObjects.Count; i++)
-        {
-            //Puts more blocks around each single block
-            BunchSpawns(i);
-            yield return new WaitForSeconds(0);
-        }
-        AddDeepWater(deepWater);
-        for (int i = 0; i < foods.Count; i++)
-        {
-            AddFood(i);
-            yield return new WaitForSeconds(0);
-        }
-    
 
+        ContinentPoints(gridObjects[0]);
+        FillWater(gridObjects[2]);
+        
+        foreach (coords c in continentPoints)
+        {
+            MakeContinents(gridObjects[0], c, 1);
+        }
+
+       
+        for (int i = 1; i < gridObjects.Count; i++)
+          {
+              //Creates all the grass and single other blocks
+              SetTiles(2);
+              yield return new WaitForSeconds(0);
+          }
+       
+        for (int i = 0; i < gridObjects.Count; i++)
+          {
+              //Puts more blocks around each single block
+              BunchSpawns(i);
+              yield return new WaitForSeconds(0);
+          }
+       
+        AddDeepWater(deepWater);
+        
+        for (int i = 0; i < foods.Count; i++)
+          {
+              AddFood(i);
+              yield return new WaitForSeconds(0);
+          }
+
+        
+        yield return new WaitForSeconds(0);
         //Takes every tile and makes it into chunks defined in chunkSize
         Chunk.MakeChunks(grid);
-       //Takes every chunk and makes it into megachunks so further increase efficiency in the thread
+        
+        //Takes every chunk and makes it into megachunks so further increase efficiency in the thread
         MegaChunk.MakeChunks(chunkList);
+
         Debug.Log("Startup Time: " + (Time.realtimeSinceStartup - ok));
         //Starts making the rendered map in repeat
         StartCoroutine(CreateGrid());
         //Its done generating
-        StopCoroutine(c);
+        StopCoroutine(cc);
+    }
+    List<coords> continentPoints = new List<coords>();
+    void ContinentPoints(GameObject gg)
+    {
+        TerrainTileValues u = null;
+        if (gg.GetComponent<TerrainTileValues>())
+        {
+            u = gg.GetComponent<TerrainTileValues>();
+        }
+        int continents = Random.Range(continentMin, continentMax);
+        for(int i = 0; i < continents; i++)
+        {
+            int x = Random.Range(0, length);
+            int y = Random.Range(0, width);
+            grid.Add(new coords(x,y), u);
+            continentPoints.Add(new coords(x, y));
+        }
+    }
+    void MakeContinents(GameObject gg, coords c, int level)
+    {
+        int radius = Random.Range(minRadius, maxRadius);
+        TerrainTileValues u = null;
+        if (gg.GetComponent<TerrainTileValues>())
+        {
+            u = gg.GetComponent<TerrainTileValues>();
+        }
+        TerrainTileValues hit;
+        TerrainTileValues hit2;
+        TerrainTileValues hit3;
+        TerrainTileValues hit4;
+        if (grid.TryGetValue(new coords(c.x + 1, c.y), out hit))
+        {
+            //if its the same block increase b
+            if (hit.code != 500)
+            {
+                if(DoBunchChance(u, c.x + 1, c.y, 100 - (100 / radius * level)))
+                {
+                    MakeContinents(gg, new coords(c.x + 1, c.y), level+1);
+                }
+            }
+        }
+        if (grid.TryGetValue(new coords(c.x - 1, c.y), out hit2))
+        {
+            //if its the same block increase b
+            if (hit2.code != 500)
+            {
+                if (DoBunchChance(u, c.x - 1, c.y, 100 - (100 / radius * level)))
+                {
+                    MakeContinents(gg, new coords(c.x + 1, c.y), level + 1);
+                }
+
+            }
+        }
+        if (grid.TryGetValue(new coords(c.x, c.y + 1), out hit3))
+        {
+            //if its the same block increase b
+            if (hit3.code != 500)
+            {
+                if (DoBunchChance(u, c.x, c.y + 1, 100 - (100 / radius * level)))
+                {
+                    MakeContinents(gg, new coords(c.x + 1, c.y), level + 1);
+                }
+
+            }
+        }
+        if (grid.TryGetValue(new coords(c.x, c.y - 1), out hit4))
+        {
+            //if its the same block increase b
+            if (hit4.code != 500)
+            {
+                if (DoBunchChance(u, c.x + 1, c.y, 100 - (100 / radius * level)))
+                {
+                    MakeContinents(gg, new coords(c.x, c.y - 1), level + 1);
+                }
+
+            }
+        }
+    }
+    void FillWater(GameObject water)
+    {
+        TerrainTileValues u = null;
+        if (water.GetComponent<TerrainTileValues>())
+        {
+            u = water.GetComponent<TerrainTileValues>();
+        }
+        for (int x = 0; x < length; x++)
+        {
+            for (int y = 0; y < width; y++)
+            {
+                if(!grid.ContainsKey(new coords(x,y)))
+                grid.Add(new coords(x, y), u);
+            }
+        }
     }
     void SetTiles(int layer)
     {
@@ -117,6 +261,7 @@ public class GenerateGrid : MonoBehaviour {
         {
             t = gg.GetComponent<TerrainTileValues>();
         }
+        
         //Loops through every tile
         for (int tx = 0; tx < length; tx++)
         {
@@ -124,41 +269,10 @@ public class GenerateGrid : MonoBehaviour {
             {
                 int x;
                 int y;
-                if (bigwaters)
-                {
+               
                     x = tx;
                     y = ty;
-                }
-                else {
-                    
-    
-                     x = -1;
-                    while (x == -1)
-                    {
-                        x = Random.Range(0, length);
-                        foreach (int k in donex)
-                        {
-                            if (x == k)
-                            {
-                                x = -1;
-                                continue;
-                            }
-                        }
-                    }
-                    y = -1;
-                    while (y == -1)
-                    {
-                        y = Random.Range(0, width);
-                        foreach (int k in doney)
-                        {
-                            if (y == k)
-                            {
-                                y = -1;
-                                continue;
-                            }
-                        }
-                    }
-                }
+               
                 //Generates variables for trygetvalue output
                 TerrainTileValues hit;
                 TerrainTileValues hit2;
@@ -212,7 +326,6 @@ public class GenerateGrid : MonoBehaviour {
             }
 
         }
-       
     }
     
     public int waterCode;
@@ -434,7 +547,7 @@ public class GenerateGrid : MonoBehaviour {
         
     }
     //Adds in objects
-    void DoBunchChance(TerrainTileValues t,int x, int y, float chance)
+    bool DoBunchChance(TerrainTileValues t,int x, int y, float chance)
     {
         //If a number from 1-100 is less than the random chance
         if (Random.Range(0.0f, 100.0f) <= chance)
@@ -442,7 +555,9 @@ public class GenerateGrid : MonoBehaviour {
             //Take out the grass and add the new block
             grid.Remove(new coords(x,y));
             grid.Add(new coords(x, y),t);
+            return true;
         }
+        return false;
     }
     void DoBunchChanceFood(TerrainTileValues t, int x, int y, float chance)
     {
@@ -481,12 +596,13 @@ public class GenerateGrid : MonoBehaviour {
             foreach (KeyValuePair<coords, Chunk> entry in pg.removeFrom)
             {
                 //Splits lag over multiple frames
-                yield return new WaitForSecondsRealtime(0.01f);
+             //   yield return new WaitForSecondsRealtime(0.01f);
                 foreach (KeyValuePair<coords, TerrainTileValues> ggg in entry.Value.t)
                 {
 
-                    foreach (PoolSystem p in pools)
-                    {
+                    PoolSystem p;
+                    int k = poolCodes.FindIndex(d => d == ggg.Value.code);
+                    p = pools[k];
                         if (p.code == ggg.Value.code)
                         {
                             GameObject hit;
@@ -501,27 +617,25 @@ public class GenerateGrid : MonoBehaviour {
                             {
                                 Debug.LogWarning("An object wants to be deleted but doesn't exist!!!");
                             }
-                        }
+                        
 
                     }
                 }
             }
-          
-        //addTo is everything the thread decides wants to be added to the render
-        foreach (KeyValuePair<coords, Chunk> entry in pg.addTo)
+            //addTo is everything the thread decides wants to be added to the render
+            foreach (KeyValuePair<coords, Chunk> entry in pg.addTo)
             {
 
-                yield return new WaitForSecondsRealtime(0.01f);
+              //  yield return new WaitForSecondsRealtime(0.01f);
                 //Loops through all the chunks and renders them
                 foreach (KeyValuePair<coords, TerrainTileValues> ggg in entry.Value.t)
                 {
                     //Finds the right pool system for the object
-                    foreach (PoolSystem p in pools)
-                    {
-                        if (p.code == ggg.Value.code)
-                        {
-                            //if for some reason addTo was already generated
-                            if (!created.ContainsKey(new coords(ggg.Key.x, ggg.Key.y)) && !updateList.ContainsKey(new coords(ggg.Key.x, ggg.Key.y)))
+                    PoolSystem p;
+                    int k = poolCodes.FindIndex(d => d == ggg.Value.code);
+                    p = pools[k];
+                    //if for some reason addTo was already generated
+                    if (!created.ContainsKey(new coords(ggg.Key.x, ggg.Key.y)) && !updateList.ContainsKey(new coords(ggg.Key.x, ggg.Key.y)))
                             {
                                 //Gets an object from the pool and turns it on
                                 GameObject g = p.GetPooledObject();
@@ -536,22 +650,23 @@ public class GenerateGrid : MonoBehaviour {
                             {
                               //  Debug.LogWarning("To be rendered object already exists!");
                            }
-                        }
-                    }
+                        
+                    
                 }
             }
+            
             //addTo is everything the thread decides wants to be added to the render
             foreach (KeyValuePair<coords, TerrainTileValues> ggg in pg.addFood)
             {
 
-             
-                    //Finds the right pool system for the object
-                    foreach (PoolSystem p in pools)
-                    {
-                        if (p.code == ggg.Value.code)
-                        {
-                            //if for some reason addTo was already generated
-                            if (!createdFoods.ContainsKey(new coords(ggg.Key.x, ggg.Key.y)))
+
+                //Finds the right pool system for the object
+                PoolSystem p;
+                int k = poolCodes.FindIndex(d => d == ggg.Value.code);
+                Debug.Log(k);
+                p = pools[k];
+                //if for some reason addTo was already generated
+                if (!createdFoods.ContainsKey(new coords(ggg.Key.x, ggg.Key.y)))
                             {
                                 //Gets an object from the pool and turns it on
                                 GameObject g = p.GetPooledObject();
@@ -562,19 +677,19 @@ public class GenerateGrid : MonoBehaviour {
                             }
                             else
                             {
-                                //  Debug.LogWarning("To be rendered object already exists!");
+                                  Debug.LogWarning("To be rendered object already exists!");
                             }
                         
-                    }
-                }
+                    
+                
             }
             foreach (KeyValuePair<coords, TerrainTileValues> ggg in pg.removeFood)
+            {
                 //Splits lag over multiple frames
-                foreach (PoolSystem p in pools)
-                {
-                    if (p.code == ggg.Value.code)
-                    {
-                        GameObject hit;
+                PoolSystem p;
+                int k = poolCodes.FindIndex(d => d == ggg.Value.code);
+                p = pools[k];
+                GameObject hit;
                         //Removes the object if it currently exists
                         if (createdFoods.TryGetValue(new coords(ggg.Key.x, ggg.Key.y), out hit))
                         {
@@ -590,21 +705,23 @@ public class GenerateGrid : MonoBehaviour {
                         {
                             Debug.LogError("INFINITE WHEAT");
                             createdFoods.Add(new coords(ggg.Key.x, ggg.Key.y), ggg.Value.gameObject);
-                           // foodList.Remove(new coords(ggg.Key.x, ggg.Key.y));
+                            // foodList.Remove(new coords(ggg.Key.x, ggg.Key.y));
                         }
 
 
-                    }
-                
+                    
 
+                
         }
-            foreach(KeyValuePair<coords,GameObject> ggg in removeFoodList)
+            
+            foreach (KeyValuePair<coords,GameObject> ggg in removeFoodList)
             {
                 createdFoods.Remove(new coords(ggg.Key.x, ggg.Key.y));
                 foodList.Remove(new coords(ggg.Key.x, ggg.Key.y));
                 Destroy(ggg.Value);
             }
             removeFoodList = new Dictionary<coords, GameObject>();
+            
             yield return new WaitForSeconds(0);
         }
     }
@@ -616,6 +733,7 @@ public class GenerateGrid : MonoBehaviour {
     public static Dictionary<coords, Chunk> chunkList = new Dictionary<coords, Chunk>();
     //Stores every mega chunk
     public static Dictionary<coords,MegaChunk> megaChunkList = new Dictionary<coords, MegaChunk>();
+    static float finalit = 0;
     public class Chunk
     {
         public static coords FindChunkCoords(coords pos)
@@ -648,13 +766,14 @@ public class GenerateGrid : MonoBehaviour {
                 }
             }
         }
+       
         //Sorts all of the tiles into chunks
         public static void MakeChunks(Dictionary<coords, TerrainTileValues> tiles)
         {
             
             chunkList = new Dictionary<coords, Chunk>();
             //Loops all the chunks (laggiest thing in this script!)
-          
+         
             foreach (coords key in tiles.Keys)
             {
                 
@@ -662,42 +781,45 @@ public class GenerateGrid : MonoBehaviour {
 
 
                 //Try to add it to a chunk, if you can't make a new chunk for it
-                float ok = Time.realtimeSinceStartup;
-                if (!AddToChunk(key, t))
-                {
-                   
-                    new Chunk(new coords(key.x, key.y));
-                    
-
+                
                     AddToChunk(key, t);
                     
-                }
+
+
                 
             }
+            
            
         }
         public static bool AddToChunk(coords c, TerrainTileValues t)
         {
-            //sorts through the current chunks
-            foreach (KeyValuePair<coords, Chunk> u in chunkList)
-            {
-                //checks for chunk and if so add it in
-                if (u.Key.x > c.x - chunkSize && u.Key.x < c.x + chunkSize && u.Key.y > c.y - chunkSize && u.Key.y < c.y + chunkSize)
-                {
-                    u.Value.t.Add(c, t);
-                    return true;
-                }
+            Chunk cc;
+               
+            if (chunkList.TryGetValue(new coords(((int)c.x - (c.x % chunkSize)), ((int)c.y - (c.y % chunkSize))),out cc)) {
+               
+                    cc.t.Add(c, t);
+                return true;
             }
+            else
+            {
+                Chunk ok = new Chunk((new coords(((int)c.x - (c.x % chunkSize)), ((int)c.y - (c.y % chunkSize)))));
+                ok.t.Add(c, t);
+            }
+            //sorts through the current chunks
             return false;
         }
         //coords of this chunk
         public coords c;
         //cooords of every tile in the chunk
         public Dictionary<coords, TerrainTileValues> t = new Dictionary<coords, TerrainTileValues>();
+        
         public Chunk(coords d)
         {
+           
             c = d;
+            
             chunkList.Add(d, this);
+            
         }
     }
     
