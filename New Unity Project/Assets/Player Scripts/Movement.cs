@@ -2,17 +2,17 @@
 using System.Collections;
 using UnityStandardAssets;
 using UnityStandardAssets.CrossPlatformInput;
+using UnityEngine.UI;
 
 public class Movement : MonoBehaviour {
 
     public float nutrition;
-
-
+	float revealOffset = 1;
 	bool isRotating = false;
 	float currentDir;
 	float headingDir;
 	float minColour = 0f;
-
+	public SpriteRenderer Loader;
 	float maxColour = 1f;
 	float posY;
 	float posX;
@@ -41,16 +41,8 @@ public class Movement : MonoBehaviour {
     public Vector3 target;
 	void FixedUpdate () {
 		TerrainTileValues t;
-
 		grid.grid.TryGetValue(new GenerateGrid.coords((int)transform.position.x, (int)transform.position.y), out t);
-
-
-    float tempSpeed = movementSpeed * t.speed;
-   
-        
-        
-   
-
+		float tempSpeed = movementSpeed * t.speed;
 		if(transform.position.x > grid.length)
 		{
 			transform.position = new Vector3(grid.length, transform.position.y, transform.position.z);
@@ -67,17 +59,15 @@ public class Movement : MonoBehaviour {
 		{
 			transform.position = new Vector3(transform.position.x, 1, transform.position.z);
 		}
-
 		posY = Mathf.Abs (CrossPlatformInputManager.GetAxis("Vertical"));
 		posX = Mathf.Abs (CrossPlatformInputManager.GetAxis("Horizontal"));
 		transform.Translate (CrossPlatformInputManager.GetAxis("Horizontal") * Time.deltaTime * tempSpeed, CrossPlatformInputManager.GetAxis("Vertical") * Time.deltaTime * tempSpeed, 0);
 		transform.position += Vector3.ClampMagnitude(new Vector2 (CrossPlatformInputManager.GetAxis("Horizontal") * Time.deltaTime * tempSpeed, CrossPlatformInputManager.GetAxis("Vertical") * Time.deltaTime * tempSpeed), tempSpeed) * Time.deltaTime;
         
 		if (doit) {
+			revealOffset = revealOffset - 0.01f;
+			Loader.material.SetFloat ("_Cutoff", revealOffset);
 			isRotating = true;
-			Vector2 dir = target - PlayerSprite.transform.position;
-			float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
-			PlayerSprite.transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
 			transform.position = Vector3.MoveTowards (transform.position, new Vector3 (target.x + 3, target.y - 1), (tempSpeed * Time.deltaTime));
 			if (Vector3.Distance (transform.position, new Vector3 (target.x + 3, target.y - 1)) < 0.5f) {
 				if (!GenerateGrid.removeFoodList.ContainsKey (new GenerateGrid.coords ((int)target.x + 3, (int)target.y - 1))) {
