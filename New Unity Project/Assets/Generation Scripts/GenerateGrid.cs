@@ -451,6 +451,7 @@ public class GenerateGrid : MonoBehaviour {
         {
             //Take out the grass and add the new block
             
+			foodList.Remove(new coords(x, y));
             foodList.Add(new coords(x, y), t);
         }
     }
