@@ -8,6 +8,7 @@ public class GenerateGrid : MonoBehaviour {
     public List<GameObject> gridObjects;
     public List<GameObject> foods;
     public GameObject deepWater;
+	public GameObject highRock;
     public int continentMin = 2;
     public int continentMax = 10;
     public int minRadius = 5;
@@ -17,6 +18,7 @@ public class GenerateGrid : MonoBehaviour {
     public List<int> poolCodes;
     //Must be a float or else it sinks
     float boat;
+	//(how original!)
 
     //Player
     public GameObject player;
@@ -52,7 +54,7 @@ public class GenerateGrid : MonoBehaviour {
             {
                 Debug.Log("20 < FPS < 25");
             }
-            else if (fps > 15)
+            else if (fps < 15)
             {
                 Debug.LogWarning("Low FPS: " + (int)fps);
             }
@@ -106,6 +108,7 @@ public class GenerateGrid : MonoBehaviour {
           }
        
         AddDeepWater(deepWater);
+		AddHighRock(highRock);
         
         for (int i = 0; i < foods.Count; i++)
           {
@@ -124,7 +127,7 @@ public class GenerateGrid : MonoBehaviour {
         Debug.Log("Startup Time: " + (Time.realtimeSinceStartup - ok));
         //Starts making the rendered map in repeat
         StartCoroutine(CreateGrid());
-        //Its done generating
+        //It is done generating
         StopCoroutine(cc);
     }
     List<coords> continentPoints = new List<coords>();
@@ -472,6 +475,151 @@ public class GenerateGrid : MonoBehaviour {
             }
         }
     }
+
+	public int rockCode;
+	void AddHighRock(GameObject gg)
+	{
+		//Gets high rock
+		TerrainTileValues k = null;
+		if (gg.GetComponent<TerrainTileValues>())
+		{
+			k = gg.GetComponent<TerrainTileValues>();
+		}
+		for (int x = 0; x < length; x++)
+		{
+			for (int y = 0; y < width; y++)
+			{
+				//8 hits this time for diagnol
+				TerrainTileValues hit;
+				TerrainTileValues hit2;
+				TerrainTileValues hit3;
+				TerrainTileValues hit4;
+				TerrainTileValues hit5;
+				TerrainTileValues hit6;
+				TerrainTileValues hit7;
+				TerrainTileValues hit8;
+
+				int b = 0;
+
+				if (grid.TryGetValue(new coords(x + 1, y), out hit))
+				{
+
+					if (hit.code == rockCode || hit.code == k.code)
+					{
+
+						b++;
+
+					}
+				}
+
+				if (grid.TryGetValue(new coords(x - 1, y), out hit2))
+				{
+
+					if (hit2.code == rockCode || hit2.code == k.code)
+					{
+						b++;
+
+					}
+				}
+				if (grid.TryGetValue(new coords(x, y + 1), out hit3))
+				{
+
+					if (hit3.code == rockCode || hit3.code == k.code)
+					{
+						b++;
+
+					}
+				}
+				if (grid.TryGetValue(new coords(x, y - 1), out hit4))
+				{
+					if (hit4.code == rockCode || hit4.code == k.code)
+					{
+						b++;
+
+					}
+				}
+				if (grid.TryGetValue(new coords(x + 2, y), out hit))
+				{
+
+					if (hit.code == rockCode || hit.code == k.code)
+					{
+
+						b++;
+
+					}
+				}
+
+				if (grid.TryGetValue(new coords(x - 2, y), out hit2))
+				{
+
+					if (hit2.code == rockCode || hit2.code == k.code)
+					{
+						b++;
+
+					}
+				}
+				if (grid.TryGetValue(new coords(x, y + 2), out hit3))
+				{
+
+					if (hit3.code == rockCode || hit3.code == k.code)
+					{
+						b++;
+
+					}
+				}
+				if (grid.TryGetValue(new coords(x, y - 2), out hit4))
+				{
+					if (hit4.code == rockCode || hit4.code == k.code)
+					{
+						b++;
+
+					}
+				}
+				if (grid.TryGetValue(new coords(x + 1, y + 1), out hit5))
+				{
+
+					if (hit5.code == rockCode || hit5.code == k.code)
+					{
+						b++;
+
+					}
+				}
+
+				if (grid.TryGetValue(new coords(x - 1, y - 1), out hit6))
+				{
+
+					if (hit6.code == rockCode || hit6.code == k.code)
+					{
+						b++;
+
+					}
+				}
+				if (grid.TryGetValue(new coords(x - 1, y + 1), out hit7))
+				{
+
+					if (hit7.code == rockCode || hit7.code == k.code)
+					{
+						b++;
+
+					}
+				}
+				if (grid.TryGetValue(new coords(x + 1, y - 1), out hit8))
+				{
+					if (hit8.code == rockCode || hit8.code == k.code)
+					{
+						b++;
+
+					}
+				}
+				//if all 12 hits are water make it deep water
+				if (b == 12)
+				{
+					grid.Remove(new coords(x,y));
+					grid.Add(new coords(x, y),k);
+				}
+			}
+		}
+	}
             
     
     void AddFood(int food)
