@@ -92,13 +92,12 @@ public class GenerateGrid : MonoBehaviour {
             MakeContinents(gridObjects[0], c, 1);
         }
 
-       
-        for (int i = 1; i < gridObjects.Count; i++)
-          {
-              //Creates all the grass and single other blocks
+
+        //Creates all the grass and single other blocks
+        SetTiles(1);
               SetTiles(2);
               yield return new WaitForSeconds(0);
-          }
+          
        
         for (int i = 0; i < gridObjects.Count; i++)
           {
@@ -244,8 +243,26 @@ public class GenerateGrid : MonoBehaviour {
                 }
                 else
                 {
-                    //Otherwise generate based on spawn chance
-                    DoBunchChance(u, x, y, u.spawnChance);
+                    if (layer == 2)
+                    {
+                        TerrainTileValues tt;
+                        if (grid.TryGetValue(new coords(x, y), out tt))
+                        {
+                           
+                            if (tt.code != 1111 && tt.code != 1112)
+                            {
+                                //Otherwise generate based on spawn chance
+                                DoBunchChance(u, x, y, u.spawnChance);
+                            }
+                            continue;
+                        }
+                    }
+                    else
+                    {
+                        //Otherwise generate based on spawn chance
+                        DoBunchChance(u, x, y, u.spawnChance);
+                    }
+                   
                 }
 
             }
@@ -538,43 +555,7 @@ public class GenerateGrid : MonoBehaviour {
 
 					}
 				}
-				if (grid.TryGetValue(new coords(x + 2, y), out hit))
-				{
-
-					if (hit.code == rockCode || hit.code == k.code)
-					{
-
-						b++;
-
-					}
-				}
-
-				if (grid.TryGetValue(new coords(x - 2, y), out hit2))
-				{
-
-					if (hit2.code == rockCode || hit2.code == k.code)
-					{
-						b++;
-
-					}
-				}
-				if (grid.TryGetValue(new coords(x, y + 2), out hit3))
-				{
-
-					if (hit3.code == rockCode || hit3.code == k.code)
-					{
-						b++;
-
-					}
-				}
-				if (grid.TryGetValue(new coords(x, y - 2), out hit4))
-				{
-					if (hit4.code == rockCode || hit4.code == k.code)
-					{
-						b++;
-
-					}
-				}
+				
 				if (grid.TryGetValue(new coords(x + 1, y + 1), out hit5))
 				{
 
@@ -612,7 +593,7 @@ public class GenerateGrid : MonoBehaviour {
 					}
 				}
 				//if all 12 hits are water make it deep water
-				if (b == 12)
+				if (b == 8)
 				{
 					grid.Remove(new coords(x,y));
 					grid.Add(new coords(x, y),k);
@@ -811,7 +792,6 @@ public class GenerateGrid : MonoBehaviour {
                 //Finds the right pool system for the object
                 PoolSystem p;
                 int k = poolCodes.FindIndex(d => d == ggg.Value.code);
-                Debug.Log(k);
                 p = pools[k];
                 //if for some reason addTo was already generated
                 if (!createdFoods.ContainsKey(new coords(ggg.Key.x, ggg.Key.y)))
