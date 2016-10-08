@@ -1,0 +1,72 @@
+﻿Rock seems to be working pretty well now
+# Please enter the commit message for your changes. Lines starting
+# with '#' will be ignored, and an empty message aborts the commit.
+# On branch master
+# Your branch is up-to-date with 'origin/master'.
+#
+# Changes to be committed:
+#	modified:   New Unity Project/Assets/Generation Scripts/GenerateGrid.cs
+#	deleted:    New Unity Project/Assets/Prefabs/Trees.meta
+#	modified:   New Unity Project/Library/CurrentMaximizeLayout.dwlt
+#	modified:   New Unity Project/Library/ScriptAssemblies/Assembly-CSharp-Editor.dll
+#	modified:   New Unity Project/Library/ScriptAssemblies/Assembly-CSharp-Editor.dll.mdb
+#	modified:   New Unity Project/Library/ScriptAssemblies/Assembly-CSharp-firstpass.dll
+#	modified:   New Unity Project/Library/ScriptAssemblies/Assembly-CSharp-firstpass.dll.mdb
+#	modified:   New Unity Project/Library/ScriptAssemblies/Assembly-CSharp.dll
+#	modified:   New Unity Project/Library/ScriptAssemblies/Assembly-CSharp.dll.mdb
+#	modified:   New Unity Project/Library/assetDatabase3
+#	modified:   New Unity Project/Library/metadata/00/00000000000000002000000000000000
+#	modified:   New Unity Project/Library/metadata/00/00000000000000003000000000000000
+#	modified:   New Unity Project/Library/metadata/00/00000000000000004000000000000000
+#	modified:   New Unity Project/Library/metadata/00/00000000000000004100000000000000
+#	modified:   New Unity Project/Library/metadata/00/00000000000000005000000000000000
+#	modified:   New Unity Project/Library/metadata/00/00000000000000005100000000000000
+#	modified:   New Unity Project/Library/metadata/00/00000000000000006000000000000000
+#	modified:   New Unity Project/Library/metadata/00/00000000000000006100000000000000
+#	modified:   New Unity Project/Library/metadata/00/00000000000000007000000000000000
+#	modified:   New Unity Project/Library/metadata/00/00000000000000007100000000000000
+#	modified:   New Unity Project/Library/metadata/00/00000000000000008000000000000000
+#	modified:   New Unity Project/Library/metadata/00/00000000000000008100000000000000
+#	modified:   New Unity Project/Library/metadata/00/00000000000000009000000000000000
+#	modified:   New Unity Project/Library/metadata/00/0000000000000000a000000000000000
+#	modified:   New Unity Project/Library/metadata/00/0000000000000000a100000000000000
+#	modified:   New Unity Project/Library/metadata/00/0000000000000000b000000000000000
+#	modified:   New Unity Project/Library/metadata/00/0000000000000000c000000000000000
+#	modified:   New Unity Project/Library/metadata/01/01cd679a1b9ee48bf9c546f6ce2cb97e.info
+#	modified:   New Unity Project/Library/metadata/04/04a842e316b6f44bf8da702de26a8ed6.info
+#	modified:   New Unity Project/Library/metadata/09/09316c9deecff5249a46bd80afe0d8ac.info
+#	modified:   New Unity Project/Library/metadata/0c/0c6271a290ef75b4c97d58746c86c5b8.info
+#	modified:   New Unity Project/Library/metadata/1f/1f16052dfd5f6f54e94e97ecedd4c86b.info
+#	modified:   New Unity Project/Library/metadata/3d/3d8675433a508ec47b8f895201eacf20.info
+#	modified:   New Unity Project/Library/metadata/49/49b611e658efbf443b686a4036f74fe3.info
+#	modified:   New Unity Project/Library/metadata/4d/4db017495c69e8140a56a0e2b669e3f8.info
+#	modified:   New Unity Project/Library/metadata/54/5485e2f56028a3c4cb54f5caa167377e.info
+#	modified:   New Unity Project/Library/metadata/5b/5b1a64ea234fb2343b8d0686c51280de.info
+#	modified:   New Unity Project/Library/metadata/71/71bc2a9e2434d5547808efd4c620dd73.info
+#	modified:   New Unity Project/Library/metadata/7e/7eab217468b394b47b4926ffae5bbbfb
+#	modified:   New Unity Project/Library/metadata/82/827c9cd4a3943534f909ac6473e17288.info
+#	modified:   New Unity Project/Library/metadata/86/86ceb602ae501b847ba729eecafdfae8.info
+#	modified:   New Unity Project/Library/metadata/87/87c316b602156405d92e616621658222.info
+#	modified:   New Unity Project/Library/metadata/88/88c23628230198a41ab96dacca0cdf1a.info
+#	modified:   New Unity Project/Library/metadata/98/9866a92691696b346901281f2b329034.info
+#	modified:   New Unity Project/Library/metadata/9d/9d7c6e4896067aa4fa512a00f692ac1c.info
+#	modified:   New Unity Project/Library/metadata/a3/a3983c59ebf804b4abba687bd7c9e92f.info
+#	modified:   New Unity Project/Library/metadata/a3/a3b997593a4f12c4c991490593f3b513
+#	modified:   New Unity Project/Library/metadata/a9/a94c9a7eb94ceec4a8d67a1890e22e51.info
+#	modified:   New Unity Project/Library/metadata/b5/b51a3e520f9164da198dc59c8acfccd6.info
+#	deleted:    New Unity Project/Library/metadata/b6/b6050ffbb6bd7cc49b13f5c9a0ccf29e
+#	deleted:    New Unity Project/Library/metadata/b6/b6050ffbb6bd7cc49b13f5c9a0ccf29e.info
+#	modified:   New Unity Project/Library/metadata/b8/b810e529d22578845bbe0994d1db19c3.info
+#	modified:   New Unity Project/Library/metadata/bb/bb10ec86c173b284b8b0f4fd25bb32b0.info
+#	modified:   New Unity Project/Library/metadata/cc/cc5626040df2e51499cd64d95363bbfe.info
+#	modified:   New Unity Project/Library/metadata/e4/e4f1fee3de32377429fd1348fae62b10.info
+#	modified:   New Unity Project/Library/metadata/ea/ea5873cfd9158664f89459f0c9e1d853.info
+#	modified:   New Unity Project/Library/metadata/eb/eb5f6e2757c821940b69cf1456f7865a.info
+#	modified:   New Unity Project/Library/metadata/ec/eccd98964e163124f8cd4d011bb223fc.info
+#	modified:   New Unity Project/Library/metadata/f5/f588d850485d0ae479d73cf3bd0b7b00.info
+#	modified:   New Unity Project/Library/metadata/fb/fb277d663aff67a46ad3590375791e7e.info
+#
+# Untracked files:
+#	New Unity Project/Temp/
+#
+
