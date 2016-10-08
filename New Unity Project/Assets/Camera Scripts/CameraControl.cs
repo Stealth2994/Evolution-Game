@@ -24,7 +24,7 @@ public class CameraControl : MonoBehaviour {
         }
         if (transform.position.y > g.width - 6)
         {
-            transform.position = new Vector3(transform.position.x,g.width-6, transform.position.z);
+            transform.position = new Vector3(transform.position.x, g.width -6, transform.position.z);
         }
         if (transform.position.x < 9)
         {

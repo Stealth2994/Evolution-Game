@@ -5,7 +5,7 @@ using UnityStandardAssets.CrossPlatformInput;
 using UnityEngine.UI;
 
 public class Movement : MonoBehaviour {
-
+    GenerateGrid grid;
     public float nutrition;
 	float revealOffset = 1;
 	bool isRotating = false;
@@ -31,8 +31,11 @@ public class Movement : MonoBehaviour {
     float tempTime = 0;
     public GameObject gg;
     public Transform target;
-
+    Genes mom;
+    Genes dad;
     void Start () {
+        grid = GameObject.Find("Grid").GetComponent<GenerateGrid>();
+        GetComponent<Genes>().CreateGenes(mom, dad);
         Player = GameObject.FindWithTag("Player");
 		PlayerSpriteRenderer.color = new Color (Random.Range(minColour,maxColour), Random.Range(minColour,maxColour), Random.Range(minColour,maxColour));
 		isWalking = false;
@@ -86,13 +89,13 @@ public class Movement : MonoBehaviour {
 
 
 
-            if (transform.position.x > GenerateGrid.grid.Count)
+            if (transform.position.x > grid.length)
             {
-                transform.position = new Vector3(GenerateGrid.grid.Count, transform.position.y, transform.position.z);
+                transform.position = new Vector3(grid.length, transform.position.y, transform.position.z);
             }
-            if (transform.position.y > GenerateGrid.grid.Count - 1)
+            if (transform.position.y > grid.width - 1)
             {
-                transform.position = new Vector3(transform.position.x, GenerateGrid.grid.Count - 1, transform.position.z);
+                transform.position = new Vector3(transform.position.x, grid.width - 1, transform.position.z);
             }
             if (transform.position.x < 1)
             {

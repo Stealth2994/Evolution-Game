@@ -24,8 +24,8 @@ public class GenerateGrid : MonoBehaviour {
     public GameObject player;
     
     //Dimensions
-    public int length;
-    public int width;
+    public int length = 500;
+    public int width = 500;
     public static int chunkSize = 6;
     public static int megaChunkSize = 64;
     public int renderdistance = 5;
@@ -142,7 +142,7 @@ public class GenerateGrid : MonoBehaviour {
         {
             int x = Random.Range(0, length);
             int y = Random.Range(0, width);
-            grid.Add(new coords(x,y), u);
+                grid.Add(new coords(x,y), u);
             continentPoints.Add(new coords(x, y));
         }
     }

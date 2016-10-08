@@ -69,7 +69,7 @@ public class Genes : MonoBehaviour {
             speed = Random.Range(0, 100);
             energy = Random.Range(0, 100);
             health = Random.Range(0, 100);
-            sight = Random.Range(0, 100);
+            sight = Random.Range(0, 10);
             sprintSpeed = Random.Range(0, 100);
             hitDamage = Random.Range(0, 100);
             camouflageSkill = Random.Range(0, 100);
@@ -105,7 +105,10 @@ public class Genes : MonoBehaviour {
                         
                     }
                 }
-                returnDictionary.Remove(highest);
+                if (highest != null)
+                {
+                    returnDictionary.Remove(highest);
+                }
                 returnList.Add(highest);
             }
             return returnList;
