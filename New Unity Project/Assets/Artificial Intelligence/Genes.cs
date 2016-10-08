@@ -1,7 +1,9 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 using System.Collections.Generic;
 
-public class Genes : MonoBehaviour {
+public class Genes : MonoBehaviour
+{
     //Stores all of the genes/traits of the current AI
     //NOTE: All numbers are from 0-100, unless otherwise noted
     //Priority Weights
@@ -27,6 +29,15 @@ public class Genes : MonoBehaviour {
     public int camouflageSkill;
     public int swimSkill;
     public int landSkill;
+
+    public Text CarnivorismText;
+    public Text SpeedText;
+    public Text SightText;
+    public Text SprintSpeedText;
+    public Text HitDmgText;
+    public Text CamoSkillText;
+    public Text SwimSkillText;
+    public Text LandSkillText;
 
     public void CreateGenes(Genes mom, Genes dad)
     {
@@ -55,18 +66,19 @@ public class Genes : MonoBehaviour {
         }
         else
         {
-            foodPriority = Random.Range(0,100);
-            waterPriority = Random.Range(0, 100);
-            breedPriority = Random.Range(0, 100);
-            restPriority = Random.Range(0, 100);
+            if (!this.gameObject.CompareTag("Player"))
+            {
+                foodPriority = Random.Range(0, 100);
+                waterPriority = Random.Range(0, 100);
+                breedPriority = Random.Range(0, 100);
+                restPriority = Random.Range(0, 100);
+                doCamouflage = Random.Range(0, 100);
+                fleeLevel = Random.Range(0, 100);
+                fightLevel = Random.Range(0, 100);
+            }
 
-            fleeLevel = Random.Range(0, 100);
             carnivorism = Random.Range(0, 100);
-            fightLevel = Random.Range(0, 100);
-
-            doCamouflage = Random.Range(0, 100);
-
-            speed = Random.Range(0, 100);
+            speed = Random.Range(0, 50);
             energy = Random.Range(0, 100);
             health = Random.Range(0, 100);
             sight = Random.Range(0, 10);
@@ -76,17 +88,29 @@ public class Genes : MonoBehaviour {
             swimSkill = Random.Range(0, 100);
             landSkill = Random.Range(0, 100);
         }
+        if (this.gameObject.CompareTag("Player"))
+        {
+            CarnivorismText.text = ("Carnivorism: " + carnivorism);
+            SpeedText.text = ("Speed: " + speed);
+            SightText.text = ("Sight: " + sight);
+            SprintSpeedText.text = ("Sprint Speed: " + sprintSpeed);
+            HitDmgText.text = ("Hit Damage: " + hitDamage);
+            CamoSkillText.text = ("Camouflage Skill: " + camouflageSkill);
+            SwimSkillText.text = ("Swimming Skill: " + swimSkill);
+            LandSkillText.text = ("Land Skill: " + landSkill);
+        }
+
     }
     public List<string> makePriorityList(SurvivalStats s, bool inCombat)
     {
-        if(!inCombat)
+        if (!inCombat)
         {
             float needFood = (100.0f / s.hunger) * foodPriority;
             float needWater = (100.0f / s.thirst) * waterPriority;
             //  float needBreed = (s.age - 1) * breedPriority;
             //  float needRest = (100.0f / s.rest) * restPriority;
             Dictionary<string, float> returnDictionary = new Dictionary<string, float>();
-            
+
             returnDictionary.Add("needWater", needWater);
             returnDictionary.Add("needFood", needFood);
             //  returnDictionary.Add("needBreed", needBreed);
@@ -98,18 +122,19 @@ public class Genes : MonoBehaviour {
                 int currentHighest = -10000;
                 foreach (KeyValuePair<string, float> entry in returnDictionary)
                 {
-                    if(entry.Value > currentHighest)
+                    if (entry.Value > currentHighest)
                     {
                         currentHighest = (int)entry.Value;
                         highest = entry.Key;
-                        
+
                     }
                 }
-                if (highest != null)
+                if(highest != null)
                 {
                     returnDictionary.Remove(highest);
+                    returnList.Add(highest);
                 }
-                returnList.Add(highest);
+               
             }
             return returnList;
         }
