@@ -14,7 +14,7 @@ public class Movement : MonoBehaviour {
 	float minColour = 0f;
 	public SpriteRenderer Loader;
 	float maxColour = 1f;
-    public PlayerHunger playerHunger;
+    public Hunger playerHunger;
     public bool doit = false;
 	float posY;
 	float posX;
