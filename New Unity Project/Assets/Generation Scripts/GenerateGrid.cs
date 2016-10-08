@@ -657,7 +657,6 @@ public class GenerateGrid : MonoBehaviour {
                 
                 if (hit.code == 500 && !foodList.ContainsKey(new coords(x,y)))
                 {
-                    Debug.Log("fooded");
                     foodList.Add(new coords(x, y), g);
                     doot = true;
                 }
