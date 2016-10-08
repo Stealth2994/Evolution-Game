@@ -138,8 +138,11 @@ public class GenerateGrid : MonoBehaviour {
         {
             int x = Random.Range(0, length);
             int y = Random.Range(0, width);
-                grid.Add(new coords(x,y), u);
-            continentPoints.Add(new coords(x, y));
+            if (!grid.ContainsKey(new coords(x, y)))
+            {
+                grid.Add(new coords(x, y), u);
+                continentPoints.Add(new coords(x, y));
+            }
         }
     }
     void MakeContinents(GameObject gg, coords c, int level)
@@ -641,18 +644,20 @@ public class GenerateGrid : MonoBehaviour {
         while (true)
         {
             int tries = 0;
-            yield return new WaitForSeconds(fodder.regenRate);
+            yield return new WaitForSeconds(fodder.regenRate / 100);
             bool doot = false;
             while (!doot)
             {
+               
                 int x = Random.Range(0, length);
                 int y = Random.Range(0, width);
                 TerrainTileValues hit;
                 grid.TryGetValue(new coords(x, y), out hit);
                 //Only spawns wheat on grass :)
+                
                 if (hit.code == 500 && !foodList.ContainsKey(new coords(x,y)))
                 {
-                   
+                    Debug.Log("fooded");
                     foodList.Add(new coords(x, y), g);
                     doot = true;
                 }
@@ -662,7 +667,7 @@ public class GenerateGrid : MonoBehaviour {
                 }
                 if(foodList.Count > length * width / 50)
                 {
-                    doot = true;
+                    break;
                 }
             }
            

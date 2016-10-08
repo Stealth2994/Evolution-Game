@@ -8,12 +8,19 @@ public class SurvivalStats : MonoBehaviour {
     public float rest;
     public int age = 0;
     public int gender = 0;
+    public Hunger h;
+    public Thirst t;
+    public Energy e;
 	void Start () {
+     
+        h = GetComponent<Hunger>();
+        t = GetComponent<Thirst>();
+        e = GetComponent<Energy>();
     }
     void Update()
     {
-        hunger = GetComponent<Hunger>().currentHunger * 100;
-        thirst = GetComponent<Thirst>().currentThirst * 100;
-        rest = GetComponent<Energy>().currentEnergy * 100;
+        hunger = h.currentHunger * 100;
+        thirst = t.currentThirst * 100;
+        rest = e.currentEnergy * 100;
     }
 }

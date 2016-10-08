@@ -39,8 +39,8 @@ public class Thirst : MonoBehaviour {
 		{
 			code = t.code;
 
-			if (code == 1111 || code == 1112) {
-				currentThirst += (Time.deltaTime / totalThirst) * (depletionRate * 2);
+			if (code == 1111) {
+				currentThirst += (Time.deltaTime / totalThirst) * (depletionRate * 10);
 			}
 		}
 

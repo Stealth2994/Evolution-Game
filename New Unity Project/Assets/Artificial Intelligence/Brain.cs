@@ -11,50 +11,79 @@ public class Brain : MonoBehaviour {
     //first int is the trait from Genes that is top of the list,
     public Dictionary<int, int> priorityList = new Dictionary<int, int>();
     Hunger h;
+    Energy r;
+    Animator a;
     bool getFood;
     Vector2 target;
     GenerateGrid grid;
     bool getWater;
     bool getRest;
     bool tryBreed;
+    float waitTime = 1;
+    float tempWait = 0;
     bool firstLoop = true;
 	// Use this for initialization
 	void Start () {
+        a = transform.FindChild("Player Sprite").GetComponent<Animator>();
         grid = GameObject.Find("Grid").GetComponent<GenerateGrid>();
         h = GetComponent<Hunger>();
+       r = GetComponent<Energy>();
         me = GetComponent<Genes>();
         stats = GetComponent<SurvivalStats>();
         me.CreateGenes(mom, dad);
 	}
-	
-	// Update is called once per frame
-	void Update () {
-        
+    float tempSpeed;
+    public bool wandering = false;
+    public string currentPriority = "";
+    // Update is called once per frame
+    void Update () {
+        TerrainTileValues tr;
+
+      
+
+        if (GenerateGrid.grid.TryGetValue(new GenerateGrid.coords((int)transform.position.x, (int)transform.position.y), out tr))
+        {
+            tempSpeed =me.speed * tr.speed;
+        }
+        else
+        {
+            tempSpeed = me.speed;
+        }
+
+
         if (wanderticks > 0)
         {
+            wandering = true;
+            needsOrders = true;
             wanderticks--;
             Wander();
             return;
         }
+        wandering = false;
 	    if(needsOrders)
         {
             needsOrders = false;
             List<string> priorities = me.makePriorityList(stats, inCombat);
+            currentPriority = priorities[0];
             if(priorities[0] == "needFood")
             {
                 getFood = true;
+                a.enabled = true;
             }
             else if (priorities[0] == "needWater")
             {
                 getWater = true;
+                a.enabled = true;
             }
             else if (priorities[0] == "needBreed")
             {
-                getRest = true;
+                tryBreed = true;
+                a.enabled = true;
             }
             else if (priorities[0] == "needRest")
             {
-                tryBreed = true;
+                getRest = true;
+                a.enabled = false;
             }
         }
         if(getFood)
@@ -94,42 +123,48 @@ public class Brain : MonoBehaviour {
                 }
                 else
                 {
-                    wanderticks = Random.Range(0, 250);
+                    wanderticks = Random.Range(0, 60);
                     wanderDirection = new Vector2(Random.Range(-1.0f, 1.0f), Random.Range(-1.0f, 1.0f));
                     firstLoop = true;
                 }
             }
             else
             {
-                transform.position = Vector2.MoveTowards(transform.position, target, Time.deltaTime * me.speed);
+                transform.position = Vector2.MoveTowards(transform.position, target, Time.deltaTime * tempSpeed);
                 if (Vector2.Distance(transform.position, target) < 0.01)
                 {
-                    if (!GenerateGrid.removeFoodList.ContainsKey(new GenerateGrid.coords((int)target.x, (int)target.y)))
-                    {
-                        if (GenerateGrid.createdFoods.ContainsKey(new GenerateGrid.coords((int)target.x, (int)target.y)))
+                    tempWait += Time.deltaTime;
+                    if(tempWait > waitTime) {
+                        tempWait = 0;
+                        if (!GenerateGrid.removeFoodList.ContainsKey(new GenerateGrid.coords((int)target.x, (int)target.y)))
                         {
-                            GameObject t;
-                            GenerateGrid.createdFoods.TryGetValue(new GenerateGrid.coords((int)target.x, (int)target.y), out t);
-                            stats.hunger = stats.hunger + t.transform.FindChild("ContextMenu").FindChild("EatButton").GetComponent<EatContext>().nutrition;
-                            GenerateGrid.removeFoodList.Add(new GenerateGrid.coords((int)target.x, (int)target.y), t.gameObject);
-                        }
-                        else
-                        {
-                            TerrainTileValues t;
-                            if (GenerateGrid.foodList.TryGetValue(new GenerateGrid.coords((int)target.x, (int)target.y), out t))
+                            if (GenerateGrid.createdFoods.ContainsKey(new GenerateGrid.coords((int)target.x, (int)target.y)))
                             {
-                                Debug.Log("An AI found food!");
-                                h.currentHunger = h.currentHunger + 20;
-                                GenerateGrid.foodList.Remove(new GenerateGrid.coords((int)target.x, (int)target.y));
+                                GameObject t;
+                                GenerateGrid.createdFoods.TryGetValue(new GenerateGrid.coords((int)target.x, (int)target.y), out t);
+                               h.currentHunger += t.transform.FindChild("ContextMenu").FindChild("EatButton").GetComponent<EatContext>().nutrition * 100;
+                                GenerateGrid.removeFoodList.Add(new GenerateGrid.coords((int)target.x, (int)target.y), t.gameObject);
+
                             }
+                            else
+                            {
+                                TerrainTileValues t;
+                                if (GenerateGrid.foodList.TryGetValue(new GenerateGrid.coords((int)target.x, (int)target.y), out t))
+                                {
+                                    Debug.Log("An AI found food!");
+                                    h.currentHunger = h.currentHunger + 20;
+                                    GenerateGrid.foodList.Remove(new GenerateGrid.coords((int)target.x, (int)target.y));
+                                }
+                            }
+                            getFood = false;
+                            firstLoop = true;
+                            needsOrders = true;
                         }
                     }
                     else
                     {
                     }
-                    getFood = false;
-                    firstLoop = true;
-                    needsOrders = true;
+                  
                 }
             }
         }
@@ -146,7 +181,7 @@ public class Brain : MonoBehaviour {
                         TerrainTileValues t;
                         if (GenerateGrid.grid.TryGetValue(new GenerateGrid.coords(x, y), out t))
                         {
-                            if (t.code == 1111 || t.code == 1112)
+                            if (t.code == 1111)
                             {
                                 targets.Add(new Vector2(x, y));
                             }
@@ -168,7 +203,7 @@ public class Brain : MonoBehaviour {
                 }
                 else
                 {
-                    wanderticks = Random.Range(0, 250);
+                    wanderticks = Random.Range(0, 60);
                     wanderDirection = new Vector2(Random.Range(-1.0f, 1.0f), Random.Range(-1.0f, 1.0f));
                     firstLoop = true;
                 }
@@ -176,7 +211,7 @@ public class Brain : MonoBehaviour {
             }
             else
             {
-                transform.position = Vector2.MoveTowards(transform.position, target, Time.deltaTime * me.speed);
+                transform.position = Vector2.MoveTowards(transform.position, target, Time.deltaTime * tempSpeed);
                 if (Vector2.Distance(transform.position, target) < 0.01)
                 {
                     getWater = false;
@@ -187,7 +222,15 @@ public class Brain : MonoBehaviour {
         }
         else if(getRest)
         {
-
+            tempWait += Time.deltaTime;
+            if(tempWait > 5)
+            {
+                
+                getRest = false;
+                tempWait = 0;
+                needsOrders = true;
+            }
+           
         }
         else if(tryBreed)
         {
@@ -195,12 +238,14 @@ public class Brain : MonoBehaviour {
         }
         transform.position = new Vector3(transform.position.x, transform.position.y, -0.5f);
     }
+    Vector2 curPos;
+    Vector2 lastPos;
     int wanderticks;
     Vector2 wanderDirection;
     public void Wander()
     {
   
-                transform.Translate(wanderDirection * Time.deltaTime * me.speed);
+                transform.Translate(wanderDirection * Time.deltaTime * tempSpeed);
 
 
         if (transform.position.x > grid.length)

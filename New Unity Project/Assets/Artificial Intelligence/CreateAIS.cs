@@ -10,7 +10,8 @@ public class CreateAIS : MonoBehaviour {
         grid = GameObject.Find("Grid").GetComponent<GenerateGrid>();
 	for(int i = 0; i < ais; i++)
         {
-            Instantiate(AI, new Vector2(Random.Range(0, grid.length), Random.Range(0, grid.width)),Quaternion.identity);
+            GameObject g = Instantiate(AI, new Vector2(Random.Range(0, grid.length), Random.Range(0, grid.width)),Quaternion.identity) as GameObject;
+            g.transform.parent = transform;
         }
 	}
 	

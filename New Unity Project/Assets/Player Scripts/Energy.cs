@@ -8,6 +8,7 @@ public class Energy : MonoBehaviour {
 	[Range(0,1)]
 	[HideInInspector]
 	public float currentEnergy = 1f;
+    public int energyIncrease = 2;
 	public GameObject DeathPanel;
 	public Text EnergyText;
 	bool isAI = false;
@@ -19,7 +20,8 @@ public class Energy : MonoBehaviour {
 			isAI = true;
 		}
 	}
-
+    Vector2 curPos;
+    Vector2 lastPos;
 	void Update () {
 		if (!isAI) {
 			EnergyText.text = ("" + Mathf.Round (currentEnergy * 100));
@@ -27,19 +29,30 @@ public class Energy : MonoBehaviour {
 				DeathPanel.SetActive (true);
 			}
 		}
-
-		TerrainTileValues t;
+        curPos = transform.position;
+      
+        
+        TerrainTileValues t;
 
 		float depletion;
 
 		if (GenerateGrid.grid.TryGetValue(new GenerateGrid.coords((int)transform.position.x, (int)transform.position.y), out t))
 		{
 			depletion = t.speed;
-			currentEnergy -= (Time.deltaTime / totalEnergy) * ((1 / depletion) / 10) * 2;
+            if (curPos == lastPos)
+            {
+                
+                currentEnergy += (Time.deltaTime / totalEnergy) * (depletion * 2);
+            }
+            else
+            {
+                currentEnergy -= (Time.deltaTime / totalEnergy) * ((1 / depletion) / 10) * 2;
+            }
 		}
-
-		if (currentEnergy > 1f) {
+      
+        if (currentEnergy > 1f) {
 			currentEnergy = 1f;
 		}
-	}
+        lastPos = curPos;
+    }
 }
