@@ -78,7 +78,7 @@ public class Genes : MonoBehaviour
             }
 
             carnivorism = Random.Range(0, 100);
-            speed = Random.Range(0, 50);
+            speed = Random.Range(1, 15);
             energy = Random.Range(0, 100);
             health = Random.Range(0, 100);
             sight = Random.Range(0, 10);
