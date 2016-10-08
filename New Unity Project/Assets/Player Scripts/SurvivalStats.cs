@@ -8,14 +8,7 @@ public class SurvivalStats : MonoBehaviour {
     public float rest;
     public int age = 0;
     public int gender = 0;
-    Hunger h;
-    Thirst t;
-    Energy e;
 	void Start () {
-     
-        h = GetComponent<Hunger>();
-        t = GetComponent<Thirst>();
-        e = GetComponent<Energy>();
     }
     void Update()
     {

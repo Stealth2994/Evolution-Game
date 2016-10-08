@@ -16,9 +16,6 @@ public class GenerateGrid : MonoBehaviour {
     //Pool system setup
     public List<PoolSystem> pools;
     public List<int> poolCodes;
-    //Must be a float or else it sinks
-    float boat;
-	//(how original!)
 
     //Player
     public GameObject player;
@@ -35,7 +32,6 @@ public class GenerateGrid : MonoBehaviour {
 
     //Contains every single tile, only have to loop this once to set up chunks
     public static Dictionary<coords, TerrainTileValues> grid;
-    float deltaTime = 0.0f;
     float fps = 0.0f;
 
     void Update()
@@ -633,7 +629,6 @@ public class GenerateGrid : MonoBehaviour {
             }
         }
     }
-    float time = 0;
     IEnumerator RegenFood(int food)
     {
         TerrainTileValues fodder = foods[food].GetComponent<TerrainTileValues>();
@@ -861,7 +856,6 @@ public class GenerateGrid : MonoBehaviour {
     public static Dictionary<coords, Chunk> chunkList = new Dictionary<coords, Chunk>();
     //Stores every mega chunk
     public static Dictionary<coords,MegaChunk> megaChunkList = new Dictionary<coords, MegaChunk>();
-    static float finalit = 0;
     public class Chunk
     {
         public static coords FindChunkCoords(coords pos)

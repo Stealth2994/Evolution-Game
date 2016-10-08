@@ -22,7 +22,7 @@ public class Energy : MonoBehaviour {
 
 	void Update () {
 		if (!isAI) {
-			EnergyText.text = ("E: " + Mathf.Round (currentEnergy * 100));
+			EnergyText.text = ("" + Mathf.Round (currentEnergy * 100));
 			if (currentEnergy <= 0) {
 				DeathPanel.SetActive (true);
 			}

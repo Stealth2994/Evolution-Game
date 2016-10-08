@@ -19,10 +19,7 @@ public class Movement : MonoBehaviour {
 	float posY;
 	float posX;
     GameObject Player;
-    bool isWalking;
 	public SpriteRenderer PlayerSpriteRenderer;
-	Vector3 curpos;
-	Vector3 lastpos;
 	public Animator PlayerAnimator;
 	public GameObject PlayerSprite;
 	public float movementSpeed = 5;
@@ -31,14 +28,15 @@ public class Movement : MonoBehaviour {
     float tempTime = 0;
     public GameObject gg;
     public Transform target;
-    Genes mom;
-    Genes dad;
+
+	Genes mom;
+	Genes dad;
+
     void Start () {
+		GetComponent<Genes> ().CreateGenes (mom, dad);
         grid = GameObject.Find("Grid").GetComponent<GenerateGrid>();
-        GetComponent<Genes>().CreateGenes(mom, dad);
         Player = GameObject.FindWithTag("Player");
 		PlayerSpriteRenderer.color = new Color (Random.Range(minColour,maxColour), Random.Range(minColour,maxColour), Random.Range(minColour,maxColour));
-		isWalking = false;
 		PlayerAnimator.Play ("PlayerAnimation");
 		rb = this.GetComponent<Rigidbody2D> ();
 	}

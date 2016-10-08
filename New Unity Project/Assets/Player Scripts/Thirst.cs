@@ -23,7 +23,7 @@ public class Thirst : MonoBehaviour {
 
 	void Update () {
 		if (!isAI) {
-			ThirstText.text = ("T: " + Mathf.Round (currentThirst * 100));
+			ThirstText.text = ("" + Mathf.Round (currentThirst * 100));
 			if (currentThirst <= 0) {
 				DeathPanel.SetActive (true);
 			}
