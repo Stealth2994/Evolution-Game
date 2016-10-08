@@ -19,6 +19,7 @@ public class Genes : MonoBehaviour {
 
     //Physical Attributes
     public int speed;
+    public int sight;
     public int energy;
     public int health;
     public int sprintSpeed;
@@ -45,6 +46,7 @@ public class Genes : MonoBehaviour {
             speed = ((mom.speed + dad.speed) / 2) + Random.Range(-1, 1);
             energy = ((mom.energy + dad.energy) / 2) + Random.Range(-1, 1);
             health = ((mom.health + dad.health) / 2) + Random.Range(-1, 1);
+            sight = ((mom.sight + dad.sight) / 2) + Random.Range(-1, 1);
             sprintSpeed = ((mom.sprintSpeed + dad.sprintSpeed) / 2) + Random.Range(-1, 1);
             hitDamage = ((mom.hitDamage + dad.hitDamage) / 2) + Random.Range(-1, 1);
             camouflageSkill = ((mom.camouflageSkill + dad.camouflageSkill) / 2) + Random.Range(-1, 1);
@@ -67,6 +69,7 @@ public class Genes : MonoBehaviour {
             speed = Random.Range(0, 100);
             energy = Random.Range(0, 100);
             health = Random.Range(0, 100);
+            sight = Random.Range(0, 100);
             sprintSpeed = Random.Range(0, 100);
             hitDamage = Random.Range(0, 100);
             camouflageSkill = Random.Range(0, 100);

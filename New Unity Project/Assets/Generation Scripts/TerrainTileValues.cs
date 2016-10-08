@@ -13,4 +13,5 @@ public class TerrainTileValues : MonoBehaviour {
     public float regenRate = 0;
     public float speed = 1;
     public bool regen = false;
+    public bool food = false;
 }

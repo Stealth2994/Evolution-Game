@@ -26,7 +26,6 @@ public class Movement : MonoBehaviour {
 	public Animator PlayerAnimator;
 	public GameObject PlayerSprite;
 	public float movementSpeed = 5;
-    public GenerateGrid grid;
 	Rigidbody2D rb;
     public float eatTime;
     float tempTime = 0;
@@ -35,7 +34,6 @@ public class Movement : MonoBehaviour {
 
     void Start () {
         Player = GameObject.FindWithTag("Player");
-        grid = GameObject.Find("Grid").GetComponent<GenerateGrid>();
 		PlayerSpriteRenderer.color = new Color (Random.Range(minColour,maxColour), Random.Range(minColour,maxColour), Random.Range(minColour,maxColour));
 		isWalking = false;
 		PlayerAnimator.Play ("PlayerAnimation");
@@ -47,7 +45,7 @@ public class Movement : MonoBehaviour {
 
         float tempSpeed;
 
-        if (grid.grid.TryGetValue(new GenerateGrid.coords((int)transform.position.x, (int)transform.position.y), out t))
+        if (GenerateGrid.grid.TryGetValue(new GenerateGrid.coords((int)transform.position.x, (int)transform.position.y), out t))
         {
          tempSpeed   = movementSpeed * t.speed;
         }
@@ -90,13 +88,13 @@ public class Movement : MonoBehaviour {
 
 
 
-            if (transform.position.x > grid.length)
+            if (transform.position.x > GenerateGrid.grid.Count)
             {
-                transform.position = new Vector3(grid.length, transform.position.y, transform.position.z);
+                transform.position = new Vector3(GenerateGrid.grid.Count, transform.position.y, transform.position.z);
             }
-            if (transform.position.y > grid.width - 1)
+            if (transform.position.y > GenerateGrid.grid.Count - 1)
             {
-                transform.position = new Vector3(transform.position.x, grid.width - 1, transform.position.z);
+                transform.position = new Vector3(transform.position.x, GenerateGrid.grid.Count - 1, transform.position.z);
             }
             if (transform.position.x < 1)
             {

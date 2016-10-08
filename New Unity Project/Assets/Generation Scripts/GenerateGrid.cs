@@ -34,7 +34,7 @@ public class GenerateGrid : MonoBehaviour {
     Coroutine cc;
 
     //Contains every single tile, only have to loop this once to set up chunks
-    public Dictionary<coords, TerrainTileValues> grid;
+    public static Dictionary<coords, TerrainTileValues> grid;
     float deltaTime = 0.0f;
     float fps = 0.0f;
 
@@ -694,7 +694,7 @@ public class GenerateGrid : MonoBehaviour {
         if (Random.Range(0.0f, 100.0f) <= chance)
         {
             //Take out the grass and add the new block
-            
+            t.food = true;
 			foodList.Remove(new coords(x, y));
             foodList.Add(new coords(x, y), t);
         }
