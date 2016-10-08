@@ -21,7 +21,7 @@ public class Hunger : MonoBehaviour {
 
 	void Update () {
 		if (!isAI) {
-			HungerText.text = ("H: " + Mathf.Round (currentHunger * 100));
+			HungerText.text = ("" + Mathf.Round (currentHunger * 100));
 			if (currentHunger <= 0) {
 				DeathPanel.SetActive (true);
 			}

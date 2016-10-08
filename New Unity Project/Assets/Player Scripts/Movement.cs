@@ -31,8 +31,11 @@ public class Movement : MonoBehaviour {
     float tempTime = 0;
     public GameObject gg;
     public Transform target;
+	Genes mom;
+	Genes dad;
 
     void Start () {
+		GetComponent<Genes> ().CreateGenes (mom, dad);
         Player = GameObject.FindWithTag("Player");
 		PlayerSpriteRenderer.color = new Color (Random.Range(minColour,maxColour), Random.Range(minColour,maxColour), Random.Range(minColour,maxColour));
 		isWalking = false;
