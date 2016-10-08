@@ -13,7 +13,7 @@ public class Genes : MonoBehaviour {
     //Trait Weights
     public int fleeLevel;
     public int fightLevel;
-
+    public int carnivorism;
     //Willingness of non-dependant things
     public int doCamouflage;
 
@@ -37,6 +37,7 @@ public class Genes : MonoBehaviour {
             restPriority = ((mom.restPriority + dad.restPriority) / 2) + Random.Range(-1, 1);
 
             fleeLevel = ((mom.fleeLevel + dad.fleeLevel) / 2) + Random.Range(-1, 1);
+            carnivorism = ((mom.carnivorism + dad.carnivorism) / 2) + Random.Range(-1, 1);
             fightLevel = ((mom.fightLevel + dad.fightLevel) / 2) + Random.Range(-1, 1);
 
             doCamouflage = ((mom.doCamouflage + dad.doCamouflage) / 2) + Random.Range(-1, 1);
@@ -58,6 +59,7 @@ public class Genes : MonoBehaviour {
             restPriority = Random.Range(0, 100);
 
             fleeLevel = Random.Range(0, 100);
+            carnivorism = Random.Range(0, 100);
             fightLevel = Random.Range(0, 100);
 
             doCamouflage = Random.Range(0, 100);
@@ -72,8 +74,42 @@ public class Genes : MonoBehaviour {
             landSkill = Random.Range(0, 100);
         }
     }
-    public Dictionary<int,int> makePriorityList(SurvivalStats s)
+    public List<string> makePriorityList(SurvivalStats s, bool inCombat)
     {
+        if(inCombat)
+        {
+            float needFood = (100.0f / s.hunger) * foodPriority;
+            float needWater = (100.0f / s.thirst) * waterPriority;
+            float needBreed = (s.age - 1) * breedPriority;
+            float needRest = (100.0f / s.rest) * restPriority;
+            Dictionary<string, float> returnDictionary = new Dictionary<string, float>();
+            returnDictionary.Add("needFood", needFood);
+            returnDictionary.Add("needWater", needWater);
+            returnDictionary.Add("needBreed", needBreed);
+            returnDictionary.Add("needRest", needRest);
+            List<string> returnList = new List<string>();
+            for (int i = 0; i < 4; i++)
+            {
+                string highest = null;
+                int currentHighest = -10000;
+                foreach (KeyValuePair<string, float> entry in returnDictionary)
+                {
+                    if(entry.Value > currentHighest)
+                    {
+                        highest = entry.Key;
+                        
+                    }
+                }
+                returnDictionary.Remove(highest);
+                returnList.Add(highest);
+            }
+            Debug.Log("HIGHEST PRIORITY: " + returnList[0]);
+            return returnList;
+        }
+        else
+        {
+            float flee = (100 / fleeLevel) * health;
+        }
         return null;
     }
 }
