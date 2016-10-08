@@ -79,19 +79,20 @@ public class Genes : MonoBehaviour {
     }
     public List<string> makePriorityList(SurvivalStats s, bool inCombat)
     {
-        if(inCombat)
+        if(!inCombat)
         {
             float needFood = (100.0f / s.hunger) * foodPriority;
             float needWater = (100.0f / s.thirst) * waterPriority;
-            float needBreed = (s.age - 1) * breedPriority;
-            float needRest = (100.0f / s.rest) * restPriority;
+            //  float needBreed = (s.age - 1) * breedPriority;
+            //  float needRest = (100.0f / s.rest) * restPriority;
             Dictionary<string, float> returnDictionary = new Dictionary<string, float>();
-            returnDictionary.Add("needFood", needFood);
+            
             returnDictionary.Add("needWater", needWater);
-            returnDictionary.Add("needBreed", needBreed);
-            returnDictionary.Add("needRest", needRest);
+            returnDictionary.Add("needFood", needFood);
+            //  returnDictionary.Add("needBreed", needBreed);
+            // returnDictionary.Add("needRest", needRest);
             List<string> returnList = new List<string>();
-            for (int i = 0; i < 4; i++)
+            for (int i = 0; i < 2; i++)
             {
                 string highest = null;
                 int currentHighest = -10000;
@@ -99,6 +100,7 @@ public class Genes : MonoBehaviour {
                 {
                     if(entry.Value > currentHighest)
                     {
+                        currentHighest = (int)entry.Value;
                         highest = entry.Key;
                         
                     }
@@ -106,7 +108,6 @@ public class Genes : MonoBehaviour {
                 returnDictionary.Remove(highest);
                 returnList.Add(highest);
             }
-            Debug.Log("HIGHEST PRIORITY: " + returnList[0]);
             return returnList;
         }
         else

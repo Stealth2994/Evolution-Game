@@ -14,7 +14,7 @@ public class Movement : MonoBehaviour {
 	float minColour = 0f;
 	public SpriteRenderer Loader;
 	float maxColour = 1f;
-    public PlayerHunger playerHunger;
+    public Hunger playerHunger;
     public bool doit = false;
 	float posY;
 	float posX;
@@ -69,8 +69,6 @@ public class Movement : MonoBehaviour {
                 {
                     playerHunger.currentHunger = playerHunger.currentHunger + nutrition;
                     GenerateGrid.removeFoodList.Add(new GenerateGrid.coords((int)target.position.x + 3, (int)target.position.y - 1 ), gg);
-                    Debug.Log(GenerateGrid.removeFoodList.Count);
-                    Debug.Log(target.position.x + 3 + "," + (target.position.y - 1));
                     tempTime = 0;
                     doit = false;
 					Loader.enabled = false;

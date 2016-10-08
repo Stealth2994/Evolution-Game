@@ -20,7 +20,7 @@ public class EatContext : MonoBehaviour {
         grid = GameObject.Find("Grid").GetComponent<GenerateGrid>();
 		Player = GameObject.FindWithTag ("Player");
         m = Player.GetComponent<Movement>();
-        m.playerHunger = Player.GetComponent<PlayerHunger>();
+        m.playerHunger = Player.GetComponent<Hunger>();
         m.eatTime = eatTime;
     }
     public void GreyOut()

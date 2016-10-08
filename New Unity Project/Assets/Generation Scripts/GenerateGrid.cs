@@ -694,7 +694,6 @@ public class GenerateGrid : MonoBehaviour {
         if (Random.Range(0.0f, 100.0f) <= chance)
         {
             //Take out the grass and add the new block
-            t.food = true;
 			foodList.Remove(new coords(x, y));
             foodList.Add(new coords(x, y), t);
         }
@@ -846,6 +845,7 @@ public class GenerateGrid : MonoBehaviour {
             {
                 createdFoods.Remove(new coords(ggg.Key.x, ggg.Key.y));
                 foodList.Remove(new coords(ggg.Key.x, ggg.Key.y));
+               
                 Destroy(ggg.Value);
             }
             removeFoodList = new Dictionary<coords, GameObject>();
