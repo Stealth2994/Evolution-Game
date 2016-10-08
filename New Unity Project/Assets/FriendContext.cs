@@ -11,6 +11,7 @@ public class FriendContext : MonoBehaviour {
 		isFriends = true;
 		FriendsText3D.SetActive (true);
 		ContextMenu.SetActive (false);
+		Time.timeScale = 1f;
 	}
 
 }

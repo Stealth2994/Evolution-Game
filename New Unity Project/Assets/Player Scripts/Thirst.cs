@@ -8,9 +8,10 @@ public class Thirst : MonoBehaviour {
 	[Range(0,1)]
 	[HideInInspector]
 	public float currentThirst = 1f;
-	public float depletionRate = 1f;
+	public float depletionRate = 0.5f;
 	public GameObject DeathPanel;
 	public Text ThirstText;
+	public Image ThirstBG;
 	bool isAI = false;
 	GenerateGrid grid;
 
@@ -26,6 +27,9 @@ public class Thirst : MonoBehaviour {
 			ThirstText.text = ("" + Mathf.Round (currentThirst * 100));
 			if (currentThirst <= 0) {
 				DeathPanel.SetActive (true);
+			}
+			if (currentThirst < 0.25f) {
+				ThirstBG.color = new Color (255, 0, 0);
 			}
 		}
 

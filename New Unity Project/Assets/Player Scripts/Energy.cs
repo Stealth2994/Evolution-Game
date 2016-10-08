@@ -11,6 +11,7 @@ public class Energy : MonoBehaviour {
     public int energyIncrease = 2;
 	public GameObject DeathPanel;
 	public Text EnergyText;
+	public Image EnergyBG;
 	bool isAI = false;
 	GenerateGrid grid;
 
@@ -27,6 +28,9 @@ public class Energy : MonoBehaviour {
 			EnergyText.text = ("" + Mathf.Round (currentEnergy * 100));
 			if (currentEnergy <= 0) {
 				DeathPanel.SetActive (true);
+			}
+			if (currentEnergy < 0.25f) {
+				EnergyBG.color = new Color (255, 0, 0);
 			}
 		}
         curPos = transform.position;
