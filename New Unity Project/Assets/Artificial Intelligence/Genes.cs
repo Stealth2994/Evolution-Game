@@ -72,6 +72,7 @@ public class Genes : MonoBehaviour
         }
         else
         {
+			//Only AIs need these priorities since they decide what they need
             if (!this.gameObject.CompareTag("Player"))
             {
                 foodPriority = Random.Range(0, 100);
@@ -96,6 +97,7 @@ public class Genes : MonoBehaviour
             landSkill = Random.Range(0, 100);
             gender = Random.Range(0, 2);
         }
+		// Change texts only if the parent tag is player
         if (this.gameObject.CompareTag("Player"))
         {
             CarnivorismText.text = ("Carnivorism: " + carnivorism);

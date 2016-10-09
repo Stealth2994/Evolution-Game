@@ -23,6 +23,7 @@ public class Thirst : MonoBehaviour {
 	}
 
 	void Update () {
+		//is the parent an AI? if so don't change texts
 		if (!isAI) {
 			ThirstText.text = ("" + Mathf.Round (currentThirst * 100));
 			if (currentThirst <= 0) {

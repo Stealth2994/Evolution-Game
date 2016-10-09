@@ -5,6 +5,7 @@ public class Brain : MonoBehaviour {
     public Genes mom;
     public Genes dad;
     public Genes me;
+	float energyDepletion;
     private bool inCombat = false;
     private bool needsOrders = true;
     public SurvivalStats stats;
@@ -27,6 +28,7 @@ public class Brain : MonoBehaviour {
 	public GameObject eatingSymbol;
 	// Use this for initialization
 	void Start () {
+		energyDepletion = GetComponent<Energy> ().depletion;
         AIS = GameObject.Find("AIS");
         a = transform.FindChild("Player Sprite").GetComponent<Animator>();
         grid = GameObject.Find("Grid").GetComponent<GenerateGrid>();
@@ -294,10 +296,7 @@ public class Brain : MonoBehaviour {
                         breedTarget = null;
                         if (me.gender == 1)
                         {
-                            Debug.Log("REEEEEEEEEEEEEEEEEEEEEEEEEEEEEE");       
-                            GameObject g = Instantiate(AI, transform.position, Quaternion.identity) as GameObject;
-                            g.transform.parent = AIS.transform;
-                            CreateAIS.aiList.Add(g.GetComponent<Brain>());
+							BirthCountdown ();
                         }
                     }
                 }
@@ -306,6 +305,22 @@ public class Brain : MonoBehaviour {
         }
         transform.position = new Vector3(transform.position.x, transform.position.y, -0.5f);
     }
+
+	public void BirthCountdown () {
+		Debug.Log ("kid in 1 minute kchow");
+		r.isPregnant = true;
+		r.energyIncrease = 0.75f;
+		Invoke ("HaveKid", 60);
+	}
+	public void HaveKid() {
+		Debug.Log ("female had kid kchow");
+		r.isPregnant = false;
+		r.energyIncrease = 2;
+		GameObject g = Instantiate(AI, transform.position, Quaternion.identity) as GameObject;
+		g.transform.parent = AIS.transform;
+		CreateAIS.aiList.Add(g.GetComponent<Brain>());
+	}
+
     public GameObject AI;
     public Brain breedTarget;
     public bool wantBreed = false;

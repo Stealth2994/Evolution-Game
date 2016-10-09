@@ -21,6 +21,7 @@ public class Hunger : MonoBehaviour {
 	}
 
 	void Update () {
+		//is the parent an AI? if so don't change texts
 		if (!isAI) {
 			HungerText.text = ("" + Mathf.Round (currentHunger * 100));
 			if (currentHunger <= 0) {

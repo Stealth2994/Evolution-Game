@@ -6,7 +6,7 @@ public class SurvivalStats : MonoBehaviour {
 	public float hunger;
     public float thirst;
     public float rest;
-    public int age = 10;
+    public int age = 0;
     public Hunger h;
     public Thirst t;
     public Energy e;

@@ -8,7 +8,9 @@ public class Energy : MonoBehaviour {
 	[Range(0,1)]
 	[HideInInspector]
 	public float currentEnergy = 1f;
-    public int energyIncrease = 2;
+	public float depletion;
+	public bool isPregnant;
+    public float energyIncrease = 2;
 	public GameObject DeathPanel;
 	public Text EnergyText;
 	public Image EnergyBG;
@@ -24,6 +26,7 @@ public class Energy : MonoBehaviour {
     Vector2 curPos;
     Vector2 lastPos;
 	void Update () {
+		//is the parent an AI? if so don't change texts
 		if (!isAI) {
 			EnergyText.text = ("" + Mathf.Round (currentEnergy * 100));
 			if (currentEnergy <= 0) {
@@ -38,14 +41,11 @@ public class Energy : MonoBehaviour {
         
         TerrainTileValues t;
 
-		float depletion;
-
 		if (GenerateGrid.grid.TryGetValue(new GenerateGrid.coords((int)transform.position.x, (int)transform.position.y), out t))
 		{
 			depletion = t.speed;
             if (curPos == lastPos)
             {
-                
                 currentEnergy += (Time.deltaTime / totalEnergy) * (depletion * 2);
             }
             else
