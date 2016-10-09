@@ -20,6 +20,7 @@ public class Movement : MonoBehaviour {
 	float posX;
     GameObject Player;
 	public SpriteRenderer PlayerSpriteRenderer;
+	public SpriteRenderer PlayerBodySpriteR;
 	public Animator PlayerAnimator;
 	public GameObject PlayerSprite;
 	public float movementSpeed = 5;
@@ -36,7 +37,7 @@ public class Movement : MonoBehaviour {
 		GetComponent<Genes> ().CreateGenes (mom, dad);
         grid = GameObject.Find("Grid").GetComponent<GenerateGrid>();
         Player = GameObject.FindWithTag("Player");
-		PlayerSpriteRenderer.color = new Color (Random.Range(minColour,maxColour), Random.Range(minColour,maxColour), Random.Range(minColour,maxColour));
+		PlayerBodySpriteR.color = new Color (Random.Range(minColour,maxColour), Random.Range(minColour,maxColour), Random.Range(minColour,maxColour));
 		PlayerAnimator.Play ("PlayerAnimation");
 		rb = this.GetComponent<Rigidbody2D> ();
 	}
