@@ -27,8 +27,11 @@ public class Genes : MonoBehaviour
     public int sprintSpeed;
     public int hitDamage;
     public int camouflageSkill;
+    public int goodLooks;
     public int swimSkill;
     public int landSkill;
+
+    public int gender;
 
     public Text CarnivorismText;
     public Text SpeedText;
@@ -58,11 +61,14 @@ public class Genes : MonoBehaviour
             energy = ((mom.energy + dad.energy) / 2) + Random.Range(-1, 1);
             health = ((mom.health + dad.health) / 2) + Random.Range(-1, 1);
             sight = ((mom.sight + dad.sight) / 2) + Random.Range(-1, 1);
+            goodLooks = ((mom.goodLooks + dad.goodLooks) / 2) + Random.Range(-1, 1);
             sprintSpeed = ((mom.sprintSpeed + dad.sprintSpeed) / 2) + Random.Range(-1, 1);
             hitDamage = ((mom.hitDamage + dad.hitDamage) / 2) + Random.Range(-1, 1);
             camouflageSkill = ((mom.camouflageSkill + dad.camouflageSkill) / 2) + Random.Range(-1, 1);
             swimSkill = ((mom.swimSkill + dad.swimSkill) / 2) + Random.Range(-1, 1);
             landSkill = ((mom.landSkill + dad.landSkill) / 2) + Random.Range(-1, 1);
+
+            gender = Random.Range(0, 2);
         }
         else
         {
@@ -78,15 +84,17 @@ public class Genes : MonoBehaviour
             }
 
             carnivorism = Random.Range(0, 100);
-            speed = Random.Range(1, 15);
+            speed = Random.Range(0, 20);
             energy = Random.Range(0, 100);
             health = Random.Range(0, 100);
-            sight = Random.Range(0, 10);
+            sight = Random.Range(1, 20);
+            goodLooks = Random.Range(0, 100);
             sprintSpeed = Random.Range(0, 100);
             hitDamage = Random.Range(0, 100);
             camouflageSkill = Random.Range(0, 100);
             swimSkill = Random.Range(0, 100);
             landSkill = Random.Range(0, 100);
+            gender = Random.Range(0, 2);
         }
         if (this.gameObject.CompareTag("Player"))
         {
@@ -101,6 +109,7 @@ public class Genes : MonoBehaviour
         }
 
     }
+
     public float needFood;
     public float needWater;
     public float needRest;
@@ -110,16 +119,16 @@ public class Genes : MonoBehaviour
         {
              needFood = ((100.0f / (Mathf.Ceil(s.h.currentHunger * 100))) - 1) * foodPriority;
              needWater = ((100.0f /(Mathf.Ceil(s.t.currentThirst * 100))) - 1) * waterPriority;
-            //  float needBreed = (s.age - 1) * breedPriority;
+             float needBreed = (s.age - 1) * breedPriority;
              needRest = ((100.0f / (Mathf.Ceil(s.e.currentEnergy * 100))) - 1) * restPriority;
             Dictionary<string, float> returnDictionary = new Dictionary<string, float>();
 
             returnDictionary.Add("needWater", needWater);
             returnDictionary.Add("needFood", needFood);
-            //  returnDictionary.Add("needBreed", needBreed);
+              returnDictionary.Add("needBreed", needBreed);
             returnDictionary.Add("needRest", needRest);
             List<string> returnList = new List<string>();
-            for (int i = 0; i < 3; i++)
+            for (int i = 0; i < 4; i++)
             {
                 string highest = null;
                 int currentHighest = -10000;
