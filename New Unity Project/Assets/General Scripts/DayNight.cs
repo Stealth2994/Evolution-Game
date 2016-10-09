@@ -23,11 +23,11 @@ public class DayNight : MonoBehaviour {
 	public bool reachedFullDay;
 
 	void Start () {
-		InvokeRepeating ("DayUp", secondsInFullDay / 30, secondsInFullDay / 30);
+		InvokeRepeating ("DayUp", secondsInFullDay / 15, secondsInFullDay / 15);
 	}
 
 	void DayUp () {
-		if (days == 29) {
+		if (days == 30) {
 			days = 0;
 		}
 		days++;
