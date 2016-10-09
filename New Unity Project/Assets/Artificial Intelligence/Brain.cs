@@ -24,6 +24,7 @@ public class Brain : MonoBehaviour {
     bool firstLoop = true;
 	// Use this for initialization
 	void Start () {
+        AIS = GameObject.Find("AIS");
         a = transform.FindChild("Player Sprite").GetComponent<Animator>();
         grid = GameObject.Find("Grid").GetComponent<GenerateGrid>();
         h = GetComponent<Hunger>();
@@ -69,21 +70,25 @@ public class Brain : MonoBehaviour {
             {
                 getFood = true;
                 a.enabled = true;
+                wantBreed = false;
             }
             else if (priorities[0] == "needWater")
             {
                 getWater = true;
                 a.enabled = true;
+                wantBreed = false;
             }
             else if (priorities[0] == "needBreed")
             {
                 tryBreed = true;
                 a.enabled = true;
+                wantBreed = true;
             }
             else if (priorities[0] == "needRest")
             {
                 getRest = true;
                 a.enabled = false;
+                wantBreed = false;
             }
         }
         if(getFood)
@@ -234,10 +239,71 @@ public class Brain : MonoBehaviour {
         }
         else if(tryBreed)
         {
-
+            if (firstLoop)
+            {
+                firstLoop = false;
+                foreach (Brain b in CreateAIS.aiList)
+                {
+                    if (b.wantBreed && Vector2.Distance(transform.position, b.transform.position) < me.sight)
+                    {
+                        if (me.gender != b.me.gender)
+                        {
+                            if (b.breedTarget != null)
+                            {
+                                if (me.goodLooks > b.breedTarget.me.goodLooks)
+                                {
+                                    breedTarget = b;
+                                    b.breedTarget = GetComponent<Brain>();
+                                    break;
+                                }
+                            }
+                            else
+                            {
+                                breedTarget = b;
+                                b.breedTarget = GetComponent<Brain>();
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+            else
+            {
+                if(breedTarget == null)
+                {
+                    wanderticks = Random.Range(0, 60);
+                    wanderDirection = new Vector2(Random.Range(-1.0f, 1.0f), Random.Range(-1.0f, 1.0f));
+                    firstLoop = true;
+                    tryBreed = false;
+                }
+                else
+                {
+                    transform.position = Vector2.MoveTowards(transform.position, breedTarget.transform.position, Time.deltaTime * tempSpeed);
+                    if(Vector2.Distance(transform.position,breedTarget.transform.position) < 1)
+                    {
+                        wanderticks = Random.Range(60, 120);
+                        wanderDirection = new Vector2(Random.Range(-1.0f, 1.0f), Random.Range(-1.0f, 1.0f));
+                        firstLoop = true;
+                        tryBreed = false;
+                        breedTarget = null;
+                        if (me.gender == 1)
+                        {
+                            Debug.Log("REEEEEEEEEEEEEEEEEEEEEEEEEEEEEE");       
+                            GameObject g = Instantiate(AI, transform.position, Quaternion.identity) as GameObject;
+                            g.transform.parent = AIS.transform;
+                            CreateAIS.aiList.Add(g.GetComponent<Brain>());
+                        }
+                    }
+                }
+            }
+            
         }
         transform.position = new Vector3(transform.position.x, transform.position.y, -0.5f);
     }
+    public GameObject AI;
+    public Brain breedTarget;
+    public bool wantBreed = false;
+    GameObject AIS;
     Vector2 curPos;
     Vector2 lastPos;
     int wanderticks;
