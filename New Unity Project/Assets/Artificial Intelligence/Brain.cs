@@ -22,6 +22,9 @@ public class Brain : MonoBehaviour {
     float waitTime = 1;
     float tempWait = 0;
     bool firstLoop = true;
+	public GameObject zzz;
+	public GameObject drinkingSymbol;
+	public GameObject eatingSymbol;
 	// Use this for initialization
 	void Start () {
         a = transform.FindChild("Player Sprite").GetComponent<Animator>();
@@ -134,7 +137,9 @@ public class Brain : MonoBehaviour {
                 if (Vector2.Distance(transform.position, target) < 0.01)
                 {
                     tempWait += Time.deltaTime;
+					eatingSymbol.SetActive (true);
                     if(tempWait > waitTime) {
+						eatingSymbol.SetActive (false);
                         tempWait = 0;
                         if (!GenerateGrid.removeFoodList.ContainsKey(new GenerateGrid.coords((int)target.x, (int)target.y)))
                         {
@@ -169,7 +174,7 @@ public class Brain : MonoBehaviour {
             }
         }
         else if(getWater)
-        {
+		{
             if (firstLoop)
             {
                 List<Vector2> targets = new List<Vector2>();
@@ -222,10 +227,11 @@ public class Brain : MonoBehaviour {
         }
         else if(getRest)
         {
+			zzz.SetActive (true);
             tempWait += Time.deltaTime;
             if(tempWait > 5)
             {
-                
+				zzz.SetActive (false);
                 getRest = false;
                 tempWait = 0;
                 needsOrders = true;
