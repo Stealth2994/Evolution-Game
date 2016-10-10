@@ -67,10 +67,10 @@ public class Movement : MonoBehaviour {
             tempTime += Time.deltaTime;
             if (tempTime > eatTime)
             {
-                if (!GenerateGrid.removeFoodList.ContainsKey(new GenerateGrid.coords((int)target.position.x + 3, (int)target.position.y - 1)))
+                if (!GenerateGrid.removeFoodList.ContainsKey(new GenerateGrid.coords((int)target.position.x + 1, (int)target.position.y - 2)))
                 {
                     playerHunger.currentHunger = playerHunger.currentHunger + nutrition;
-                    GenerateGrid.removeFoodList.Add(new GenerateGrid.coords((int)target.position.x + 3, (int)target.position.y - 1 ), gg);
+                    GenerateGrid.removeFoodList.Add(new GenerateGrid.coords((int)target.position.x + 1, (int)target.position.y - 2), gg);
                     tempTime = 0;
                     doit = false;
 					Loader.enabled = false;

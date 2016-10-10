@@ -35,7 +35,7 @@ public class EatContext : MonoBehaviour {
     }
     public void OnMouseDown()
     {
-        float distance = Mathf.Sqrt(Mathf.Pow(Player.transform.position.x - (transform.position.x + 3), 2) + Mathf.Pow(Player.transform.position.y - (transform.position.y - 1), 2));
+        float distance = Mathf.Sqrt(Mathf.Pow(Player.transform.position.x - (transform.position.x + 1), 2) + Mathf.Pow(Player.transform.position.y - (transform.position.y - 2), 2));
         Debug.Log(distance);
         if (distance < range)
         {

@@ -11,6 +11,7 @@ public class ProcessGrid : ThreadedJob
     public float x;
     public float y;
     public int render;
+    public int loops = 0;
     public Dictionary<GenerateGrid.coords, GameObject> created;
     public Dictionary<GenerateGrid.coords, GameObject> createdFoods;
     //These variables will contain computed info once the thread is done
@@ -30,6 +31,7 @@ public class ProcessGrid : ThreadedJob
                 //loop through all of its chunks
                 foreach (KeyValuePair<GenerateGrid.coords, GenerateGrid.Chunk> chunk in entry.Value.t)
                 {
+                    loops++;
                     //if the chunk is in range
                     if (chunk.Key.x > x - render && chunk.Key.x < x + render && chunk.Key.y > y - render && chunk.Key.y < y + render)
                     {

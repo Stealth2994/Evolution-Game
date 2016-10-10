@@ -719,6 +719,7 @@ public class GenerateGrid : MonoBehaviour {
             pg.Start();
             //Waits for the thread to finish so we can use the values
             yield return StartCoroutine(pg.WaitFor());
+            Debug.Log(pg.loops);
             //The opposite of addTo, everything to be removed this frame
             foreach (KeyValuePair<coords, Chunk> entry in pg.removeFrom)
             {
@@ -752,7 +753,6 @@ public class GenerateGrid : MonoBehaviour {
             //addTo is everything the thread decides wants to be added to the render
             foreach (KeyValuePair<coords, Chunk> entry in pg.addTo)
             {
-
               //  yield return new WaitForSecondsRealtime(0.01f);
                 //Loops through all the chunks and renders them
                 foreach (KeyValuePair<coords, TerrainTileValues> ggg in entry.Value.t)
@@ -775,7 +775,7 @@ public class GenerateGrid : MonoBehaviour {
                             }
                             else
                             {
-                              //  Debug.LogWarning("To be rendered object already exists!");
+                                Debug.LogWarning("To be rendered object already exists!");
                            }
                         
                     
