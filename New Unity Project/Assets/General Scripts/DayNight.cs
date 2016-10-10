@@ -16,21 +16,30 @@ public class DayNight : MonoBehaviour {
 	public int months = 0;
 	public int years = 2000;
 	public SpriteRenderer DarknessImage;
-	public float secondsInFullDay = 120f;
+	public float secondsInHalfDay = 30f;
 	[Range(-1,1)]
 	public float currentTimeOfDay = -1f;
 	public float timeMultiplier = 1f;
 	public bool reachedFullDay;
 
 	void Start () {
-		InvokeRepeating ("DayUp", secondsInFullDay / 15, secondsInFullDay / 15);
+		//call the first month so it isnt 0 :)
+		CallNewMonth ();
+		// Since the month changes 5 times in a single daynight cycle do /75 
+		InvokeRepeating ("DayUp", secondsInHalfDay / 75, secondsInHalfDay / 75);
+		//seconds in full day is = seconds in half day * 2.
+		InvokeRepeating ("CallNewMonth", (secondsInHalfDay * 2) / 5, (secondsInHalfDay * 2) / 5);
 	}
 
 	void DayUp () {
+		day.text = ("" + days + daySuffix);
+		//if the day is equal to 30, it is a new month, so set it to 0.
 		if (days == 30) {
 			days = 0;
 		}
+		//add days
 		days++;
+		//modulo to check the suffix of the day
 		daya = days % 10;
 		dayb = days % 100;
 		if (daya == 1 && dayb != 11) {
@@ -44,6 +53,8 @@ public class DayNight : MonoBehaviour {
 	}
 
 	void CallNewMonth() {
+		//switch cases for month names
+		months++;
 		switch (months) {
 		case 1:
 			monthString = ("January");
@@ -82,35 +93,33 @@ public class DayNight : MonoBehaviour {
 			monthString = ("December");
 			break;
 		}
+		month.text = (monthString);
 	}
 
 	void Update() {
-
 		if (TimeIsZero == true) {
-			currentTimeOfDay += (Time.deltaTime / secondsInFullDay) * timeMultiplier;
+			currentTimeOfDay += (Time.deltaTime / secondsInHalfDay) * timeMultiplier;
 			if (currentTimeOfDay >= 1) {
-				months++;
-				CallNewMonth ();
 				TimeIsZero = false;
 			}
 		} else if (TimeIsZero == false) {
-			currentTimeOfDay -= (Time.deltaTime / secondsInFullDay) * timeMultiplier;
+			currentTimeOfDay -= (Time.deltaTime / secondsInHalfDay) * timeMultiplier;
 			if (currentTimeOfDay <= -1) {
-				months++;
-				CallNewMonth ();
-				days = 1;
 				TimeIsZero = true;
 			}
 		}
-		if (months == 12) {
-			months = 0;
+
+		if (months == 13) {
 			years++;
+			monthString = ("January");
+			year.text = ("" + years);
+			month.text = (monthString);
+			months = 1;
 		}
+			
 		if (currentTimeOfDay >= 0f) {
 			DarknessImage.color = new Color (0, 0, 0, currentTimeOfDay);
 		}
-		day.text = ("" + days + daySuffix);
-		month.text = (monthString);
-		year.text = ("" + years);
+		//change calendar text on canvas
 	}
 }
