@@ -843,7 +843,7 @@ public class GenerateGrid : MonoBehaviour {
                             {
                                 if (thit.code == 1111 || thit.code == 1112)
                                 {
-                                    Debug.Log("le water");
+                                    //Debug.Log("le water");
                                     tWater = true;
                                 }
                             }
@@ -896,7 +896,10 @@ public class GenerateGrid : MonoBehaviour {
                             {
                                g.GetComponent<SpriteRenderer>().sprite = WaterSpriteL;
 
-                            }
+							} else {
+								g.GetComponent<SpriteRenderer>().sprite = WaterSpriteC;
+
+							}
                         
                     }
                                 created.Add(new coords(ggg.Key.x, ggg.Key.y), g);
