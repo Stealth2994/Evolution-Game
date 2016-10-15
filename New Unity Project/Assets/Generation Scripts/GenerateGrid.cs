@@ -621,7 +621,6 @@ public class GenerateGrid : MonoBehaviour {
         {
             g = gg.GetComponent<TerrainTileValues>();
         }
-           
         for (int i = 0; i < length * width * (g.spawnChance / 100); i++)
         {
 
