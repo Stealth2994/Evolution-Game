@@ -109,7 +109,7 @@ public class Brain : MonoBehaviour {
                        // Debug.Log(GenerateGrid.foodList.Count);
                         if(GenerateGrid.foodList.TryGetValue(new GenerateGrid.coords(x, y), out t))
                         {
-                            if (t.food)
+                            if (t.GetComponent<FoodValues>())
                             {
                                 targets.Add(new Vector2(x, y));
                             }

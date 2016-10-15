@@ -6,7 +6,7 @@ using System.Linq;
 public class GenerateGrid : MonoBehaviour {
     //Objects used in grid
     public List<GameObject> gridObjects;
-    public List<GameObject> foods;
+    public List<GameObject> usables;
     public GameObject deepWater;
 	public GameObject highRock;
     public int continentMin = 2;
@@ -23,8 +23,8 @@ public class GenerateGrid : MonoBehaviour {
     //Dimensions
     public int length = 500;
     public int width = 500;
-    public static int chunkSize = 6;
-    public static int megaChunkSize = 64;
+    public static int chunkSize = 2;
+    public static int megaChunkSize = 32;
     public int renderdistance = 5;
     public bool fpscounter = true;
     //For stopping map gen
@@ -66,11 +66,11 @@ public class GenerateGrid : MonoBehaviour {
 
         grid = new Dictionary<coords, TerrainTileValues>();
         cc = StartCoroutine(GenerateMap());
-        for (int i = 0; i < foods.Count; i++)
+        for (int i = 0; i < usables.Count; i++)
         {
-            if (foods[i].GetComponent<TerrainTileValues>().regen)
+            if (usables[i].GetComponent<UsableValues>().regen)
             {
-                StartCoroutine(RegenFood(i));
+                StartCoroutine(RegenItem(i));
             }
         }
     }
@@ -105,9 +105,9 @@ public class GenerateGrid : MonoBehaviour {
         AddDeepWater(deepWater);
 		AddHighRock(highRock);
         
-        for (int i = 0; i < foods.Count; i++)
+        for (int i = 0; i < usables.Count; i++)
           {
-              AddFood(i);
+              AddUsables(i);
               yield return new WaitForSeconds(0);
           }
 
@@ -602,27 +602,26 @@ public class GenerateGrid : MonoBehaviour {
 	}
             
     
-    void AddFood(int food)
+    void AddUsables(int usable)
     {
         TerrainTileValues g = null;
-        GameObject gg = foods[food];
+        GameObject gg = usables[usable];
         if (gg.GetComponent<TerrainTileValues>())
         {
             g = gg.GetComponent<TerrainTileValues>();
         }
            
-        for (int x = 0; x < length; x++)
+        for (int i = 0; i < length * width * (g.spawnChance / 100); i++)
         {
-            for (int y = 0; y < width; y++)
-            {
 
-             
+            int x = Random.Range(0, length);
+            int y = Random.Range(0, width);
                     TerrainTileValues hit;
                    grid.TryGetValue(new coords(x,y), out hit);
-                    //Only spawns wheat on grass :)
+                    //Only spawns items on grass :)
                     if(hit.code == 500) {
                       DoBunchChanceFood(g, x, y, g.spawnChance);
-}
+
 
 
 
@@ -632,11 +631,11 @@ public class GenerateGrid : MonoBehaviour {
             }
         }
     }
-    IEnumerator RegenFood(int food)
+    IEnumerator RegenItem(int food)
     {
-        TerrainTileValues fodder = foods[food].GetComponent<TerrainTileValues>();
+        UsableValues fodder = usables[food].GetComponent<UsableValues>();
         TerrainTileValues g = null;
-        GameObject gg = foods[food];
+        GameObject gg = usables[food];
         if (gg.GetComponent<TerrainTileValues>())
         {
             g = gg.GetComponent<TerrainTileValues>();
@@ -719,12 +718,11 @@ public class GenerateGrid : MonoBehaviour {
             pg.Start();
             //Waits for the thread to finish so we can use the values
             yield return StartCoroutine(pg.WaitFor());
-            Debug.Log(pg.loops);
             //The opposite of addTo, everything to be removed this frame
             foreach (KeyValuePair<coords, Chunk> entry in pg.removeFrom)
             {
                 //Splits lag over multiple frames
-             //   yield return new WaitForSecondsRealtime(0.01f);
+              //  yield return new WaitForSecondsRealtime(0);
                 foreach (KeyValuePair<coords, TerrainTileValues> ggg in entry.Value.t)
                 {
 
@@ -753,7 +751,7 @@ public class GenerateGrid : MonoBehaviour {
             //addTo is everything the thread decides wants to be added to the render
             foreach (KeyValuePair<coords, Chunk> entry in pg.addTo)
             {
-              //  yield return new WaitForSecondsRealtime(0.01f);
+             //   yield return new WaitForSecondsRealtime(0);
                 //Loops through all the chunks and renders them
                 foreach (KeyValuePair<coords, TerrainTileValues> ggg in entry.Value.t)
                 {
@@ -844,13 +842,17 @@ public class GenerateGrid : MonoBehaviour {
             {
                 createdFoods.Remove(new coords(ggg.Key.x, ggg.Key.y));
                 foodList.Remove(new coords(ggg.Key.x, ggg.Key.y));
-               
+                PoolSystem p;
+                int k = poolCodes.FindIndex(d => d == ggg.Value.GetComponent<TerrainTileValues>().code);
+                p = pools[k];
+                p.Exterminate(ggg.Value);
                 Destroy(ggg.Value);
             }
             removeFoodList = new Dictionary<coords, GameObject>();
             
             yield return new WaitForSeconds(0);
         }
+        
     }
     public static Dictionary<coords, TerrainTileValues> foodList = new Dictionary<coords, TerrainTileValues>();
     public static Dictionary<coords, GameObject> createdFoods = new Dictionary<coords, GameObject>();
