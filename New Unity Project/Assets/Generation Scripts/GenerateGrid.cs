@@ -4,6 +4,17 @@ using System.Collections.Generic;
 using System.Linq;
 
 public class GenerateGrid : MonoBehaviour {
+	//sprites
+	public Sprite WaterSpriteTL;
+	public Sprite WaterSpriteT;
+	public Sprite WaterSpriteTR;
+	public Sprite WaterSpriteR;
+	public Sprite WaterSpriteBR;
+	public Sprite WaterSpriteB;
+	public Sprite WaterSpriteBL;
+	public Sprite WaterSpriteL;
+	public Sprite WaterSpriteC;
+
     //Objects used in grid
     public List<GameObject> gridObjects;
     public List<GameObject> usables;
@@ -111,7 +122,7 @@ public class GenerateGrid : MonoBehaviour {
               yield return new WaitForSeconds(0);
           }
 
-        
+		CheckSurroundings ();
         yield return new WaitForSeconds(0);
         //Takes every tile and makes it into chunks defined in chunkSize
         Chunk.MakeChunks(grid);
@@ -696,6 +707,101 @@ public class GenerateGrid : MonoBehaviour {
             foodList.Add(new coords(x, y), t);
         }
     }
+
+	void CheckSurroundings() {
+		for (int x = 0; x < length; x++) {
+			for (int y = 0; y < width; y++) {
+				TerrainTileValues hit;
+				if (grid.TryGetValue (new coords (x, y), out hit)) {
+					if (hit.code == 1111) {
+						TerrainTileValues rhit;
+						bool rWater = false;
+						if (grid.TryGetValue (new coords (x + 1, y), out rhit)) {
+							if (rhit.code == 1111) {
+								rWater = true;
+							}
+						}
+						TerrainTileValues brhit;
+						bool brWater = false;
+						if (grid.TryGetValue (new coords (x + 1, y - 1), out brhit)) {
+							if (brhit.code == 1111) {
+								brWater = true;
+							}
+						}
+						TerrainTileValues bhit;
+						bool bWater = false;
+						if (grid.TryGetValue (new coords (x, y - 1), out bhit)) {
+							if (bhit.code == 1111) {
+								bWater = true;
+							}
+						}
+						TerrainTileValues blhit;
+						bool blWater = false;
+						if (grid.TryGetValue (new coords (x - 1, y - 1), out blhit)) {
+							if (blhit.code == 1111) {
+								blWater = true;
+							}
+						}
+						TerrainTileValues lhit;
+						bool lWater = false;
+						if (grid.TryGetValue (new coords (x - 1, y), out lhit)) {
+							if (lhit.code == 1111) {
+								lWater = true;
+							}
+						}
+						TerrainTileValues tlhit;
+						bool tlWater = false;
+						if (grid.TryGetValue (new coords (x - 1, y + 1), out tlhit)) {
+							if (tlhit.code == 1111) {
+								tlWater = true;
+							}
+						}
+						TerrainTileValues thit;
+						bool tWater = false;
+						if (grid.TryGetValue (new coords (x, y + 1), out thit)) {
+							if (thit.code == 1111) {
+								tWater = true;
+							}
+						}
+						TerrainTileValues trhit;
+						bool trWater = false;
+						if (grid.TryGetValue (new coords (x + 1, y + 1), out trhit)) {
+							if (trhit.code == 1111) {
+								trWater = true;
+							}
+						}
+
+						if (!lWater && !tlWater && !tWater && trWater && rWater && brWater && bWater && blWater) {
+							tlhit.gameObject.GetComponent<SpriteRenderer> ().sprite = WaterSpriteTL;
+
+						} else if (!lWater && !tlWater && !tWater && !trWater && !rWater && brWater && bWater && blWater) {
+							thit.gameObject.GetComponent<SpriteRenderer> ().sprite = WaterSpriteT;
+
+						} else if (lWater && tlWater && !tWater && !trWater && !rWater && brWater && bWater && blWater) {
+							trhit.gameObject.GetComponent<SpriteRenderer> ().sprite = WaterSpriteTR;
+
+						} else if (lWater && tlWater && !tWater && !trWater && !rWater && !brWater && !bWater && blWater) {
+							rhit.gameObject.GetComponent<SpriteRenderer> ().sprite = WaterSpriteR;
+
+						} else if (lWater && tlWater && tWater && trWater && !rWater && !brWater && !bWater && blWater) {
+							brhit.gameObject.GetComponent<SpriteRenderer> ().sprite = WaterSpriteBR;
+
+						} else if (!lWater && tlWater && tWater && trWater && !rWater && !brWater && !bWater && !blWater) {
+							bhit.gameObject.GetComponent<SpriteRenderer> ().sprite = WaterSpriteB;
+
+						} else if (!lWater && tlWater && tWater && trWater && rWater && brWater && !bWater && !blWater) {
+							blhit.gameObject.GetComponent<SpriteRenderer> ().sprite = WaterSpriteBL;
+
+						} else if (!lWater && !tlWater && !tWater && trWater && rWater && brWater && !bWater && !blWater) {
+							lhit.gameObject.GetComponent<SpriteRenderer> ().sprite = WaterSpriteL;
+
+						}
+					}
+				}
+			}
+		}
+	}
+
     //Threading
     ProcessGrid pg;
     //List of all currently rendered tiles
