@@ -1,13 +1,18 @@
 fileFormatVersion: 2
-guid: ebed3cd1870b7224db81b433832cb489
-timeCreated: 1476554220
+guid: 7e78295c5a3a71b4eb083fd7434fa229
+timeCreated: 1476556852
 licenseType: Free
 TextureImporter:
   fileIDToRecycleName:
-    21300000: GrassSprite_0
-    21300002: GrassSprite_1
-    21300004: GrassSprite_2
-    21300006: GrassSprite_3
+    21300000: WaterCornerTL
+    21300002: WaterCornerTR
+    21300004: WaterEndNorth
+    21300006: WaterEndEast
+    21300008: WaterCornerBL
+    21300010: WaterCornerBR
+    21300012: WaterEndWest
+    21300014: WaterEndSouth
+    21300016: WaterCenter
   serializedVersion: 2
   mipmaps:
     mipMapMode: 0
@@ -33,7 +38,7 @@ TextureImporter:
   textureFormat: -1
   maxTextureSize: 2048
   textureSettings:
-    filterMode: 0
+    filterMode: -1
     aniso: 16
     mipBias: -1
     wrapMode: 1
@@ -57,7 +62,59 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: GrassSprite_0
+      name: WaterCornerTL
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 256
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: WaterCornerTR
+      rect:
+        serializedVersion: 2
+        x: 256
+        y: 256
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: WaterEndNorth
+      rect:
+        serializedVersion: 2
+        x: 512
+        y: 256
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: WaterEndEast
+      rect:
+        serializedVersion: 2
+        x: 768
+        y: 256
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: WaterCornerBL
       rect:
         serializedVersion: 2
         x: 0
@@ -65,12 +122,12 @@ TextureImporter:
         width: 256
         height: 256
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       tessellationDetail: 0
     - serializedVersion: 2
-      name: GrassSprite_1
+      name: WaterCornerBR
       rect:
         serializedVersion: 2
         x: 256
@@ -78,12 +135,12 @@ TextureImporter:
         width: 256
         height: 256
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       tessellationDetail: 0
     - serializedVersion: 2
-      name: GrassSprite_2
+      name: WaterEndWest
       rect:
         serializedVersion: 2
         x: 512
@@ -91,12 +148,12 @@ TextureImporter:
         width: 256
         height: 256
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       tessellationDetail: 0
     - serializedVersion: 2
-      name: GrassSprite_3
+      name: WaterEndSouth
       rect:
         serializedVersion: 2
         x: 768
@@ -104,7 +161,20 @@ TextureImporter:
         width: 256
         height: 256
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: WaterCenter
+      rect:
+        serializedVersion: 2
+        x: 128
+        y: 128
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       tessellationDetail: 0

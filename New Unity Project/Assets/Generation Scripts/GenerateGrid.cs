@@ -4,6 +4,17 @@ using System.Collections.Generic;
 using System.Linq;
 
 public class GenerateGrid : MonoBehaviour {
+	//sprites
+	public Sprite WaterSpriteTL;
+	public Sprite WaterSpriteT;
+	public Sprite WaterSpriteTR;
+	public Sprite WaterSpriteR;
+	public Sprite WaterSpriteBR;
+	public Sprite WaterSpriteB;
+	public Sprite WaterSpriteBL;
+	public Sprite WaterSpriteL;
+	public Sprite WaterSpriteC;
+
     //Objects used in grid
     public List<GameObject> gridObjects;
     public List<GameObject> usables;
@@ -111,7 +122,6 @@ public class GenerateGrid : MonoBehaviour {
               yield return new WaitForSeconds(0);
           }
 
-        
         yield return new WaitForSeconds(0);
         //Takes every tile and makes it into chunks defined in chunkSize
         Chunk.MakeChunks(grid);
@@ -695,6 +705,9 @@ public class GenerateGrid : MonoBehaviour {
             foodList.Add(new coords(x, y), t);
         }
     }
+
+
+
     //Threading
     ProcessGrid pg;
     //List of all currently rendered tiles
@@ -768,6 +781,124 @@ public class GenerateGrid : MonoBehaviour {
                                 if(g.transform.parent == null) {
                                     g.transform.parent = transform;
                                 }
+                                if(ggg.Value.code == 1111)
+                        {
+                            TerrainTileValues rhit;
+                            bool rWater = false;
+                            if (grid.TryGetValue(new coords(ggg.Key.x + 1, ggg.Key.y), out rhit))
+                            {
+                                if (rhit.code == 1111 || rhit.code == 1112)
+                                {
+                                    rWater = true;
+                                }
+                            }
+                            TerrainTileValues brhit;
+                            bool brWater = false;
+                            if (grid.TryGetValue(new coords(ggg.Key.x + 1, ggg.Key.y - 1), out brhit))
+                            {
+                                if (brhit.code == 1111 || brhit.code == 1112)
+                                {
+                                    brWater = true;
+                                }
+                            }
+                            TerrainTileValues bhit;
+                            bool bWater = false;
+                            if (grid.TryGetValue(new coords(ggg.Key.x, ggg.Key.y - 1), out bhit))
+                            {
+                                if (bhit.code == 1111 || bhit.code == 1112)
+                                {
+                                    bWater = true;
+                                }
+                            }
+                            TerrainTileValues blhit;
+                            bool blWater = false;
+                            if (grid.TryGetValue(new coords(ggg.Key.x - 1, ggg.Key.y - 1), out blhit))
+                            {
+                                if (blhit.code == 1111 || blhit.code == 1112)
+                                {
+                                    blWater = true;
+                                }
+                            }
+                            TerrainTileValues lhit;
+                            bool lWater = false;
+                            if (grid.TryGetValue(new coords(ggg.Key.x - 1, ggg.Key.y), out lhit))
+                            {
+                                if (lhit.code == 1111 || lhit.code == 1112)
+                                {
+                                    lWater = true;
+                                }
+                            }
+                            TerrainTileValues tlhit;
+                            bool tlWater = false;
+                            if (grid.TryGetValue(new coords(ggg.Key.x - 1, ggg.Key.y + 1), out tlhit))
+                            {
+                                if (tlhit.code == 1111 || tlhit.code == 1112)
+                                {
+                                    tlWater = true;
+                                }
+                            }
+                            TerrainTileValues thit;
+                            bool tWater = false;
+                            if (grid.TryGetValue(new coords(ggg.Key.x, ggg.Key.y + 1), out thit))
+                            {
+                                if (thit.code == 1111 || thit.code == 1112)
+                                {
+                                    Debug.Log("le water");
+                                    tWater = true;
+                                }
+                            }
+                            TerrainTileValues trhit;
+                            bool trWater = false;
+                            if (grid.TryGetValue(new coords(ggg.Key.x + 1, ggg.Key.y + 1), out trhit))
+                            {
+                                if (trhit.code == 1111 || trhit.code == 1112)
+                                {
+                                    trWater = true;
+                                }
+                            }
+
+                            if (!lWater && !tlWater && !tWater && rWater && bWater)
+                            {
+                                g.GetComponent<SpriteRenderer>().sprite = WaterSpriteTL;
+
+                            }
+                            else if (!lWater && !tlWater && !tWater && !trWater && !rWater && bWater)
+                            {
+                                g.GetComponent<SpriteRenderer>().sprite = WaterSpriteT;
+
+                            }
+                            else if (lWater && !tWater && !trWater && !rWater && bWater)
+                            {
+                                g.GetComponent<SpriteRenderer>().sprite = WaterSpriteTR;
+
+                            }
+                            else if (lWater&& !tWater && !trWater && !rWater && !brWater && !bWater)
+                            {
+                                g.GetComponent<SpriteRenderer>().sprite = WaterSpriteR;
+
+                            }
+                            else if (lWater && tWater && !rWater && !brWater && !bWater)
+                            {
+                                g.GetComponent<SpriteRenderer>().sprite = WaterSpriteBR;
+
+                            }
+                            else if (!lWater && tWater && !rWater && !brWater && !bWater && !blWater)
+                            {
+                                g.GetComponent<SpriteRenderer>().sprite = WaterSpriteB;
+
+                            }
+                            else if (!lWater && tWater && rWater && !bWater && !blWater)
+                            {
+                                g.GetComponent<SpriteRenderer>().sprite = WaterSpriteBL;
+
+                            }
+                            else if (!lWater && !tlWater && !tWater && rWater && !bWater && !blWater)
+                            {
+                               g.GetComponent<SpriteRenderer>().sprite = WaterSpriteL;
+
+                            }
+                        
+                    }
                                 created.Add(new coords(ggg.Key.x, ggg.Key.y), g);
                             }
                             else
