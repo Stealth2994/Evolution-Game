@@ -8,6 +8,8 @@ public class UIAnimations : MonoBehaviour {
 	public Animator StatsPanelAnimator;
 	public GameObject PausePanel;
 	public Animator PausePanelAnimator;
+	public GameObject InventoryPanel;
+	public Animator InvPanelAnimator;
 
 	public void OnClickStatsHamburger () {
 		StatsPanel.SetActive (true);
@@ -29,12 +31,23 @@ public class UIAnimations : MonoBehaviour {
 	public void OnClickPlayButton () {
 		Time.timeScale = 1;
 		PausePanelAnimator.Play ("PausePanelAnimationReversed");
-		Invoke ("PausePanelDisable", 1);
+		Invoke ("PanelDisable", 1);
 	}
-	public void PausePanelDisable() {
+	public void PanelDisable() {
 		PausePanel.SetActive (false);
+		InventoryPanel.SetActive (false);
 	}
 	public void TimeScaleZero () {
 		Time.timeScale = 0;
+	}
+	public void OnClickInv () {
+		InventoryPanel.SetActive (true);
+		InvPanelAnimator.Play ("PausePanelAnimation");
+		Invoke ("TimeScaleZero", 1);
+	}
+	public void OnClickInvBack () {
+		Time.timeScale = 1;
+		InvPanelAnimator.Play ("PausePanelAnimationReversed");
+		Invoke ("PanelDisable", 1);
 	}
 }
