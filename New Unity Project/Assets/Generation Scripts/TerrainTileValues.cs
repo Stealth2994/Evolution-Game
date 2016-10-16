@@ -9,5 +9,6 @@ public class TerrainTileValues : MonoBehaviour {
     public float bunchMultiplier = 1.5f;
     public int code = 1000;
     public float speed = 1;
+    public string name;
 
 }

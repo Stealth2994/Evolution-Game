@@ -7,10 +7,10 @@ public class ContextMenu : MonoBehaviour {
 	GenerateGrid grid;
     GameObject Player;
     float range;
-    public EatContext eater;
+    public ContextBase eater;
 	void Start () {
 		grid = GameObject.Find("Grid").GetComponent<GenerateGrid>();
-        eater = transform.Find("ContextMenu").Find("EatButton").GetComponent<EatContext>();
+        eater = transform.Find("ContextMenu").Find("EatButton").GetComponent<ContextBase>();
         Player = GameObject.FindWithTag("Player");
         eater.Awake();
     }
