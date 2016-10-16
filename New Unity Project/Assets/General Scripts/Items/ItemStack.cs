@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
-
+[System.Serializable]
 public class ItemStack {
     public ItemStack(string name,Item item, int amount )
     {
