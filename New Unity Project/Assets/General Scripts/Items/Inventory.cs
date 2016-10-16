@@ -12,6 +12,7 @@ public class Inventory : MonoBehaviour {
     }
     void UpdateInventory()
     {
+        GetComponent<Craft>().invChanged();
        foreach(Transform t in location)
         {
             Destroy(t.gameObject);

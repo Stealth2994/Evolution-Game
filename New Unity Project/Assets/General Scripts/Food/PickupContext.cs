@@ -8,8 +8,8 @@ public class PickupContext : ContextBase {
         Debug.Log(distance);
         if (distance < range)
         {
-            GenerateGrid.removeFoodList.Add(new GenerateGrid.coords((int)transform.position.x + 1, (int)transform.position.y - 2), transform.parent.parent.gameObject);
-            GameObject.Find("Inventory").GetComponent<Inventory>().AddItem(new ItemStack(transform.parent.parent.GetComponent<UsableValues>().name, transform.parent.parent.GetComponent<Item>(), transform.parent.parent.GetComponent<UsableValues>().amount),transform.parent.parent.GetComponent<Item>().code);
+            GenerateGrid.removeFoodList.Add(new GenerateGrid.coords((int)transform.parent.parent.position.x, (int)transform.parent.parent.position.y), transform.parent.parent.gameObject);
+            GameObject.Find("Inventory").GetComponent<Inventory>().AddItem(new ItemStack(transform.parent.parent.GetComponent<Item>().image, transform.parent.parent.GetComponent<UsableValues>().name, transform.parent.parent.GetComponent<Item>(), transform.parent.parent.GetComponent<UsableValues>().amount),transform.parent.parent.GetComponent<Item>().code);
             
         }
         ContextSprite.SetActive(false);
