@@ -3,6 +3,13 @@ using System.Collections.Generic;
 [System.Serializable]
 public class Recipe {
     public List<ItemStack> items;
-    public ItemStack outcome;
+    [SerializeField]
+    private ItemStack outcome;
+    public ItemStack Outcome
+    {
+        get { return outcome; }
+        set { Debug.Log("ive been set");
+           outcome = value; }
+    }
 
 }

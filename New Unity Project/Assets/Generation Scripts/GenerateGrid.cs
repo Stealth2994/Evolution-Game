@@ -973,11 +973,9 @@ public class GenerateGrid : MonoBehaviour {
             
             foreach (KeyValuePair<coords,GameObject> ggg in removeFoodList)
             {
-                Debug.Log(foodList.ContainsKey(new coords(ggg.Key.x, ggg.Key.y)));
                 createdFoods.Remove(new coords(ggg.Key.x, ggg.Key.y));
                
                 foodList.Remove(new coords(ggg.Key.x, ggg.Key.y));
-                Debug.Log(foodList.ContainsKey(new coords(ggg.Key.x, ggg.Key.y)));
                 PoolSystem p;
                 int k = poolCodes.FindIndex(d => d == ggg.Value.GetComponent<TerrainTileValues>().code);
                 p = pools[k];

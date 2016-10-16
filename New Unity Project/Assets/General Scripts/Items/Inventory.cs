@@ -21,7 +21,7 @@ public class Inventory : MonoBehaviour {
         {
             Button g = Instantiate(NewButton);
             g.transform.SetParent(location);
-            g.transform.FindChild("Text").GetComponent<Text>().text = entry.Value.amount + " " + entry.Value.name;
+            g.transform.FindChild("Text").GetComponent<Text>().text = entry.Value.Amount + " " + entry.Value.name;
         }
     }
       
@@ -32,15 +32,16 @@ public class Inventory : MonoBehaviour {
     }
     public void AddItem(ItemStack newItem, int code)
     {
+        Debug.Log(newItem.Amount);
         ItemStack alreadyInv;
         if(inventory.TryGetValue(code, out alreadyInv))
         {
-            alreadyInv.amount += newItem.amount;
+            alreadyInv.Amount += newItem.Amount;
             UpdateInventory();
         }
         else
         {
-            inventory.Add(code, newItem);
+            inventory.Add(code, new ItemStack(newItem.picture,newItem.name,newItem.item,newItem.Amount));
             UpdateInventory();
         }
       
@@ -50,13 +51,13 @@ public class Inventory : MonoBehaviour {
         ItemStack alreadyInv;
         if (inventory.TryGetValue(code, out alreadyInv))
         {
-            if(alreadyInv.amount > amount)
+            if(alreadyInv.Amount > amount)
             {
-                alreadyInv.amount -= amount;
+                alreadyInv.Amount -= amount;
                 UpdateInventory();
                 return true;
             }
-            else if(alreadyInv.amount == amount)
+            else if(alreadyInv.Amount == amount)
             {
                 inventory.Remove(code);
                 UpdateInventory();
@@ -76,7 +77,7 @@ public class Inventory : MonoBehaviour {
         ItemStack alreadyInv;
         if (inventory.TryGetValue(code, out alreadyInv))
         {
-            return alreadyInv.amount;
+            return alreadyInv.Amount;
         }
         return 0;
     }

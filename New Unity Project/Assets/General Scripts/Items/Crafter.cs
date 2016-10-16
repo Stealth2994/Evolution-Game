@@ -21,11 +21,11 @@ public class Crafter : MonoBehaviour {
         {
             Button g = Instantiate(CraftButton);
             g.transform.SetParent(location);
-            g.transform.FindChild("Name").GetComponent<Text>().text = entry.outcome.name;
-            g.transform.FindChild("Image").GetComponent<Image>().sprite = entry.outcome.picture;
+            g.transform.FindChild("Name").GetComponent<Text>().text = entry.Outcome.name;
+            g.transform.FindChild("Image").GetComponent<Image>().sprite = entry.Outcome.picture;
             g.GetComponent<Create>().r = entry;
             string recipe = "";
-            foreach(ItemStack i in entry.items)
+           foreach(ItemStack i in entry.items)
             {
                 recipe += i.name + " + ";
             }

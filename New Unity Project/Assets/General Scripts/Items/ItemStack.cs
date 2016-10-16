@@ -11,6 +11,12 @@ public class ItemStack {
     }
     public Sprite picture;
     public string name;
-    public int amount;
+    [SerializeField]
+    private int amount;
+    public int Amount
+    {
+        get { return amount; }
+        set { amount = value; }
+    }
     public Item item;
 }

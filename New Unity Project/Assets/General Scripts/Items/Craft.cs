@@ -11,14 +11,13 @@ public class Craft : MonoBehaviour {
 	
 	// Update is called once per frame
 	public void invChanged () {
-        Debug.Log("ive been called");
 	    foreach(Recipe r in recipes)
         {
             foreach(ItemStack i in r.items)
             {
                 if(pi.inventory.ContainsKey(i.item.code))
                 {
-                    if(pi.inventory[i.item.code].amount >= i.amount)
+                    if(pi.inventory[i.item.code].Amount >= i.Amount)
                     {
                         Debug.Log("well here");
                     }
@@ -32,12 +31,9 @@ public class Craft : MonoBehaviour {
                     goto getOut;
                 }
             }
-            Debug.Log("YAA BOIZ");
             GetComponent<Crafter>().AddItem(r);
             continue;
             getOut:;
-            Debug.Log("DELETED U NERDS");
-
             GetComponent<Crafter>().RemoveItem(r);
         }
 	}
