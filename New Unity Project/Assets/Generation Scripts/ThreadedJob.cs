@@ -54,7 +54,7 @@ public class ThreadedJob
     {
         while (!Update())
         {
-            yield return null;
+            yield return new WaitForSeconds(0.5f);
         }
     }
     private void Run()

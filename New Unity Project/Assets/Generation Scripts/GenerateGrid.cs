@@ -74,7 +74,7 @@ public class GenerateGrid : MonoBehaviour {
     }
     // Generates map
     void Awake() {
-
+        Brain.MakeSortList();
         grid = new Dictionary<coords, TerrainTileValues>();
         cc = StartCoroutine(GenerateMap());
         for (int i = 0; i < usables.Count; i++)
@@ -645,9 +645,9 @@ public class GenerateGrid : MonoBehaviour {
         UsableValues fodder = usables[food].GetComponent<UsableValues>();
         TerrainTileValues g = null;
         GameObject gg = usables[food];
-        if (gg.GetComponent<TerrainTileValues>())
+        if (gg.GetComponent<UsableValues>())
         {
-            g = gg.GetComponent<TerrainTileValues>();
+            g = gg.GetComponent<UsableValues>();
         }
         while (true)
         {
@@ -974,7 +974,7 @@ public class GenerateGrid : MonoBehaviour {
             foreach (KeyValuePair<coords,GameObject> ggg in removeFoodList)
             {
                 createdFoods.Remove(new coords(ggg.Key.x, ggg.Key.y));
-               
+                
                 foodList.Remove(new coords(ggg.Key.x, ggg.Key.y));
                 PoolSystem p;
                 int k = poolCodes.FindIndex(d => d == ggg.Value.GetComponent<TerrainTileValues>().code);
@@ -983,10 +983,9 @@ public class GenerateGrid : MonoBehaviour {
                 Destroy(ggg.Value);
             }
             removeFoodList = new Dictionary<coords, GameObject>();
-            
             yield return new WaitForSeconds(0);
         }
-        
+      
     }
     public static Dictionary<coords, TerrainTileValues> foodList = new Dictionary<coords, TerrainTileValues>();
     public static Dictionary<coords, GameObject> createdFoods = new Dictionary<coords, GameObject>();
