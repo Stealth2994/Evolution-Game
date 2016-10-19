@@ -11,4 +11,5 @@ public class TerrainTileValues : MonoBehaviour {
     public float speed = 1;
     public string name;
     public Sprite image;
+    public bool food = false;
 }
