@@ -1,0 +1,40 @@
+﻿me envie o link para o teste de prática osslt por favor
+# Please enter the commit message for your changes. Lines starting
+# with '#' will be ignored, and an empty message aborts the commit.
+# On branch master
+# Your branch is up-to-date with 'origin/master'.
+#
+# Changes to be committed:
+#	modified:   New Unity Project/Assets/Artificial Intelligence/AI.prefab
+#	modified:   New Unity Project/Assets/Artificial Intelligence/Brain.cs
+#	modified:   New Unity Project/Assets/Artificial Intelligence/Genes.cs
+#	modified:   New Unity Project/Assets/Generation Scripts/GenerateGrid.cs
+#	modified:   New Unity Project/Assets/Generation Scripts/TerrainTileValues.cs
+#	modified:   New Unity Project/Assets/Generation Scripts/ThreadedJob.cs
+#	modified:   New Unity Project/Assets/MainScene 3.unity
+#	modified:   New Unity Project/Assets/Player Scripts/SurvivalStats.cs
+#	modified:   New Unity Project/Assets/Prefabs/food & bushes etc/WheatSquare.prefab
+#	modified:   New Unity Project/Library/CurrentLayout.dwlt
+#	modified:   New Unity Project/Library/InspectorExpandedItems.asset
+#	modified:   New Unity Project/Library/ScriptAssemblies/Assembly-CSharp-Editor.dll
+#	modified:   New Unity Project/Library/ScriptAssemblies/Assembly-CSharp-Editor.dll.mdb
+#	modified:   New Unity Project/Library/ScriptAssemblies/Assembly-CSharp-firstpass.dll
+#	modified:   New Unity Project/Library/ScriptAssemblies/Assembly-CSharp-firstpass.dll.mdb
+#	modified:   New Unity Project/Library/ScriptAssemblies/Assembly-CSharp.dll
+#	modified:   New Unity Project/Library/ScriptAssemblies/Assembly-CSharp.dll.mdb
+#	modified:   New Unity Project/Library/assetDatabase3
+#	modified:   New Unity Project/Library/expandedItems
+#	modified:   New Unity Project/Library/metadata/00/00000000000000004000000000000000
+#	modified:   New Unity Project/Library/metadata/00/00000000000000006100000000000000
+#	modified:   New Unity Project/Library/metadata/00/00000000000000009000000000000000
+#	modified:   New Unity Project/Library/metadata/18/18a3c84f811bcb94d820e0484c07ce48
+#	modified:   New Unity Project/Library/metadata/37/37ed08d4beca46a4db6f02d386509cc2
+#	modified:   New Unity Project/Library/metadata/7e/7eab217468b394b47b4926ffae5bbbfb
+#	modified:   New Unity Project/Library/metadata/8a/8a5fc41e96452d74485998f6ea96b50f
+#	modified:   New Unity Project/Library/metadata/8a/8a78108093bece741bc11497ed29adca.info
+#	modified:   New Unity Project/Library/metadata/8e/8ec95eecac44ed74e84d0cb976d59c09
+#	modified:   New Unity Project/Library/metadata/a5/a5c52e7951d7205449df3f592b272c4f.info
+#	modified:   New Unity Project/Library/metadata/c2/c2a8b78c4995e824191c49b300ec7d13
+#	modified:   New Unity Project/ProjectSettings/QualitySettings.asset
+#
+
