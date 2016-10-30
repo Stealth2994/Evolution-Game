@@ -111,7 +111,7 @@ public class DayNight : MonoBehaviour {
 			}
 		}
 
-		if (months == 12) {
+		if (months == 13) {
 			years++;
 			monthString = ("January");
 			year.text = ("" + years);
