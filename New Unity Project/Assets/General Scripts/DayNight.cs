@@ -21,14 +21,15 @@ public class DayNight : MonoBehaviour {
 	public float currentTimeOfDay = -1f;
 	public float timeMultiplier = 1f;
 	public bool reachedFullDay;
+	public Text ageText;
 
 	void Start () {
 		//call the first month so it isnt 0 :)
 		CallNewMonth ();
 		// Since the month changes 5 times in a single daynight cycle do /75 
-		InvokeRepeating ("DayUp", secondsInHalfDay / 75, secondsInHalfDay / 75);
+		InvokeRepeating ("DayUp", secondsInHalfDay / 225, secondsInHalfDay / 225);
 		//seconds in full day is = seconds in half day * 2.
-		InvokeRepeating ("CallNewMonth", (secondsInHalfDay * 2) / 5, (secondsInHalfDay * 2) / 5);
+		InvokeRepeating ("CallNewMonth", (secondsInHalfDay * 2) / 15, (secondsInHalfDay * 2) / 15);
 	}
 
 	void DayUp () {
@@ -54,6 +55,7 @@ public class DayNight : MonoBehaviour {
 
 	void CallNewMonth() {
 		//switch cases for month names
+
 		months++;
 		switch (months) {
 		case 1:
@@ -109,12 +111,14 @@ public class DayNight : MonoBehaviour {
 			}
 		}
 
-		if (months == 13) {
+		if (months == 12) {
 			years++;
 			monthString = ("January");
 			year.text = ("" + years);
 			month.text = (monthString);
 			months = 1;
+			Genes.age++;	//Everyone's age goes up by 1 every month!
+			ageText.text = ("" + Genes.age);
 		}
 			
 		if (currentTimeOfDay >= 0f) {

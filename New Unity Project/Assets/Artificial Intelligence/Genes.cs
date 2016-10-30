@@ -24,6 +24,8 @@ public class Genes : MonoBehaviour
     public int swimSkill;
     public int landSkill;
 
+	public static int age;
+
     public int gender;
 
     public Text CarnivorismText;
