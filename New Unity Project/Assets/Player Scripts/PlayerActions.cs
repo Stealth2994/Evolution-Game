@@ -12,10 +12,30 @@ public class PlayerActions : MonoBehaviour {
     public Block brcornerBlock;
     public Block centerBlock;
     public Camera c;
+    private bool building = false;
+    public bool Building
+    {
+        get
+        {
+            return building;
+        }
+        set
+        {
+            building = value;
+        }
+    }
     // Use this for initialization
     void Start () {
 	    
 	}
+    public void StartBuild()
+    {
+        building = true;
+    }
+    public void StopBuild()
+    {
+        building = false;
+    }
     int startx;
     int currentx;
     int starty;
@@ -25,18 +45,22 @@ public class PlayerActions : MonoBehaviour {
     // Update is called once per frame
     void Update()
     {
-        if(Input.GetMouseButtonDown(0))
+        if (building)
         {
-            Select();
-        }
-        else if(Input.GetMouseButton(0)) {
-            Select();
-            Build();
-        }
-        else if(Input.GetMouseButtonUp(0))
-        {
-            buildArea = new Dictionary<GenerateGrid.coords, Block>();
-            Build();
+            if (Input.GetMouseButtonDown(0))
+            {
+                Select();
+            }
+            else if (Input.GetMouseButton(0))
+            {
+                Select();
+                Build();
+            }
+            else if (Input.GetMouseButtonUp(0))
+            {
+                buildArea = new Dictionary<GenerateGrid.coords, Block>();
+                Build();
+            }
         }
     }
     Vector2 one = Vector2.zero;
