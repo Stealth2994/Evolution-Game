@@ -22,8 +22,10 @@ public class DayNight : MonoBehaviour {
 	public float timeMultiplier = 1f;
 	public bool reachedFullDay;
 	public Text ageText;
+    public Genes player;
 
 	void Start () {
+        player = GameObject.Find("Player").GetComponent<Genes>();
 		//call the first month so it isnt 0 :)
 		CallNewMonth ();
 		// Since the month changes 5 times in a single daynight cycle do /75 
@@ -117,8 +119,12 @@ public class DayNight : MonoBehaviour {
 			year.text = ("" + years);
 			month.text = (monthString);
 			months = 1;
-			Genes.age++;	//Everyone's age goes up by 1 every month!
-			ageText.text = ("" + Genes.age);
+            foreach(Brain g in CreateAIS.aiList)
+            {
+                g.me.age++;
+            }
+			player.age++;	//Everyone's age goes up by 1 every month!
+			ageText.text = ("" + player.age);
 		}
 			
 		if (currentTimeOfDay >= 0f) {

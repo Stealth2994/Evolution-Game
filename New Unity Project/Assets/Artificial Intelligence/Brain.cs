@@ -316,13 +316,15 @@ public class Brain : MonoBehaviour {
                         transform.position = Vector2.MoveTowards(pos, breedTarget.pos, Time.deltaTime * tempSpeed);
                         if (Vector2.Distance(pos, breedTarget.pos) < 1)
                         {
-                          
+                            me.lastBreed = me.age;
                             firstLoop = true;
                             tryBreed = false;
                             breedTarget = null;
                             needsOrders = true;
+                            wandering = true;
                             if (me.gender == 1)
                             {
+                                Debug.Log("WE GOT A BABY BOIZZZZ");
                                 BirthCountdown();
                             }
                         }
@@ -339,6 +341,7 @@ public class Brain : MonoBehaviour {
     int wanderDir;
     // Update is called once per frame
     void Update () {
+        stats.age = me.age;
         pos = transform.position;
         transform.position = new Vector3(transform.position.x, transform.position.y, -0.5f);
         TerrainTileValues tr;

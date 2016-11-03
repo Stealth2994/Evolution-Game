@@ -24,7 +24,7 @@ public class Genes : MonoBehaviour
     public int swimSkill;
     public int landSkill;
 
-	public static int age;
+	public int age;
 
     public int gender;
 
@@ -106,13 +106,15 @@ public class Genes : MonoBehaviour
     public float needWater;
     public float needRest;
     public float needBreed;
+    public float lastBreed;
     public List<string> makePriorityList(SurvivalStats s, bool inCombat)
     {
         if (!inCombat)
         {
             needFood = ((100.0f / (Mathf.Ceil(s.h.currentHunger * 100))) - 1);
                 needWater = ((100.0f / (Mathf.Ceil(s.t.currentThirst * 100))) - 1);
-                needBreed = (s.age / 10);
+            Debug.Log(lastBreed);
+                needBreed = ((s.age - lastBreed)/ 10.0f);
                 needRest = s.e.currentEnergy < 25 ? 0 : 4;
                 Dictionary<string, float> returnDictionary = new Dictionary<string, float>();
 
@@ -124,19 +126,18 @@ public class Genes : MonoBehaviour
                 for (int i = 0; i < 4; i++)
                 {
                     string highest = null;
-                    int currentHighest = -10000;
+                    float currentHighest = -10000;
                     foreach (KeyValuePair<string, float> entry in returnDictionary)
                     {
                         if (entry.Value > currentHighest)
                         {
-                            currentHighest = (int)entry.Value;
+                            currentHighest = entry.Value;
                             highest = entry.Key;
 
                         }
                     }
                     if (highest != null)
                     {
-
                         returnDictionary.Remove(highest);
                         returnList.Add(highest);
                     }
