@@ -4,7 +4,7 @@ using System.Collections;
 public class FriendContext : MonoBehaviour {
 
 	public GameObject ContextMenu;
-	bool isFriends;
+	public bool isFriends;
 	public GameObject FriendsText3D;
 
 	public void OnMouseDown() {
