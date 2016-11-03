@@ -35,7 +35,6 @@ public class UIAnimations : MonoBehaviour {
 	}
 	public void PanelDisable() {
 		PausePanel.SetActive (false);
-		InventoryPanel.SetActive (false);
 	}
 	public void TimeScaleZero () {
 		Time.timeScale = 0;
