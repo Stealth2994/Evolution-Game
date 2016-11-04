@@ -1002,7 +1002,7 @@ public class GenerateGrid : MonoBehaviour {
                     g.transform.parent = transform;
                     createdBuildings.Add(b.Key, b.Value);
                 }
-            }s
+            }
             yield return new WaitForSeconds(0);
         }
       
