@@ -8,17 +8,21 @@ public class ProcessGrid : ThreadedJob
     public Dictionary<GenerateGrid.coords, GenerateGrid.MegaChunk> grid;
     public Dictionary<GenerateGrid.coords, GenerateGrid.Chunk> chunkGrid = new Dictionary<GenerateGrid.coords, GenerateGrid.Chunk>();
     public Dictionary<GenerateGrid.coords, TerrainTileValues> foodList = new Dictionary<GenerateGrid.coords, TerrainTileValues>();
+    public Dictionary<GenerateGrid.coords, GenerateGrid.Building> buildingList = new Dictionary<GenerateGrid.coords, GenerateGrid.Building>();
     public float x;
     public float y;
     public int render;
     public int loops = 0;
     public Dictionary<GenerateGrid.coords, GameObject> created;
     public Dictionary<GenerateGrid.coords, GameObject> createdFoods;
+    public Dictionary<GenerateGrid.coords, GenerateGrid.Building> createdBuildings;
     //These variables will contain computed info once the thread is done
     public Dictionary<GenerateGrid.coords, GenerateGrid.Chunk> addTo = new Dictionary<GenerateGrid.coords, GenerateGrid.Chunk>();
     public Dictionary<GenerateGrid.coords, GenerateGrid.Chunk> removeFrom = new Dictionary<GenerateGrid.coords, GenerateGrid.Chunk>();
     public Dictionary<GenerateGrid.coords, TerrainTileValues> addFood = new Dictionary<GenerateGrid.coords, TerrainTileValues>();
     public Dictionary<GenerateGrid.coords, TerrainTileValues> removeFood = new Dictionary<GenerateGrid.coords, TerrainTileValues>();
+    public Dictionary<GenerateGrid.coords, GenerateGrid.Building> addBuilding = new Dictionary<GenerateGrid.coords, GenerateGrid.Building>();
+    public Dictionary<GenerateGrid.coords, GenerateGrid.Building> removeBuilding = new Dictionary<GenerateGrid.coords, GenerateGrid.Building>();
     protected override void ThreadFunction()
     {
         //Loop through all megachunks
@@ -77,6 +81,28 @@ public class ProcessGrid : ThreadedJob
                 if (createdFoods.TryGetValue(new GenerateGrid.coords(entry.Key.x, entry.Key.y), out hit))
                 {
                     removeFood.Add(entry.Key, entry.Value);
+                }
+            }
+        }
+        foreach(KeyValuePair<GenerateGrid.coords,GenerateGrid.Building> entry in buildingList)
+        {
+            if (entry.Key.x > x - render && entry.Key.x < x + render && entry.Key.y > y - render && entry.Key.y < y + render)
+            {
+                //add it
+                if (!createdBuildings.ContainsKey(new GenerateGrid.coords(entry.Key.x, entry.Key.y)))
+                {
+                    addBuilding.Add(entry.Key, entry.Value);
+
+                }
+
+            }
+            //otherwise delete it if it exists
+            else
+            {
+                GenerateGrid.Building hit;
+                if (createdBuildings.TryGetValue(new GenerateGrid.coords(entry.Key.x, entry.Key.y), out hit))
+                {
+                    removeBuilding.Add(entry.Key, entry.Value);
                 }
             }
         }

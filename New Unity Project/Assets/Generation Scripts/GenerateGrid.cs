@@ -723,6 +723,8 @@ public class GenerateGrid : MonoBehaviour {
             pg.x = player.transform.position.x;
             pg.y = player.transform.position.y;
             pg.render = renderdistance;
+            pg.createdBuildings = createdBuildings;
+            pg.buildingList = buildingList;
             pg.created = created;
             pg.foodList = foodList;
             pg.createdFoods = createdFoods;
@@ -983,10 +985,30 @@ public class GenerateGrid : MonoBehaviour {
                 Destroy(ggg.Value);
             }
             removeFoodList = new Dictionary<coords, GameObject>();
+            foreach(KeyValuePair<coords,Building> b in pg.addBuilding)
+            {
+                foreach(KeyValuePair<coords,Block> c in b.Value.buildingBlocks)
+                {
+                    GameObject g = Instantiate(c.Value, new Vector2(c.Key.x, c.Key.y), Quaternion.identity) as GameObject;
+                    g.transform.parent = transform;
+                    createdBuildings.Add(b.Key, b.Value);
+                }
+            }
+            foreach (KeyValuePair<coords, Building> b in pg.addBuilding)
+            {
+                foreach (KeyValuePair<coords, Block> c in b.Value.buildingBlocks)
+                {
+                    GameObject g = Instantiate(c.Value, new Vector2(c.Key.x, c.Key.y), Quaternion.identity) as GameObject;
+                    g.transform.parent = transform;
+                    createdBuildings.Add(b.Key, b.Value);
+                }
+            }s
             yield return new WaitForSeconds(0);
         }
       
     }
+    public static Dictionary<coords,Building> buildingList = new Dictionary<coords,Building>();
+    public static Dictionary<coords, Building> createdBuildings = new Dictionary<coords, Building>();
     public static Dictionary<coords, TerrainTileValues> foodList = new Dictionary<coords, TerrainTileValues>();
     public static Dictionary<coords, GameObject> createdFoods = new Dictionary<coords, GameObject>();
     public static Dictionary<coords, GameObject> removeFoodList = new Dictionary<coords, GameObject>();
@@ -995,6 +1017,14 @@ public class GenerateGrid : MonoBehaviour {
     public static Dictionary<coords, Chunk> chunkList = new Dictionary<coords, Chunk>();
     //Stores every mega chunk
     public static Dictionary<coords,MegaChunk> megaChunkList = new Dictionary<coords, MegaChunk>();
+    public class Building
+    {
+        public Dictionary<coords, Block> buildingBlocks;
+        public Building(Dictionary<coords,Block> bb)
+        {
+            this.buildingBlocks = bb;
+        }
+    }
     public class Chunk
     {
         public static coords FindChunkCoords(coords pos)
