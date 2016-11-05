@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
-using System.Collections;
+using UnityEngine.UI;
 public class PlayerActions : MonoBehaviour {
     public Block nedgeBlock;
     public Block eedgeBlock;
@@ -12,6 +12,7 @@ public class PlayerActions : MonoBehaviour {
     public Block brcornerBlock;
     public Block centerBlock;
     public Camera c;
+    UIAnimations a;
     private bool building = false;
     public bool Building
     {
@@ -26,7 +27,7 @@ public class PlayerActions : MonoBehaviour {
     }
     // Use this for initialization
     void Start () {
-	    
+       a = GameObject.Find("Canvas").GetComponent<UIAnimations>();
 	}
     public void StartBuild()
     {
@@ -45,22 +46,27 @@ public class PlayerActions : MonoBehaviour {
     // Update is called once per frame
     void Update()
     {
-        if (building)
-        {
-            if (Input.GetMouseButtonDown(0))
+
+
+            if (building)
             {
-                Select();
+                if (Input.GetMouseButtonDown(0))
+                {
+                    Select();
+                
+                }
+                else if (Input.GetMouseButton(0))
+                {
+                    Select();
+                    Build();
+                }
+                else if (Input.GetMouseButtonUp(0))
+                {
+                    buildArea = new Dictionary<GenerateGrid.coords, Block>();
+                    Build();
+               
             }
-            else if (Input.GetMouseButton(0))
-            {
-                Select();
-                Build();
-            }
-            else if (Input.GetMouseButtonUp(0))
-            {
-                buildArea = new Dictionary<GenerateGrid.coords, Block>();
-                Build();
-            }
+            
         }
     }
     Vector2 one = Vector2.zero;
