@@ -7,9 +7,5 @@ public class MakeBuildingScripto : MonoBehaviour {
 	void Start () {
         GetComponent<Button>().onClick.AddListener(delegate { GameObject.Find("Player").GetComponent<PlayerActions>().StartBuild(); });
 	}
-	
-	// Update is called once per frame
-	void Update () {
-	
-	}
+
 }
