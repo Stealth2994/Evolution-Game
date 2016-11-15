@@ -6,11 +6,31 @@ public class UIAnimations : MonoBehaviour {
 	public GameObject GridGO;
 	public GameObject StatsPanel;
 	public Animator StatsPanelAnimator;
+	public GameObject BPPanel;
+	public Animator BPPanelAnimator;
 	public GameObject PausePanel;
 	public Animator PausePanelAnimator;
 	public GameObject InventoryPanel;
 	public Animator InvPanelAnimator;
+	public Canvas mainCanvas;
+	public Canvas buildCanvas;
 
+	public void HideCanvas() {
+		mainCanvas.enabled = false;
+		buildCanvas.enabled = true;
+	}
+	public void DoneButton() {
+		buildCanvas.enabled = false;
+		mainCanvas.enabled = true;
+	}
+	public void OnClickBPHamburger () {
+		BPPanel.SetActive (true);
+		BPPanelAnimator.Play ("BPPanelAnimation");
+	}
+	public void OnClickBPBack () {
+		BPPanelAnimator.Play ("BPPanelReversed");
+		Invoke ("StatsPanelDisable", 1);
+	}
 	public void OnClickStatsHamburger () {
 		StatsPanel.SetActive (true);
 		StatsPanelAnimator.Play ("StatsPanelAnimation");
@@ -21,6 +41,7 @@ public class UIAnimations : MonoBehaviour {
 	}
 	public void StatsPanelDisable() {
 		StatsPanel.SetActive (false);
+		BPPanel.SetActive (false);
 	}
 
 	public void OnClickPause () {
