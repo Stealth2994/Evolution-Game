@@ -990,8 +990,15 @@ public class GenerateGrid : MonoBehaviour {
                 foreach(KeyValuePair<coords,Block> c in b.Value.buildingBlocks)
                 {
                     GameObject g = Instantiate(c.Value, new Vector2(c.Key.x, c.Key.y), Quaternion.identity) as GameObject;
-                    g.transform.parent = transform;
-                    createdBuildings.Add(b.Key, b.Value);
+                    if (g != null && transform != null)
+                    {
+                        g.transform.parent = transform;
+
+                        if (!createdBuildings.ContainsKey(b.Key))
+                        {
+                            createdBuildings.Add(b.Key, b.Value);
+                        }
+                    }
                 }
             }
             foreach (KeyValuePair<coords, Building> b in pg.addBuilding)
@@ -999,8 +1006,14 @@ public class GenerateGrid : MonoBehaviour {
                 foreach (KeyValuePair<coords, Block> c in b.Value.buildingBlocks)
                 {
                     GameObject g = Instantiate(c.Value, new Vector2(c.Key.x, c.Key.y), Quaternion.identity) as GameObject;
-                    g.transform.parent = transform;
-                    createdBuildings.Add(b.Key, b.Value);
+                    if (g != null && transform != null)
+                    {
+                        g.transform.parent = transform;
+                        if (!createdBuildings.ContainsKey(b.Key))
+                        {
+                            createdBuildings.Add(b.Key, b.Value);
+                    }
+                }
                 }
             }
             yield return new WaitForSeconds(0);
